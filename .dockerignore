@@ -9,60 +9,24 @@ __pycache__
 *.pyd
 .Python
 env
-pip-log.txt
-pip-delete-this-directory.txt
-.tox
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.log
 .venv
 venv/
+.coverage
+*.log
 
-# Node.js
-frontend/node_modules
-frontend/npm-debug.log*
-frontend/yarn-debug.log*
-frontend/yarn-error.log*
-frontend/.env.local
-frontend/.env.development.local
-frontend/.env.test.local
-frontend/.env.production.local
+# Docker
+.dockerignore
+
+# Temporary files
+temp_videos/*
+analysis_results/*
+uploads/*
+clips/*
 
 # IDE
 .vscode
 .idea
-*.swp
-*.swo
 
 # OS
 .DS_Store
 Thumbs.db
-
-# Project specific
-uploads/*
-!uploads/.gitkeep
-clips/*
-!clips/.gitkeep
-*.db
-*.sqlite
-sql_app.db
-
-# Test files
-test/
-*.test.js
-*.spec.js
-
-# Documentation
-*.md
-docs/
-
-# Batch files
-*.bat
-
-# Temporary files
-*.tmp
-*.temp

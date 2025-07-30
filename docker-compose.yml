@@ -1,23 +1,36 @@
 version: '3.8'
 
 services:
-  # Redis 서비스
-  redis:
-    image: redis:7-alpine
-    container_name: poker-mam-redis
+  # 메인 Poker MAM Flask 애플리케이션
+  poker-mam:
+    build: .
+    container_name: poker-mam-app
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "5000:5000"
     volumes:
-      - redis_data:/data
-    command: redis-server --appendonly yes
+      - ./temp_videos:/app/temp_videos
+      - ./analysis_results:/app/analysis_results
+      - ./static/results:/app/static/results
+    environment:
+      - FLASK_ENV=production
+      - FLASK_DEBUG=0
+      - MAX_FILE_SIZE=10737418240
+      - TEMP_VIDEO_DIR=temp_videos
+      - RESULTS_DIR=analysis_results
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
-  # 백엔드 API 서비스
-  backend:
+  # 기존 백엔드 (FastAPI) - Phase 1-3 시스템
+  legacy-backend:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    container_name: poker-mam-backend
+    container_name: poker-mam-legacy-backend
     restart: unless-stopped
     ports:
       - "8000:8000"
@@ -37,8 +50,23 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    profiles:
+      - legacy
 
-  # Celery Worker 서비스
+  # Redis 서비스 (기존 시스템용)
+  redis:
+    image: redis:7-alpine
+    container_name: poker-mam-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    profiles:
+      - legacy
+
+  # Celery Worker 서비스 (기존 시스템용)
   celery-worker:
     build:
       context: .
@@ -56,22 +84,26 @@ services:
       - backend_data:/app/data
     depends_on:
       - redis
-      - backend
+      - legacy-backend
     command: python run_celery.py
+    profiles:
+      - legacy
 
-  # 프론트엔드 서비스
-  frontend:
+  # 기존 프론트엔드 (React)
+  legacy-frontend:
     build:
       context: .
       dockerfile: Dockerfile.frontend
-    container_name: poker-mam-frontend
+    container_name: poker-mam-legacy-frontend
     restart: unless-stopped
     ports:
       - "80:80"
     depends_on:
-      - backend
+      - legacy-backend
     environment:
       - REACT_APP_API_URL=http://localhost:8000
+    profiles:
+      - legacy
 
   # 개발용 프론트엔드 (선택사항)
   frontend-dev:
