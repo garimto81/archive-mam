@@ -1,0 +1,595 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="poker-header">
+    <h1><i class="fas fa-spade-suit text-primary"></i> 포커 대회 영상 분석기</h1>
+    <p>YouTube 링크나 비디오 파일을 업로드하여 포커 핸드의 길이를 자동으로 분석하세요</p>
+</div>
+
+<!-- 분석 폼 -->
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card card-custom">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-video me-2"></i>
+                    영상 분석 시작
+                </h5>
+                
+                <form id="analysisForm">
+                    <!-- URL 입력 탭 -->
+                    <ul class="nav nav-tabs" id="inputTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="url-tab" data-bs-toggle="tab" data-bs-target="#url-pane" type="button">
+                                <i class="fas fa-link me-2"></i>비디오 URL
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="browse-tab" data-bs-toggle="tab" data-bs-target="#browse-pane" type="button">
+                                <i class="fas fa-folder-open me-2"></i>파일 탐색
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="file-tab" data-bs-toggle="tab" data-bs-target="#file-pane" type="button">
+                                <i class="fas fa-upload me-2"></i>파일 업로드
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content mt-3" id="inputTabsContent">
+                        <!-- URL 입력 -->
+                        <div class="tab-pane fade show active" id="url-pane">
+                            <div class="mb-3">
+                                <label for="videoUrl" class="form-label">비디오 URL</label>
+                                <input type="url" class="form-control" id="videoUrl" name="video_url" 
+                                       placeholder="https://www.youtube.com/watch?v=... 또는 직접 비디오 링크">
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    YouTube, Twitch, 직접 비디오 링크 등을 입력하세요 (스트리밍으로 바로 처리)
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 파일 탐색 -->
+                        <div class="tab-pane fade" id="browse-pane">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">드라이브 선택</label>
+                                        <select class="form-select" id="driveSelect">
+                                            <option value="">드라이브를 선택하세요...</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">현재 경로</label>
+                                        <input type="text" class="form-control" id="currentPath" readonly>
+                                        <div class="btn-group mt-2 w-100">
+                                            <button type="button" class="btn btn-outline-secondary btn-sm" id="parentDirBtn">
+                                                <i class="fas fa-level-up-alt me-1"></i>상위 폴더
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary btn-sm" id="refreshBtn">
+                                                <i class="fas fa-sync me-1"></i>새로고침
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-8">
+                                    <div class="mb-3">
+                                        <label class="form-label">파일 목록</label>
+                                        <div class="border rounded p-2" style="height: 300px; overflow-y: auto;">
+                                            <div id="fileList">
+                                                <div class="text-muted text-center p-3">
+                                                    <i class="fas fa-folder-open fa-2x mb-2"></i>
+                                                    <br>드라이브를 선택하여 탐색을 시작하세요
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">선택된 파일</label>
+                                        <input type="text" class="form-control" id="selectedFile" readonly 
+                                               placeholder="비디오 파일을 선택하세요">
+                                    </div>
+                                    
+                                    <div id="fileInfo" class="alert alert-info" style="display: none;">
+                                        <h6><i class="fas fa-info-circle me-2"></i>파일 정보</h6>
+                                        <p class="mb-1"><strong>크기:</strong> <span id="fileSize">-</span></p>
+                                        <p class="mb-1"><strong>형식:</strong> <span id="fileFormat">-</span></p>
+                                        <p class="mb-0"><strong>경로:</strong> <span id="filePath">-</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-text mt-2">
+                                <i class="fas fa-info-circle me-1"></i>
+                                로컬 네트워크 환경에서 비디오 파일을 직접 선택할 수 있습니다
+                            </div>
+                        </div>
+                        
+                        <!-- 파일 업로드 -->
+                        <div class="tab-pane fade" id="file-pane">
+                            <div class="mb-3">
+                                <label for="videoFile" class="form-label">비디오 파일</label>
+                                <input type="file" class="form-control" id="videoFile" name="video_file" 
+                                       accept=".mp4,.avi,.mov,.mkv,.flv,.webm">
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    지원 형식: MP4, AVI, MOV, MKV, FLV, WEBM (로컬 파일만)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 분석 옵션 -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">분석 정밀도</label>
+                            <select class="form-select" id="precision">
+                                <option value="normal">일반 (빠름)</option>
+                                <option value="high" selected>높음 (권장)</option>
+                                <option value="ultra">매우 높음 (느림)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">핸드 길이 분류</label>
+                            <select class="form-select" id="classification">
+                                <option value="standard" selected>표준 (5단계)</option>
+                                <option value="detailed">상세 (10단계)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary-custom btn-lg">
+                            <i class="fas fa-play me-2"></i>
+                            분석 시작
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 진행 상황 표시 (숨김) -->
+<div id="progressSection" class="mt-4" style="display: none;">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card card-custom">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-cog fa-spin me-2"></i>
+                        분석 진행 중
+                    </h5>
+                    
+                    <div id="progressInfo" class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span id="progressMessage">분석 준비 중...</span>
+                            <span id="progressPercent">0%</span>
+                        </div>
+                        <div class="progress progress-custom">
+                            <div id="progressBar" class="progress-bar progress-bar-custom" 
+                                 style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div id="videoInfo" style="display: none;" class="alert alert-info alert-custom">
+                        <h6><i class="fas fa-video me-2"></i>영상 정보</h6>
+                        <p class="mb-1"><strong>제목:</strong> <span id="videoTitle">-</span></p>
+                        <p class="mb-1"><strong>길이:</strong> <span id="videoDuration">-</span></p>
+                        <p class="mb-0"><strong>처리 방식:</strong> <span id="processingType">스트리밍 분석</span></p>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <button id="cancelBtn" class="btn btn-outline-danger">
+                            <i class="fas fa-stop me-2"></i>
+                            취소
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 기능 소개 -->
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card card-custom h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-brain fa-3x text-primary mb-3"></i>
+                <h5>스트리밍 분석</h5>
+                <p>다운로드 없이 URL에서 직접 스트리밍하여 빠르고 효율적으로 분석합니다.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card card-custom h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-chart-pie fa-3x text-success mb-3"></i>
+                <h5>상세한 통계</h5>
+                <p>핸드 길이별 분류, 평균 시간, 분포도 등 다양한 통계를 제공합니다.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card card-custom h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-download fa-3x text-info mb-3"></i>
+                <h5>결과 다운로드</h5>
+                <p>분석 결과를 JSON 형태로 다운로드하여 추가 분석에 활용할 수 있습니다.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentTaskId = null;
+let progressInterval = null;
+
+document.getElementById('analysisForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData();
+    const activeTab = document.querySelector('.nav-link.active').id;
+    
+    if (activeTab === 'url-tab') {
+        const url = document.getElementById('videoUrl').value.trim();
+        if (!url) {
+            alert('비디오 URL을 입력하세요.');
+            return;
+        }
+        formData.append('video_url', url);
+        startAnalysis(formData);
+        
+    } else if (activeTab === 'browse-tab') {
+        const selectedFile = document.getElementById('selectedFile').value.trim();
+        if (!selectedFile) {
+            alert('파일을 선택하세요.');
+            return;
+        }
+        // 로컬 파일 분석 시작
+        startLocalFileAnalysis(selectedFile);
+        
+    } else if (activeTab === 'file-tab') {
+        const file = document.getElementById('videoFile').files[0];
+        if (!file) {
+            alert('비디오 파일을 선택하세요.');
+            return;
+        }
+        formData.append('video_file', file);
+        startAnalysis(formData);
+    }
+});
+
+function startAnalysis(formData) {
+    // UI 변경
+    document.getElementById('analysisForm').style.display = 'none';
+    document.getElementById('progressSection').style.display = 'block';
+    
+    fetch('/analyze', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            throw new Error(data.error);
+        }
+        
+        currentTaskId = data.task_id;
+        startProgressTracking();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('분석 시작 실패: ' + error.message);
+        resetUI();
+    });
+}
+
+function startProgressTracking() {
+    progressInterval = setInterval(() => {
+        fetch(`/progress/${currentTaskId}`)
+        .then(response => response.json())
+        .then(data => {
+            updateProgress(data);
+            
+            if (data.status === 'completed') {
+                clearInterval(progressInterval);
+                showResults();
+            } else if (data.status === 'error') {
+                clearInterval(progressInterval);
+                alert('분석 실패: ' + data.message);
+                resetUI();
+            }
+        })
+        .catch(error => {
+            console.error('Progress tracking error:', error);
+        });
+    }, 2000); // 2초마다 확인
+}
+
+function updateProgress(data) {
+    const progressBar = document.getElementById('progressBar');
+    const progressPercent = document.getElementById('progressPercent');
+    const progressMessage = document.getElementById('progressMessage');
+    
+    const progress = data.progress || 0;
+    progressBar.style.width = progress + '%';
+    progressPercent.textContent = progress + '%';
+    progressMessage.textContent = data.message || '처리 중...';
+    
+    // 비디오 정보 표시
+    if (data.video_info) {
+        const videoInfo = document.getElementById('videoInfo');
+        const videoTitle = document.getElementById('videoTitle');
+        const videoDuration = document.getElementById('videoDuration');
+        const processingType = document.getElementById('processingType');
+        
+        videoTitle.textContent = data.video_info.title;
+        videoDuration.textContent = formatDuration(data.video_info.duration);
+        
+        // 처리 방식 표시
+        if (data.video_info.source_type === 'youtube') {
+            processingType.textContent = 'YouTube 스트리밍 분석';
+        } else if (data.video_info.source_type === 'direct') {
+            processingType.textContent = '직접 URL 스트리밍 분석';
+        } else {
+            processingType.textContent = '로컬 파일 분석';
+        }
+        
+        videoInfo.style.display = 'block';
+    }
+}
+
+function showResults() {
+    window.location.href = `/results/${currentTaskId}`;
+}
+
+function resetUI() {
+    document.getElementById('analysisForm').style.display = 'block';
+    document.getElementById('progressSection').style.display = 'none';
+    
+    // 폼 초기화
+    document.getElementById('analysisForm').reset();
+    
+    if (progressInterval) {
+        clearInterval(progressInterval);
+        progressInterval = null;
+    }
+    currentTaskId = null;
+}
+
+function formatDuration(seconds) {
+    if (!seconds) return '-';
+    
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    
+    if (hours > 0) {
+        return `${hours}시간 ${minutes}분 ${secs}초`;
+    } else {
+        return `${minutes}분 ${secs}초`;
+    }
+}
+
+// 취소 버튼
+document.getElementById('cancelBtn').addEventListener('click', function() {
+    if (confirm('분석을 취소하시겠습니까?')) {
+        if (progressInterval) {
+            clearInterval(progressInterval);
+        }
+        resetUI();
+    }
+});
+
+// 파일 브라우저 기능
+let currentDirectory = null;
+
+// 로컬 파일 분석 시작
+function startLocalFileAnalysis(filePath) {
+    // UI 변경
+    document.getElementById('analysisForm').style.display = 'none';
+    document.getElementById('progressSection').style.display = 'block';
+    
+    fetch('/analyze-local-file', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            file_path: filePath
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            throw new Error(data.error);
+        }
+        
+        currentTaskId = data.task_id;
+        startProgressTracking();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('분석 시작 실패: ' + error.message);
+        resetUI();
+    });
+}
+
+// 드라이브 목록 로드
+function loadDrives() {
+    fetch('/api/file-browser/drives')
+    .then(response => response.json())
+    .then(data => {
+        const driveSelect = document.getElementById('driveSelect');
+        driveSelect.innerHTML = '<option value="">드라이브를 선택하세요...</option>';
+        
+        data.drives.forEach(drive => {
+            const option = document.createElement('option');
+            option.value = drive.path;
+            option.textContent = drive.name;
+            driveSelect.appendChild(option);
+        });
+    })
+    .catch(error => {
+        console.error('드라이브 로드 실패:', error);
+    });
+}
+
+// 디렉토리 내용 로드
+function loadDirectory(path) {
+    if (!path) return;
+    
+    fetch(`/api/file-browser/list?path=${encodeURIComponent(path)}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            throw new Error(data.error);
+        }
+        
+        currentDirectory = data.current_path;
+        document.getElementById('currentPath').value = currentDirectory;
+        
+        const fileList = document.getElementById('fileList');
+        fileList.innerHTML = '';
+        
+        if (data.items.length === 0) {
+            fileList.innerHTML = '<div class="text-muted text-center p-3">빈 폴더입니다</div>';
+            return;
+        }
+        
+        data.items.forEach(item => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'file-item p-2 border-bottom';
+            itemDiv.style.cursor = 'pointer';
+            
+            let icon = '';
+            let className = '';
+            
+            if (item.type === 'parent') {
+                icon = 'fas fa-level-up-alt';
+                className = 'text-secondary';
+            } else if (item.type === 'directory') {
+                icon = 'fas fa-folder';
+                className = 'text-primary';
+            } else if (item.is_video) {
+                icon = 'fas fa-video';
+                className = 'text-success';
+            } else {
+                icon = 'fas fa-file';
+                className = 'text-muted';
+            }
+            
+            const sizeText = item.type === 'file' ? formatFileSize(item.size) : '';
+            
+            itemDiv.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="${icon} me-2 ${className}"></i>
+                    <span class="flex-grow-1">${item.name}</span>
+                    ${sizeText ? `<small class="text-muted">${sizeText}</small>` : ''}
+                </div>
+            `;
+            
+            // 클릭 이벤트
+            itemDiv.addEventListener('click', function() {
+                if (item.type === 'directory' || item.type === 'parent') {
+                    loadDirectory(item.path);
+                } else if (item.is_video) {
+                    selectFile(item.path);
+                }
+            });
+            
+            // 비디오 파일인 경우 하이라이트
+            if (item.is_video) {
+                itemDiv.addEventListener('mouseenter', function() {
+                    this.style.backgroundColor = '#e8f5e8';
+                });
+                itemDiv.addEventListener('mouseleave', function() {
+                    this.style.backgroundColor = '';
+                });
+            }
+            
+            fileList.appendChild(itemDiv);
+        });
+    })
+    .catch(error => {
+        console.error('디렉토리 로드 실패:', error);
+        document.getElementById('fileList').innerHTML = 
+            `<div class="text-danger text-center p-3">오류: ${error.message}</div>`;
+    });
+}
+
+// 파일 선택
+function selectFile(filePath) {
+    document.getElementById('selectedFile').value = filePath;
+    
+    // 파일 정보 로드
+    fetch(`/api/file-browser/file-info?path=${encodeURIComponent(filePath)}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            throw new Error(data.error);
+        }
+        
+        document.getElementById('fileSize').textContent = formatFileSize(data.size);
+        document.getElementById('fileFormat').textContent = data.extension.toUpperCase();
+        document.getElementById('filePath').textContent = data.path;
+        document.getElementById('fileInfo').style.display = 'block';
+    })
+    .catch(error => {
+        console.error('파일 정보 로드 실패:', error);
+        document.getElementById('fileInfo').style.display = 'none';
+    });
+}
+
+// 파일 크기 포맷팅
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 B';
+    
+    const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+    let size = bytes;
+    let unitIndex = 0;
+    
+    while (size >= 1024 && unitIndex < units.length - 1) {
+        size /= 1024;
+        unitIndex++;
+    }
+    
+    return `${size.toFixed(1)} ${units[unitIndex]}`;
+}
+
+// 이벤트 리스너 등록
+document.getElementById('driveSelect').addEventListener('change', function() {
+    const selectedDrive = this.value;
+    if (selectedDrive) {
+        loadDirectory(selectedDrive);
+    }
+});
+
+document.getElementById('parentDirBtn').addEventListener('click', function() {
+    if (currentDirectory) {
+        const parentPath = currentDirectory.split(/[\/\\]/).slice(0, -1).join('/') || '/';
+        loadDirectory(parentPath);
+    }
+});
+
+document.getElementById('refreshBtn').addEventListener('click', function() {
+    if (currentDirectory) {
+        loadDirectory(currentDirectory);
+    }
+});
+
+// 탭 변경시 드라이브 로드
+document.getElementById('browse-tab').addEventListener('shown.bs.tab', function() {
+    loadDrives();
+});
+</script>
+{% endblock %}

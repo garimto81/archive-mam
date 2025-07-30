@@ -1,0 +1,413 @@
+{% extends "base.html" %}
+
+{% block title %}분석 결과 - 포커 대회 영상 분석기{% endblock %}
+
+{% block content %}
+<div class="poker-header">
+    <h1><i class="fas fa-chart-line text-success"></i> 분석 결과</h1>
+    <p>포커 핸드 길이 분석이 완료되었습니다</p>
+</div>
+
+<!-- 요약 통계 -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-number">{{ results.summary.total_hands }}</div>
+            <div class="stats-label">총 핸드 수</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-number">{{ "%.1f" | format(results.summary.average_duration) }}초</div>
+            <div class="stats-label">평균 핸드 길이</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-number">{{ "%.1f" | format(results.summary.total_duration / 60) }}분</div>
+            <div class="stats-label">총 게임 시간</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-number">{{ "%.1f" | format(results.summary.longest_hand.duration) }}초</div>
+            <div class="stats-label">최장 핸드</div>
+        </div>
+    </div>
+</div>
+
+<!-- 차트 섹션 -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card card-custom">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-pie-chart me-2"></i>
+                    핸드 길이 분포
+                </h5>
+                <canvas id="distributionChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card card-custom">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-bar-chart me-2"></i>
+                    시간대별 핸드 수
+                </h5>
+                <canvas id="timelineChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 핸드 카테고리별 상세 정보 -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card card-custom">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-list me-2"></i>
+                    카테고리별 상세 정보
+                </h5>
+                
+                {% for category_id, category_info in results.categories.items() %}
+                {% set hands = results.classified_hands[category_id] %}
+                {% if hands %}
+                <div class="hand-category mb-3" style="border-left-color: {{ category_info.color }}; background-color: {{ category_info.color }}15;">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h6 class="mb-1" style="color: {{ category_info.color }};">
+                                <i class="fas fa-circle me-2"></i>
+                                {{ category_info.name }}
+                            </h6>
+                            <p class="mb-1">
+                                <strong>범위:</strong> {{ category_info.min }}초 - 
+                                {% if category_info.max == float('inf') %}무제한{% else %}{{ category_info.max }}초{% endif %}
+                            </p>
+                            <p class="mb-0">
+                                <strong>핸드 수:</strong> {{ hands|length }}개 
+                                ({{ "%.1f" | format((hands|length / results.summary.total_hands * 100)) }}%)
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <button class="btn btn-outline-primary btn-sm" onclick="showCategoryDetails('{{ category_id }}')">
+                                <i class="fas fa-eye me-1"></i>
+                                상세 보기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 핸드 목록 -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card card-custom">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-table me-2"></i>
+                    전체 핸드 목록
+                </h5>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>핸드 #</th>
+                                <th>시작 시간</th>
+                                <th>종료 시간</th>
+                                <th>길이</th>
+                                <th>카테고리</th>
+                                <th>신뢰도</th>
+                                <th>액션</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for hand in results.hands_data %}
+                            <tr>
+                                <td><strong>{{ hand.hand_id }}</strong></td>
+                                <td>{{ "%.1f" | format(hand.start_time) }}초</td>
+                                <td>{{ "%.1f" | format(hand.end_time) }}초</td>
+                                <td>
+                                    <span class="badge bg-primary">{{ "%.1f" | format(hand.duration) }}초</span>
+                                </td>
+                                <td>
+                                    {% for category_id, category_info in results.categories.items() %}
+                                        {% if category_info.min <= hand.duration < category_info.max %}
+                                            <span class="badge" style="background-color: {{ category_info.color }};">
+                                                {{ category_info.name }}
+                                            </span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar" style="width: {{ hand.overall_confidence }}%">
+                                            {{ "%.0f" | format(hand.overall_confidence) }}%
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-info" onclick="showHandDetails({{ hand.hand_id }})">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 액션 버튼 -->
+<div class="row">
+    <div class="col-12 text-center">
+        <button class="btn btn-success btn-lg me-3" onclick="downloadResults()">
+            <i class="fas fa-download me-2"></i>
+            결과 다운로드 (JSON)
+        </button>
+        <button class="btn btn-primary btn-lg me-3" onclick="location.href='/'">
+            <i class="fas fa-plus me-2"></i>
+            새 분석
+        </button>
+        <button class="btn btn-info btn-lg" onclick="shareResults()">
+            <i class="fas fa-share me-2"></i>
+            결과 공유
+        </button>
+    </div>
+</div>
+
+<!-- 상세 정보 모달 -->
+<div class="modal fade" id="detailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">상세 정보</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- 동적 콘텐츠 -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const resultsData = {{ results | tojson }};
+const taskId = "{{ task_id }}";
+
+// 분포 차트
+const distributionCtx = document.getElementById('distributionChart').getContext('2d');
+const distributionLabels = [];
+const distributionData = [];
+const distributionColors = [];
+
+for (const [categoryId, categoryInfo] of Object.entries(resultsData.categories)) {
+    const count = resultsData.statistics[categoryId];
+    if (count > 0) {
+        distributionLabels.push(categoryInfo.name);
+        distributionData.push(count);
+        distributionColors.push(categoryInfo.color);
+    }
+}
+
+new Chart(distributionCtx, {
+    type: 'doughnut',
+    data: {
+        labels: distributionLabels,
+        datasets: [{
+            data: distributionData,
+            backgroundColor: distributionColors,
+            borderWidth: 2,
+            borderColor: '#fff'
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+
+// 타임라인 차트
+const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+const timelineData = [];
+const timelineLabels = [];
+
+// 10분 단위로 그룹화
+const timeGroups = {};
+for (const hand of resultsData.hands_data) {
+    const timeGroup = Math.floor(hand.start_time / 600) * 10; // 10분 단위
+    if (!timeGroups[timeGroup]) {
+        timeGroups[timeGroup] = 0;
+    }
+    timeGroups[timeGroup]++;
+}
+
+for (const [time, count] of Object.entries(timeGroups)) {
+    timelineLabels.push(`${time}분`);
+    timelineData.push(count);
+}
+
+new Chart(timelineCtx, {
+    type: 'bar',
+    data: {
+        labels: timelineLabels,
+        datasets: [{
+            label: '핸드 수',
+            data: timelineData,
+            backgroundColor: 'rgba(30, 60, 114, 0.8)',
+            borderColor: 'rgba(30, 60, 114, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
+    }
+});
+
+function showCategoryDetails(categoryId) {
+    const category = resultsData.categories[categoryId];
+    const hands = resultsData.classified_hands[categoryId];
+    
+    let content = `
+        <h6 style="color: ${category.color};">${category.name}</h6>
+        <p><strong>범위:</strong> ${category.min}초 - ${category.max === Infinity ? '무제한' : category.max + '초'}</p>
+        <p><strong>핸드 수:</strong> ${hands.length}개</p>
+        
+        <h6 class="mt-3">해당 핸드 목록:</h6>
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>핸드 #</th>
+                        <th>시작</th>
+                        <th>길이</th>
+                        <th>신뢰도</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+    
+    for (const hand of hands) {
+        content += `
+            <tr>
+                <td>${hand.hand_id}</td>
+                <td>${hand.start_time.toFixed(1)}초</td>
+                <td>${hand.duration.toFixed(1)}초</td>
+                <td>${hand.overall_confidence.toFixed(0)}%</td>
+            </tr>
+        `;
+    }
+    
+    content += `
+                </tbody>
+            </table>
+        </div>
+    `;
+    
+    document.getElementById('modalBody').innerHTML = content;
+    new bootstrap.Modal(document.getElementById('detailModal')).show();
+}
+
+function showHandDetails(handId) {
+    const hand = resultsData.hands_data.find(h => h.hand_id === handId);
+    
+    let content = `
+        <h6>핸드 #${hand.hand_id} 상세 정보</h6>
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>시작 시간:</strong> ${hand.start_time.toFixed(1)}초</p>
+                <p><strong>종료 시간:</strong> ${hand.end_time.toFixed(1)}초</p>
+                <p><strong>길이:</strong> ${hand.duration.toFixed(1)}초</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>시작 신뢰도:</strong> ${hand.start_confidence.toFixed(1)}%</p>
+                <p><strong>종료 신뢰도:</strong> ${hand.end_confidence.toFixed(1)}%</p>
+                <p><strong>전체 신뢰도:</strong> ${hand.overall_confidence.toFixed(1)}%</p>
+            </div>
+        </div>
+        
+        <h6 class="mt-3">감지 상세 정보:</h6>
+        <div class="accordion" id="detailAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#startDetails">
+                        시작 감지 상세
+                    </button>
+                </h2>
+                <div id="startDetails" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <pre>${JSON.stringify(hand.start_indicators, null, 2)}</pre>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#endDetails">
+                        종료 감지 상세
+                    </button>
+                </h2>
+                <div id="endDetails" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <pre>${JSON.stringify(hand.end_indicators, null, 2)}</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('modalBody').innerHTML = content;
+    new bootstrap.Modal(document.getElementById('detailModal')).show();
+}
+
+function downloadResults() {
+    window.open(`/download/${taskId}`, '_blank');
+}
+
+function shareResults() {
+    const url = window.location.href;
+    if (navigator.share) {
+        navigator.share({
+            title: '포커 핸드 분석 결과',
+            text: `${resultsData.summary.total_hands}개의 핸드를 분석했습니다.`,
+            url: url
+        });
+    } else {
+        // 클립보드에 복사
+        navigator.clipboard.writeText(url).then(() => {
+            alert('결과 링크가 클립보드에 복사되었습니다.');
+        });
+    }
+}
+</script>
+{% endblock %}
