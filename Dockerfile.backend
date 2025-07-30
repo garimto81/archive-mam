@@ -1,0 +1,44 @@
+# Backend Dockerfile
+FROM python:3.11-slim
+
+# 시스템 의존성 설치
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    tesseract-ocr \
+    tesseract-ocr-kor \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libgomp1 \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# 작업 디렉토리 설정
+WORKDIR /app
+
+# Python 의존성 복사 및 설치
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 애플리케이션 코드 복사
+COPY src/ ./src/
+COPY run_api.py .
+COPY run_celery.py .
+
+# 필요한 디렉토리 생성
+RUN mkdir -p uploads clips analysis_results videos
+
+# 환경 변수 설정
+ENV PYTHONPATH=/app
+ENV TESSERACT_CMD=/usr/bin/tesseract
+
+# 포트 노출
+EXPOSE 8000
+
+# 헬스체크
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/ || exit 1
+
+# 실행 명령
+CMD ["python", "run_api.py"]

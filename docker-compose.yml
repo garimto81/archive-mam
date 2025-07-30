@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  # Redis 서비스
+  redis:
+    image: redis:7-alpine
+    container_name: poker-mam-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+  # 백엔드 API 서비스
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: poker-mam-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=sqlite:///./sql_app.db
+    volumes:
+      - ./uploads:/app/uploads
+      - ./clips:/app/clips
+      - ./videos:/app/videos
+      - ./analysis_results:/app/analysis_results
+      - backend_data:/app/data
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Celery Worker 서비스
+  celery-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: poker-mam-celery
+    restart: unless-stopped
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=sqlite:///./sql_app.db
+    volumes:
+      - ./uploads:/app/uploads
+      - ./clips:/app/clips
+      - ./videos:/app/videos
+      - ./analysis_results:/app/analysis_results
+      - backend_data:/app/data
+    depends_on:
+      - redis
+      - backend
+    command: python run_celery.py
+
+  # 프론트엔드 서비스
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: poker-mam-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+
+  # 개발용 프론트엔드 (선택사항)
+  frontend-dev:
+    image: node:18-alpine
+    container_name: poker-mam-frontend-dev
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:3000"
+    command: sh -c "npm install && npm start"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+    profiles:
+      - dev
+
+volumes:
+  redis_data:
+  backend_data:
+
+networks:
+  default:
+    name: poker-mam-network
