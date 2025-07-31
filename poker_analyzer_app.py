@@ -20,11 +20,13 @@ import cv2
 # 프로젝트 모듈 import
 try:
     from src.hand_boundary_detector import HandBoundaryDetector
+    from src.fast_hand_detector import FastHandDetector
     from src.streaming_video_handler import StreamingVideoHandler
     from src.local_file_browser import LocalFileBrowser
 except ImportError:
     sys.path.append('.')
     from src.hand_boundary_detector import HandBoundaryDetector
+    from src.fast_hand_detector import FastHandDetector
     from src.streaming_video_handler import StreamingVideoHandler
     from src.local_file_browser import LocalFileBrowser
 
@@ -157,7 +159,7 @@ def allowed_file(filename):
     """허용된 파일 확장자인지 확인"""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def analyze_stream_task(url, task_id):
+def analyze_stream_task(url, task_id, use_fast_mode=False):
     """스트리밍 비디오 분석 작업 (백그라운드 실행)"""
     cap = None
     try:
@@ -194,7 +196,11 @@ def analyze_stream_task(url, task_id):
                 analysis_progress[task_id]['video_info'].update(progress_info['source_info'])
         
         # 핸드 감지 수행 (스트리밍 방식)
-        detector = HandBoundaryDetector()
+        if use_fast_mode:
+            detector = FastHandDetector(sampling_rate=60, num_workers=4)
+            analysis_progress[task_id]['message'] = '고속 분석 모드로 실행 중...'
+        else:
+            detector = HandBoundaryDetector()
         
         # 스트림 정보를 source_info로 전달
         source_info = {
@@ -254,7 +260,7 @@ def analyze_stream_task(url, task_id):
         if cap is not None:
             cap.release()
 
-def analyze_file_task(video_path, task_id):
+def analyze_file_task(video_path, task_id, use_fast_mode=False):
     """로컬 파일 분석 작업 (기존 방식 유지)"""
     try:
         analysis_progress[task_id]['status'] = 'analyzing'
@@ -268,7 +274,11 @@ def analyze_file_task(video_path, task_id):
             analysis_progress[task_id]['message'] = f'분석 중... ({progress_info.get("detected_hands", 0)}개 핸드 감지됨)'
         
         # 핸드 감지 수행
-        detector = HandBoundaryDetector()
+        if use_fast_mode:
+            detector = FastHandDetector(sampling_rate=60, num_workers=4)
+            analysis_progress[task_id]['message'] = '고속 분석 모드로 실행 중...'
+        else:
+            detector = HandBoundaryDetector()
         result_file = detector.analyze_video(video_path, progress_callback=progress_callback)
         
         analysis_progress[task_id]['progress'] = 85
@@ -335,6 +345,9 @@ def analyze():
             'start_time': datetime.now().isoformat()
         }
         
+        # 분석 모드 확인 (고속 모드 여부)
+        use_fast_mode = request.form.get('fast_mode', 'false').lower() == 'true'
+        
         # URL 입력인지 파일 업로드인지 확인
         if 'video_url' in request.form and request.form['video_url'].strip():
             # URL 스트리밍 분석
@@ -346,7 +359,7 @@ def analyze():
                 return jsonify({'error': '유효한 URL을 입력하세요'}), 400
             
             # 백그라운드에서 스트리밍 분석 시작
-            thread = threading.Thread(target=analyze_stream_task, args=(url, task_id))
+            thread = threading.Thread(target=analyze_stream_task, args=(url, task_id, use_fast_mode))
             thread.daemon = True
             thread.start()
                 
@@ -359,7 +372,7 @@ def analyze():
                 file.save(video_path)
                 
                 # 백그라운드에서 파일 분석 시작
-                thread = threading.Thread(target=analyze_file_task, args=(video_path, task_id))
+                thread = threading.Thread(target=analyze_file_task, args=(video_path, task_id, use_fast_mode))
                 thread.daemon = True
                 thread.start()
             else:
