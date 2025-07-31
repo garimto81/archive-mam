@@ -37,5 +37,5 @@ redis==5.0.1
 ffmpeg-python==0.2.0
 pytesseract==0.3.10
 pytest==7.4.3
-httpx==0.25.2
+httpx==0.28.1
 python-dotenv==1.0.0
