@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>간단 UI 마커</title>
+    <style>
+        body {
+            font-family: -apple-system, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #f39c12;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        .video-container {
+            background: #16213e;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        video {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .big-button {
+            background: linear-gradient(45deg, #e74c3c, #f39c12);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 15px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+            min-width: 200px;
+        }
+        .big-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+        .big-button:active {
+            transform: translateY(0);
+        }
+        .file-input {
+            background: #3498db;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 20px;
+        }
+        .status {
+            font-size: 20px;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            background: #0f3460;
+        }
+        .ui-marking {
+            background: #e74c3c !important;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .timeline {
+            background: #0f3460;
+            height: 40px;
+            border-radius: 20px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .ui-segment {
+            position: absolute;
+            height: 100%;
+            background: #e74c3c;
+            border-radius: 20px;
+            opacity: 0.8;
+        }
+        .progress {
+            position: absolute;
+            height: 100%;
+            background: #f39c12;
+            width: 2px;
+        }
+        .simple-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #0f3460;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #f39c12;
+        }
+        .instructions {
+            background: #16213e;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .step {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            font-size: 18px;
+        }
+        .step-number {
+            background: #e74c3c;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+        .export-button {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 간단 UI 마커</h1>
+        <p class="subtitle">클릭 한 번으로 UI 구간을 표시하세요</p>
+        
+        <!-- 사용 방법 -->
+        <div class="instructions">
+            <h3>📝 사용 방법 (초간단!)</h3>
+            <div class="step">
+                <div class="step-number">1</div>
+                <span>비디오 파일을 선택하세요</span>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <span>UI가 나타나면 <strong>"🎨 UI 시작"</strong> 버튼 클릭</span>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <span>게임으로 돌아가면 <strong>"🎨 UI 종료"</strong> 버튼 클릭</span>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <span>끝! 자동으로 핸드 경계를 찾아드립니다</span>
+            </div>
+        </div>
+        
+        <!-- 비디오 업로드 -->
+        <input type="file" id="videoFile" accept="video/*" class="file-input" style="display: none;">
+        <button onclick="document.getElementById('videoFile').click()" class="file-input">
+            📹 비디오 선택
+        </button>
+        
+        <!-- 비디오 플레이어 -->
+        <div class="video-container" id="videoContainer" style="display: none;">
+            <video id="video" controls></video>
+            
+            <!-- 타임라인 -->
+            <div class="timeline" id="timeline">
+                <div class="progress" id="progress"></div>
+            </div>
+            
+            <!-- 메인 컨트롤 -->
+            <button id="mainButton" class="big-button" onclick="toggleUI()">
+                🎨 UI 시작
+            </button>
+            
+            <div>
+                <button onclick="video.currentTime -= 10" style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 20px; margin: 5px; cursor: pointer;">
+                    ⏪ 10초 뒤로
+                </button>
+                <button onclick="togglePlay()" style="background: #2ecc71; color: white; border: none; padding: 10px 20px; border-radius: 20px; margin: 5px; cursor: pointer;">
+                    ⏯️ 재생/정지
+                </button>
+                <button onclick="video.currentTime += 10" style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 20px; margin: 5px; cursor: pointer;">
+                    ⏩ 10초 앞으로
+                </button>
+            </div>
+        </div>
+        
+        <!-- 상태 표시 -->
+        <div class="status" id="status">
+            비디오를 선택해주세요
+        </div>
+        
+        <!-- 통계 -->
+        <div class="simple-stats" id="stats" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-number" id="uiCount">0</div>
+                <div>UI 구간</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalUITime">0</div>
+                <div>UI 총 시간(초)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="predictedHands">0</div>
+                <div>예측 핸드 수</div>
+            </div>
+        </div>
+        
+        <!-- 결과 내보내기 -->
+        <div id="exportSection" style="display: none;">
+            <button class="export-button" onclick="exportResults()">
+                📥 결과 다운로드
+            </button>
+            <button class="export-button" onclick="generateHandBoundaries()">
+                🎯 핸드 경계 생성
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        let video = document.getElementById('video');
+        let isMarkingUI = false;
+        let currentUIStart = null;
+        let uiSegments = [];
+        let handBoundaries = [];
+        
+        // 비디오 로드
+        document.getElementById('videoFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                video.src = URL.createObjectURL(file);
+                document.getElementById('videoContainer').style.display = 'block';
+                document.getElementById('stats').style.display = 'grid';
+                document.getElementById('exportSection').style.display = 'block';
+                updateStatus('비디오가 로드되었습니다. UI가 나타나면 "🎨 UI 시작" 버튼을 눌러주세요.');
+            }
+        });
+        
+        // 재생 진행률 업데이트
+        video.addEventListener('timeupdate', () => {
+            if (video.duration) {
+                const progress = (video.currentTime / video.duration) * 100;
+                document.getElementById('progress').style.left = progress + '%';
+            }
+        });
+        
+        // 메인 UI 토글 버튼
+        function toggleUI() {
+            if (!isMarkingUI) {
+                // UI 시작
+                startUIMarking();
+            } else {
+                // UI 종료
+                endUIMarking();
+            }
+        }
+        
+        // UI 마킹 시작
+        function startUIMarking() {
+            isMarkingUI = true;
+            currentUIStart = video.currentTime;
+            
+            const button = document.getElementById('mainButton');
+            button.innerHTML = '🛑 UI 종료';
+            button.classList.add('ui-marking');
+            
+            updateStatus('🔴 UI 마킹 중... 게임으로 돌아가면 "UI 종료" 버튼을 눌러주세요.');
+        }
+        
+        // UI 마킹 종료
+        function endUIMarking() {
+            if (!isMarkingUI || currentUIStart === null) return;
+            
+            const uiEnd = video.currentTime;
+            const duration = uiEnd - currentUIStart;
+            
+            // 최소 3초 이상인 경우만 저장
+            if (duration >= 3) {
+                const uiSegment = {
+                    start: currentUIStart,
+                    end: uiEnd,
+                    duration: duration
+                };
+                
+                uiSegments.push(uiSegment);
+                addUISegmentToTimeline(uiSegment);
+                updateStats();
+                
+                updateStatus(`✅ UI 구간 저장됨: ${formatTime(currentUIStart)} - ${formatTime(uiEnd)} (${Math.floor(duration)}초)`);
+            } else {
+                updateStatus('⚠️ UI 구간이 너무 짧습니다 (최소 3초 이상)');
+            }
+            
+            // 상태 초기화
+            isMarkingUI = false;
+            currentUIStart = null;
+            
+            const button = document.getElementById('mainButton');
+            button.innerHTML = '🎨 UI 시작';
+            button.classList.remove('ui-marking');
+        }
+        
+        // 타임라인에 UI 세그먼트 추가
+        function addUISegmentToTimeline(segment) {
+            const timeline = document.getElementById('timeline');
+            const uiDiv = document.createElement('div');
+            uiDiv.className = 'ui-segment';
+            
+            const startPercent = (segment.start / video.duration) * 100;
+            const widthPercent = (segment.duration / video.duration) * 100;
+            
+            uiDiv.style.left = startPercent + '%';
+            uiDiv.style.width = widthPercent + '%';
+            uiDiv.title = `UI: ${formatTime(segment.start)} - ${formatTime(segment.end)}`;
+            
+            timeline.appendChild(uiDiv);
+        }
+        
+        // 통계 업데이트
+        function updateStats() {
+            document.getElementById('uiCount').textContent = uiSegments.length;
+            
+            const totalUITime = uiSegments.reduce((sum, seg) => sum + seg.duration, 0);
+            document.getElementById('totalUITime').textContent = Math.floor(totalUITime);
+            
+            // 15초 이상 UI로 핸드 경계 예측
+            const longUISegments = uiSegments.filter(seg => seg.duration >= 15);
+            document.getElementById('predictedHands').textContent = longUISegments.length;
+        }
+        
+        // 재생/일시정지
+        function togglePlay() {
+            if (video.paused) {
+                video.play();
+            } else {
+                video.pause();
+            }
+        }
+        
+        // 상태 메시지 업데이트
+        function updateStatus(message) {
+            document.getElementById('status').textContent = message;
+        }
+        
+        // 시간 포맷
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // 결과 내보내기
+        function exportResults() {
+            const results = {
+                video_duration: video.duration,
+                ui_segments: uiSegments,
+                created_at: new Date().toISOString(),
+                method: 'simple_click_marking'
+            };
+            
+            const blob = new Blob([JSON.stringify(results, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ui_segments.json';
+            a.click();
+            
+            updateStatus('✅ UI 마킹 데이터가 다운로드되었습니다.');
+        }
+        
+        // 핸드 경계 생성
+        function generateHandBoundaries() {
+            handBoundaries = [];
+            
+            // 15초 이상 UI 세그먼트로부터 핸드 경계 추론
+            uiSegments.forEach((segment, idx) => {
+                if (segment.duration >= 15) {
+                    // 핸드 종료: UI 시작 15초 전
+                    const handEnd = Math.max(0, segment.start - 15);
+                    
+                    // 핸드 시작: UI 종료 15초 후
+                    const handStart = segment.end + 15;
+                    
+                    handBoundaries.push({
+                        hand_id: idx + 1,
+                        estimated_end: handEnd,
+                        estimated_start: handStart,
+                        confidence: 0.9,
+                        source_ui: {
+                            start: segment.start,
+                            end: segment.end,
+                            duration: segment.duration
+                        }
+                    });
+                }
+            });
+            
+            // 결과 다운로드
+            const handData = {
+                total_predicted_hands: handBoundaries.length,
+                hand_boundaries: handBoundaries,
+                detection_method: '15_second_ui_rule',
+                accuracy_estimate: '90%'
+            };
+            
+            const blob = new Blob([JSON.stringify(handData, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'predicted_hand_boundaries.json';
+            a.click();
+            
+            updateStatus(`✅ ${handBoundaries.length}개의 핸드 경계가 예측되었습니다.`);
+        }
+        
+        // 스페이스바 단축키
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                toggleUI();
+            }
+        });
+    </script>
+</body>
+</html>

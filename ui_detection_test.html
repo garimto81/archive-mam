@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI 기반 핸드 감지 테스트</title>
+    <style>
+        body {
+            font-family: -apple-system, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #f39c12;
+        }
+        .demo-section {
+            background: #16213e;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        .timeline {
+            position: relative;
+            height: 100px;
+            background: #0f3460;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .ui-segment {
+            position: absolute;
+            height: 100%;
+            background: #e74c3c;
+            opacity: 0.8;
+            transition: all 0.3s;
+        }
+        .ui-segment:hover {
+            opacity: 1;
+        }
+        .hand-segment {
+            position: absolute;
+            height: 100%;
+            background: #2ecc71;
+            opacity: 0.6;
+            border: 2px solid #27ae60;
+        }
+        .time-marker {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: #f39c12;
+        }
+        .legend {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .legend-color {
+            width: 30px;
+            height: 20px;
+            border-radius: 5px;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .metric-card {
+            background: #0f3460;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #f39c12;
+        }
+        .metric-label {
+            color: #95a5a6;
+            margin-top: 5px;
+        }
+        .simulation-controls {
+            background: #0f3460;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        .status-box {
+            background: #0f3460;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #f39c12;
+        }
+        .detection-log {
+            max-height: 300px;
+            overflow-y: auto;
+            background: #0f3460;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        .log-ui { background: rgba(231, 76, 60, 0.2); }
+        .log-hand-end { background: rgba(241, 196, 15, 0.2); }
+        .log-hand-start { background: rgba(46, 204, 113, 0.2); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 UI 기반 핸드 감지 테스트</h1>
+        
+        <!-- 타임라인 시각화 -->
+        <div class="demo-section">
+            <h2>📈 시간축 시각화</h2>
+            <div class="timeline" id="timeline">
+                <!-- UI 세그먼트 -->
+                <div class="ui-segment" style="left: 20%; width: 10%;"></div>
+                <div class="ui-segment" style="left: 45%; width: 15%;"></div>
+                <div class="ui-segment" style="left: 75%; width: 20%;"></div>
+                
+                <!-- 핸드 세그먼트 -->
+                <div class="hand-segment" style="left: 5%; width: 12%;"></div>
+                <div class="hand-segment" style="left: 30%; width: 12%;"></div>
+                <div class="hand-segment" style="left: 63%; width: 10%;"></div>
+                
+                <!-- 현재 시간 마커 -->
+                <div class="time-marker" id="timeMarker" style="left: 0%;"></div>
+            </div>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #e74c3c;"></div>
+                    <span>UI 표시 (15초 이상)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #2ecc71;"></div>
+                    <span>감지된 핸드</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #f39c12;"></div>
+                    <span>현재 시간</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- UI 감지 메트릭 -->
+        <div class="demo-section">
+            <h2>📊 UI 감지 메트릭</h2>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value" id="motionScore">85</div>
+                    <div class="metric-label">모션 점수</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="textDensity">42</div>
+                    <div class="metric-label">텍스트 밀도</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="colorUniformity">78</div>
+                    <div class="metric-label">색상 균일도</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="edgeDensity">31</div>
+                    <div class="metric-label">엣지 밀도</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="layoutScore">65</div>
+                    <div class="metric-label">레이아웃 점수</div>
+                </div>
+            </div>
+            
+            <div class="status-box">
+                <strong>UI 확률:</strong> <span id="uiProbability" style="font-size: 24px; color: #e74c3c;">72%</span>
+                <span id="uiStatus" style="float: right; color: #e74c3c;">⚠️ UI 감지됨</span>
+            </div>
+        </div>
+        
+        <!-- 시뮬레이션 컨트롤 -->
+        <div class="demo-section">
+            <h2>🎮 시뮬레이션 컨트롤</h2>
+            <div class="simulation-controls">
+                <button onclick="simulateUI()">📺 UI 표시 시뮬레이션</button>
+                <button onclick="simulateHandEnd()">🏁 핸드 종료 감지</button>
+                <button onclick="simulateHandStart()">🚀 핸드 시작 감지</button>
+                <button onclick="resetSimulation()">🔄 리셋</button>
+                <button onclick="runFullSequence()">▶️ 전체 시퀀스 실행</button>
+            </div>
+        </div>
+        
+        <!-- 감지 로그 -->
+        <div class="demo-section">
+            <h2>📄 감지 로그</h2>
+            <div class="detection-log" id="detectionLog">
+                <div class="log-entry">[00:00:00] 시스템 시작...</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentTime = 0;
+        let uiDuration = 0;
+        let isUIActive = false;
+        let simulationInterval = null;
+        
+        // 타임라인 업데이트
+        function updateTimeline() {
+            const marker = document.getElementById('timeMarker');
+            marker.style.left = (currentTime % 100) + '%';
+        }
+        
+        // 로그 추가
+        function addLog(message, type = '') {
+            const log = document.getElementById('detectionLog');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            const timestamp = formatTime(currentTime);
+            entry.textContent = `[${timestamp}] ${message}`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        // 시간 포맷
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // UI 메트릭 업데이트
+        function updateMetrics(isUI) {
+            if (isUI) {
+                // UI 상태의 메트릭
+                document.getElementById('motionScore').textContent = Math.floor(85 + Math.random() * 10);
+                document.getElementById('textDensity').textContent = Math.floor(35 + Math.random() * 20);
+                document.getElementById('colorUniformity').textContent = Math.floor(70 + Math.random() * 15);
+                document.getElementById('edgeDensity').textContent = Math.floor(25 + Math.random() * 15);
+                document.getElementById('layoutScore').textContent = Math.floor(60 + Math.random() * 20);
+                
+                const probability = Math.floor(70 + Math.random() * 20);
+                document.getElementById('uiProbability').textContent = probability + '%';
+                document.getElementById('uiStatus').innerHTML = '⚠️ UI 감지됨';
+                document.getElementById('uiStatus').style.color = '#e74c3c';
+            } else {
+                // 게임 상태의 메트릭
+                document.getElementById('motionScore').textContent = Math.floor(20 + Math.random() * 30);
+                document.getElementById('textDensity').textContent = Math.floor(5 + Math.random() * 15);
+                document.getElementById('colorUniformity').textContent = Math.floor(30 + Math.random() * 20);
+                document.getElementById('edgeDensity').textContent = Math.floor(10 + Math.random() * 10);
+                document.getElementById('layoutScore').textContent = Math.floor(20 + Math.random() * 20);
+                
+                const probability = Math.floor(20 + Math.random() * 25);
+                document.getElementById('uiProbability').textContent = probability + '%';
+                document.getElementById('uiStatus').innerHTML = '✅ 게임 진행 중';
+                document.getElementById('uiStatus').style.color = '#2ecc71';
+            }
+        }
+        
+        // UI 시뮬레이션
+        function simulateUI() {
+            isUIActive = true;
+            uiDuration = 0;
+            updateMetrics(true);
+            addLog('UI 표시 감지 시작', 'log-ui');
+            
+            const uiCheck = setInterval(() => {
+                uiDuration++;
+                if (uiDuration === 15) {
+                    addLog('UI가 15초 이상 지속 - 핸드 종료 확정!', 'log-hand-end');
+                    addLog(`핸드 종료 시점: UI 시작 15초 전 (${formatTime(currentTime - 15)})`, 'log-hand-end');
+                }
+                if (uiDuration > 20) {
+                    clearInterval(uiCheck);
+                }
+            }, 1000);
+        }
+        
+        // 핸드 종료 감지
+        function simulateHandEnd() {
+            if (!isUIActive) {
+                simulateUI();
+            }
+        }
+        
+        // 핸드 시작 감지
+        function simulateHandStart() {
+            if (isUIActive) {
+                isUIActive = false;
+                updateMetrics(false);
+                addLog('UI 종료 - 게임 화면 복귀', 'log-ui');
+                setTimeout(() => {
+                    addLog('핸드 시작 가능 (UI 종료 15초 후)', 'log-hand-start');
+                }, 15000);
+            }
+        }
+        
+        // 전체 시퀀스 실행
+        function runFullSequence() {
+            resetSimulation();
+            addLog('전체 시퀀스 시작...');
+            
+            // 시간 진행
+            simulationInterval = setInterval(() => {
+                currentTime++;
+                updateTimeline();
+                
+                // 시나리오: 20초에 UI, 50초에 UI 종료
+                if (currentTime === 20) {
+                    simulateUI();
+                } else if (currentTime === 50) {
+                    simulateHandStart();
+                } else if (currentTime === 80) {
+                    simulateUI();
+                }
+            }, 100); // 0.1초마다 업데이트
+        }
+        
+        // 리셋
+        function resetSimulation() {
+            currentTime = 0;
+            uiDuration = 0;
+            isUIActive = false;
+            updateMetrics(false);
+            updateTimeline();
+            if (simulationInterval) {
+                clearInterval(simulationInterval);
+            }
+            document.getElementById('detectionLog').innerHTML = '<div class="log-entry">[00:00:00] 시스템 리셋...</div>';
+        }
+        
+        // 초기 상태
+        updateMetrics(false);
+    </script>
+</body>
+</html>

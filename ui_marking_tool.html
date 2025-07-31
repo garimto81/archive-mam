@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI 마킹 도구</title>
+    <style>
+        body {
+            font-family: -apple-system, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .video-section {
+            background: #16213e;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .control-section {
+            background: #16213e;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        video {
+            width: 100%;
+            border-radius: 8px;
+        }
+        .timeline {
+            position: relative;
+            height: 60px;
+            background: #0f3460;
+            border-radius: 8px;
+            margin: 20px 0;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        .time-cursor {
+            position: absolute;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: #f39c12;
+            pointer-events: none;
+        }
+        .ui-marker {
+            position: absolute;
+            height: 100%;
+            background: #e74c3c;
+            opacity: 0.7;
+            border: 1px solid #c0392b;
+        }
+        .game-marker {
+            position: absolute;
+            height: 100%;
+            background: #2ecc71;
+            opacity: 0.7;
+            border: 1px solid #27ae60;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        button.active {
+            background: #e74c3c;
+        }
+        button.marking-ui {
+            background: #e74c3c;
+        }
+        button.marking-game {
+            background: #2ecc71;
+        }
+        .marking-info {
+            background: #0f3460;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #f39c12;
+        }
+        .keyboard-shortcuts {
+            background: #0f3460;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .shortcut {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 8px;
+            background: #1a1a2e;
+            border-radius: 4px;
+        }
+        .key {
+            background: #2c3e50;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-weight: bold;
+        }
+        .status {
+            background: #0f3460;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .ui-patterns {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .pattern-thumb {
+            background: #0f3460;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .pattern-thumb:hover {
+            transform: scale(1.05);
+            background: #1a4a7a;
+        }
+        .pattern-thumb img {
+            width: 100%;
+            border-radius: 4px;
+        }
+        .export-section {
+            background: #0f3460;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .marker-list {
+            max-height: 200px;
+            overflow-y: auto;
+            background: #0f3460;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .marker-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            margin: 5px 0;
+            background: #1a1a2e;
+            border-radius: 4px;
+        }
+        .ui-item { border-left: 4px solid #e74c3c; }
+        .game-item { border-left: 4px solid #2ecc71; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 UI 마킹 도구</h1>
+        <p>영상에서 UI 구간을 직접 표시하여 핸드 감지 정확도를 높입니다</p>
+        
+        <div class="main-grid">
+            <!-- 비디오 섹션 -->
+            <div class="video-section">
+                <h3>🎬 비디오 플레이어</h3>
+                <video id="video" controls></video>
+                <input type="file" id="videoFile" accept="video/*">
+                
+                <!-- 타임라인 -->
+                <h4>📋 타임라인 (클릭하여 이동)</h4>
+                <div class="timeline" id="timeline">
+                    <div class="time-cursor" id="timeCursor"></div>
+                </div>
+                
+                <!-- 컨트롤 버튼 -->
+                <div style="text-align: center; margin: 20px 0;">
+                    <button id="markStartBtn" onclick="startMarking()">
+                        🔴 마킹 시작
+                    </button>
+                    <button id="uiBtn" onclick="markAsUI()" style="display: none;">
+                        🎨 UI 구간
+                    </button>
+                    <button id="gameBtn" onclick="markAsGame()" style="display: none;">
+                        🎮 게임 구간
+                    </button>
+                    <button onclick="playPause()">
+                        ⏯️ 재생/일시정지
+                    </button>
+                    <button onclick="skip(-5)">
+                        ⏪ 5초 뒤로
+                    </button>
+                    <button onclick="skip(5)">
+                        ⏩ 5초 앞으로
+                    </button>
+                </div>
+                
+                <!-- 현재 마킹 상태 -->
+                <div class="marking-info" id="markingInfo" style="display: none;">
+                    <h4>현재 마킹 중</h4>
+                    <p>시작 시간: <span id="markStart">00:00</span></p>
+                    <p>현재 시간: <span id="currentTime">00:00</span></p>
+                    <p>구간 길이: <span id="duration">0초</span></p>
+                </div>
+            </div>
+            
+            <!-- 컨트롤 섹션 -->
+            <div class="control-section">
+                <h3>🎛️ 마킹 컨트롤</h3>
+                
+                <!-- 키보드 단축키 -->
+                <div class="keyboard-shortcuts">
+                    <h4>⌨️ 키보드 단축키</h4>
+                    <div class="shortcut">
+                        <span>마킹 시작/종료</span>
+                        <span class="key">Space</span>
+                    </div>
+                    <div class="shortcut">
+                        <span>UI로 표시</span>
+                        <span class="key">U</span>
+                    </div>
+                    <div class="shortcut">
+                        <span>게임으로 표시</span>
+                        <span class="key">G</span>
+                    </div>
+                    <div class="shortcut">
+                        <span>재생/일시정지</span>
+                        <span class="key">P</span>
+                    </div>
+                    <div class="shortcut">
+                        <span>5초 뒤로/앞으로</span>
+                        <span class="key">← →</span>
+                    </div>
+                    <div class="shortcut">
+                        <span>마지막 마킹 취소</span>
+                        <span class="key">Ctrl+Z</span>
+                    </div>
+                </div>
+                
+                <!-- 마킹된 구간 목록 -->
+                <h4>📋 마킹된 구간</h4>
+                <div class="marker-list" id="markerList">
+                    <p style="text-align: center; color: #7f8c8d;">아직 마킹된 구간이 없습니다</p>
+                </div>
+                
+                <!-- 통계 -->
+                <div class="status">
+                    <h4>📊 통계</h4>
+                    <p>UI 구간: <span id="uiCount">0</span>개</p>
+                    <p>게임 구간: <span id="gameCount">0</span>개</p>
+                    <p>총 마킹 시간: <span id="totalMarked">0초</span></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- UI 패턴 갤러리 -->
+        <div class="video-section">
+            <h3>🇺🇮 감지된 UI 패턴</h3>
+            <p>UI로 마킹된 구간에서 자동 추출된 패턴들입니다</p>
+            <div class="ui-patterns" id="uiPatterns">
+                <!-- UI 패턴 썸네일들 -->
+            </div>
+        </div>
+        
+        <!-- 내보내기 -->
+        <div class="export-section">
+            <h3>💾 데이터 내보내기</h3>
+            <button onclick="exportMarkers()">📥 마킹 데이터 내보내기 (JSON)</button>
+            <button onclick="exportForTraining()">🤖 학습용 데이터 생성</button>
+            <button onclick="generateReport()">📊 분석 리포트 생성</button>
+        </div>
+    </div>
+    
+    <script>
+        let video = document.getElementById('video');
+        let timeline = document.getElementById('timeline');
+        let markers = [];
+        let isMarking = false;
+        let markingStart = null;
+        let markingType = null;
+        
+        // 비디오 파일 로드
+        document.getElementById('videoFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                video.src = URL.createObjectURL(file);
+                video.onloadedmetadata = () => {
+                    updateTimeline();
+                };
+            }
+        });
+        
+        // 타임라인 클릭
+        timeline.addEventListener('click', (e) => {
+            if (!video.duration) return;
+            const rect = timeline.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const time = (x / rect.width) * video.duration;
+            video.currentTime = time;
+        });
+        
+        // 비디오 시간 업데이트
+        video.addEventListener('timeupdate', () => {
+            updateTimeCursor();
+            if (isMarking) {
+                updateMarkingInfo();
+            }
+        });
+        
+        // 키보드 단축키
+        document.addEventListener('keydown', (e) => {
+            switch(e.key.toLowerCase()) {
+                case ' ':
+                    e.preventDefault();
+                    if (isMarking) {
+                        finishMarking();
+                    } else {
+                        startMarking();
+                    }
+                    break;
+                case 'u':
+                    if (isMarking) markAsUI();
+                    break;
+                case 'g':
+                    if (isMarking) markAsGame();
+                    break;
+                case 'p':
+                    playPause();
+                    break;
+                case 'arrowleft':
+                    skip(-5);
+                    break;
+                case 'arrowright':
+                    skip(5);
+                    break;
+                case 'z':
+                    if (e.ctrlKey) undoLastMarking();
+                    break;
+            }
+        });
+        
+        // 마킹 시작
+        function startMarking() {
+            if (!video.duration) return;
+            
+            isMarking = true;
+            markingStart = video.currentTime;
+            markingType = null;
+            
+            document.getElementById('markStartBtn').style.display = 'none';
+            document.getElementById('uiBtn').style.display = 'inline-block';
+            document.getElementById('gameBtn').style.display = 'inline-block';
+            document.getElementById('markingInfo').style.display = 'block';
+            
+            updateMarkingInfo();
+        }
+        
+        // UI로 마킹
+        function markAsUI() {
+            if (!isMarking) return;
+            markingType = 'ui';
+            document.getElementById('uiBtn').classList.add('active');
+            document.getElementById('gameBtn').classList.remove('active');
+            finishMarking();
+        }
+        
+        // 게임으로 마킹
+        function markAsGame() {
+            if (!isMarking) return;
+            markingType = 'game';
+            document.getElementById('gameBtn').classList.add('active');
+            document.getElementById('uiBtn').classList.remove('active');
+            finishMarking();
+        }
+        
+        // 마킹 종료
+        function finishMarking() {
+            if (!markingType) {
+                alert('구간 타입을 선택하세요 (UI 또는 게임)');
+                return;
+            }
+            
+            const marker = {
+                start: markingStart,
+                end: video.currentTime,
+                type: markingType,
+                duration: video.currentTime - markingStart
+            };
+            
+            // 최소 1초 이상인 경우만 저장
+            if (marker.duration >= 1) {
+                markers.push(marker);
+                updateTimeline();
+                updateMarkerList();
+                updateStats();
+                
+                // UI 패턴 추출
+                if (markingType === 'ui') {
+                    extractUIPattern(marker);
+                }
+            }
+            
+            // 상태 초기화
+            isMarking = false;
+            markingStart = null;
+            markingType = null;
+            
+            document.getElementById('markStartBtn').style.display = 'inline-block';
+            document.getElementById('uiBtn').style.display = 'none';
+            document.getElementById('gameBtn').style.display = 'none';
+            document.getElementById('markingInfo').style.display = 'none';
+            document.getElementById('uiBtn').classList.remove('active');
+            document.getElementById('gameBtn').classList.remove('active');
+        }
+        
+        // 타임라인 업데이트
+        function updateTimeline() {
+            // 기존 마커 제거
+            timeline.querySelectorAll('.ui-marker, .game-marker').forEach(el => el.remove());
+            
+            // 마커 추가
+            markers.forEach(marker => {
+                const div = document.createElement('div');
+                div.className = marker.type === 'ui' ? 'ui-marker' : 'game-marker';
+                div.style.left = (marker.start / video.duration * 100) + '%';
+                div.style.width = ((marker.end - marker.start) / video.duration * 100) + '%';
+                div.title = `${marker.type.toUpperCase()}: ${formatTime(marker.start)} - ${formatTime(marker.end)}`;
+                timeline.appendChild(div);
+            });
+        }
+        
+        // 시간 커서 업데이트
+        function updateTimeCursor() {
+            if (!video.duration) return;
+            const cursor = document.getElementById('timeCursor');
+            cursor.style.left = (video.currentTime / video.duration * 100) + '%';
+        }
+        
+        // 마킹 정보 업데이트
+        function updateMarkingInfo() {
+            document.getElementById('markStart').textContent = formatTime(markingStart);
+            document.getElementById('currentTime').textContent = formatTime(video.currentTime);
+            document.getElementById('duration').textContent = Math.floor(video.currentTime - markingStart) + '초';
+        }
+        
+        // 마커 목록 업데이트
+        function updateMarkerList() {
+            const list = document.getElementById('markerList');
+            if (markers.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #7f8c8d;">아직 마킹된 구간이 없습니다</p>';
+                return;
+            }
+            
+            list.innerHTML = markers.map((marker, idx) => `
+                <div class="marker-item ${marker.type}-item">
+                    <span>${marker.type.toUpperCase()}: ${formatTime(marker.start)} - ${formatTime(marker.end)}</span>
+                    <button onclick="removeMarker(${idx})" style="padding: 4px 8px; font-size: 12px;">❌</button>
+                </div>
+            `).join('');
+        }
+        
+        // 통계 업데이트
+        function updateStats() {
+            const uiMarkers = markers.filter(m => m.type === 'ui');
+            const gameMarkers = markers.filter(m => m.type === 'game');
+            
+            document.getElementById('uiCount').textContent = uiMarkers.length;
+            document.getElementById('gameCount').textContent = gameMarkers.length;
+            
+            const totalTime = markers.reduce((sum, m) => sum + m.duration, 0);
+            document.getElementById('totalMarked').textContent = Math.floor(totalTime) + '초';
+        }
+        
+        // UI 패턴 추출
+        function extractUIPattern(marker) {
+            // 실제 구현에서는 비디오에서 프레임 추출
+            // 여기서는 시뮬레이션
+            const patterns = document.getElementById('uiPatterns');
+            const patternDiv = document.createElement('div');
+            patternDiv.className = 'pattern-thumb';
+            patternDiv.innerHTML = `
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='60'%3E%3Crect width='100' height='60' fill='%23e74c3c'/%3E%3Ctext x='50' y='35' text-anchor='middle' fill='white' font-size='12'%3EUI%3C/text%3E%3C/svg%3E" alt="UI Pattern">
+                <small>${formatTime(marker.start)}</small>
+            `;
+            patterns.appendChild(patternDiv);
+        }
+        
+        // 마커 제거
+        function removeMarker(idx) {
+            markers.splice(idx, 1);
+            updateTimeline();
+            updateMarkerList();
+            updateStats();
+        }
+        
+        // 마지막 마킹 취소
+        function undoLastMarking() {
+            if (markers.length > 0) {
+                markers.pop();
+                updateTimeline();
+                updateMarkerList();
+                updateStats();
+            }
+        }
+        
+        // 재생/일시정지
+        function playPause() {
+            if (video.paused) {
+                video.play();
+            } else {
+                video.pause();
+            }
+        }
+        
+        // 스킵
+        function skip(seconds) {
+            video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + seconds));
+        }
+        
+        // 시간 포맷
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // 마킹 데이터 내보내기
+        function exportMarkers() {
+            const data = {
+                video_duration: video.duration,
+                markers: markers,
+                created_at: new Date().toISOString(),
+                stats: {
+                    ui_count: markers.filter(m => m.type === 'ui').length,
+                    game_count: markers.filter(m => m.type === 'game').length,
+                    total_marked_time: markers.reduce((sum, m) => sum + m.duration, 0)
+                }
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ui_markers.json';
+            a.click();
+        }
+        
+        // 학습용 데이터 생성
+        function exportForTraining() {
+            const trainingData = {
+                ui_segments: markers.filter(m => m.type === 'ui').map(m => ({
+                    start_frame: Math.floor(m.start * 30), // 30fps 가정
+                    end_frame: Math.floor(m.end * 30),
+                    confidence: 1.0
+                })),
+                game_segments: markers.filter(m => m.type === 'game').map(m => ({
+                    start_frame: Math.floor(m.start * 30),
+                    end_frame: Math.floor(m.end * 30),
+                    confidence: 1.0
+                }))
+            };
+            
+            const blob = new Blob([JSON.stringify(trainingData, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'training_data.json';
+            a.click();
+        }
+        
+        // 분석 리포트 생성
+        function generateReport() {
+            const uiSegments = markers.filter(m => m.type === 'ui');
+            const avgUILength = uiSegments.reduce((sum, m) => sum + m.duration, 0) / (uiSegments.length || 1);
+            
+            const report = `
+# UI 분석 리포트
+
+## 통계
+- 총 영상 길이: ${formatTime(video.duration)}
+- UI 구간: ${uiSegments.length}개
+- 게임 구간: ${markers.filter(m => m.type === 'game').length}개
+- 평균 UI 길이: ${formatTime(avgUILength)}
+
+## UI 패턴
+- 15초 이상 UI: ${uiSegments.filter(m => m.duration >= 15).length}개
+- 30초 이상 UI: ${uiSegments.filter(m => m.duration >= 30).length}개
+
+## 핸드 경계 예측
+${uiSegments.filter(m => m.duration >= 15).map(m => 
+    `- 핸드 종료: ${formatTime(m.start - 15)} (확률: 95%)`
+).join('\n')}
+            `;
+            
+            const blob = new Blob([report], {type: 'text/markdown'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ui_analysis_report.md';
+            a.click();
+        }
+    </script>
+</body>
+</html>

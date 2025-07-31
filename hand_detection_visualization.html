@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>포커 핸드 감지 로직 시각화</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; text-align: center; }
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+        .score-bar {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .score-label {
+            width: 150px;
+            font-weight: bold;
+        }
+        .score-progress {
+            flex: 1;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(to right, #4CAF50, #8BC34A);
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            color: white;
+            font-weight: bold;
+        }
+        .threshold-line {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: red;
+            right: 25%;
+        }
+        .state-diagram {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: #e8f5e9;
+            border-radius: 10px;
+        }
+        .state {
+            padding: 15px 25px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 25px;
+            font-weight: bold;
+            position: relative;
+        }
+        .state.active {
+            background: #FF5722;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .arrow {
+            font-size: 24px;
+            color: #666;
+        }
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .chart-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .parameter-controls {
+            background: #fff3e0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .control-group {
+            margin: 15px 0;
+        }
+        .control-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="range"] {
+            width: 100%;
+            margin: 10px 0;
+        }
+        .value-display {
+            text-align: center;
+            font-size: 18px;
+            color: #FF5722;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 포커 핸드 감지 로직 시각화</h1>
+        
+        <!-- 상태 다이어그램 -->
+        <div class="section">
+            <h2>핸드 감지 상태 흐름</h2>
+            <div class="state-diagram">
+                <div class="state" id="state-waiting">대기 중</div>
+                <div class="arrow">→</div>
+                <div class="state" id="state-detecting">감지 중</div>
+                <div class="arrow">→</div>
+                <div class="state active" id="state-hand">핸드 진행</div>
+                <div class="arrow">→</div>
+                <div class="state" id="state-ending">종료 감지</div>
+                <div class="arrow">→</div>
+                <div class="state" id="state-complete">완료</div>
+            </div>
+        </div>
+
+        <!-- 핸드 시작 점수 시각화 -->
+        <div class="section">
+            <h2>🚀 핸드 시작 감지 점수 (임계값: 75점)</h2>
+            <div class="score-bar">
+                <div class="score-label">카드 출현</div>
+                <div class="score-progress">
+                    <div class="score-fill" id="card-score" style="width: 0%">0/35점</div>
+                    <div class="threshold-line" style="left: 35%"></div>
+                </div>
+            </div>
+            <div class="score-bar">
+                <div class="score-label">딜링 모션</div>
+                <div class="score-progress">
+                    <div class="score-fill" id="dealing-score" style="width: 0%">0/40점</div>
+                    <div class="threshold-line" style="left: 40%"></div>
+                </div>
+            </div>
+            <div class="score-bar">
+                <div class="score-label">시간 패턴</div>
+                <div class="score-progress">
+                    <div class="score-fill" id="time-score" style="width: 0%">0/15점</div>
+                    <div class="threshold-line" style="left: 15%"></div>
+                </div>
+            </div>
+            <div class="score-bar">
+                <div class="score-label">활동 증가</div>
+                <div class="score-progress">
+                    <div class="score-fill" id="activity-score" style="width: 0%">0/10점</div>
+                    <div class="threshold-line" style="left: 10%"></div>
+                </div>
+            </div>
+            <div class="score-bar">
+                <div class="score-label"><strong>총 점수</strong></div>
+                <div class="score-progress">
+                    <div class="score-fill" id="total-start-score" style="width: 0%; background: linear-gradient(to right, #FF5722, #FFC107)">0/100점</div>
+                    <div class="threshold-line" style="left: 75%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 차트 영역 -->
+        <div class="charts-container">
+            <div class="chart-box">
+                <h3>시간별 감지 신뢰도</h3>
+                <canvas id="confidenceChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3>구성 요소별 기여도</h3>
+                <canvas id="contributionChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 파라미터 조정 -->
+        <div class="parameter-controls">
+            <h2>🎛️ 감지 파라미터 시뮬레이션</h2>
+            <div class="control-group">
+                <label>카드 증가 감도 (현재: 2장)</label>
+                <input type="range" id="card-sensitivity" min="1" max="5" value="2" oninput="updateSimulation()">
+                <div class="value-display" id="card-value">2장 이상 증가시 감지</div>
+            </div>
+            <div class="control-group">
+                <label>모션 지속 프레임 (현재: 3프레임)</label>
+                <input type="range" id="motion-frames" min="1" max="10" value="3" oninput="updateSimulation()">
+                <div class="value-display" id="motion-value">3프레임 연속 감지 필요</div>
+            </div>
+            <div class="control-group">
+                <label>시작 임계값 (현재: 75점)</label>
+                <input type="range" id="start-threshold" min="50" max="100" value="75" oninput="updateSimulation()">
+                <div class="value-display" id="threshold-value">75점 이상시 핸드 시작</div>
+            </div>
+        </div>
+
+        <!-- 문제 상황 시각화 -->
+        <div class="section">
+            <h2>⚠️ 현재 시스템의 문제 상황</h2>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                <div style="background: #ffebee; padding: 15px; border-radius: 8px;">
+                    <h4>🃏 카드 겹침</h4>
+                    <p>여러 카드가 겹쳐있을 때 정확한 개수 파악 불가</p>
+                </div>
+                <div style="background: #fff3e0; padding: 15px; border-radius: 8px;">
+                    <h4>💡 조명 변화</h4>
+                    <p>스튜디오 조명 변화로 칩/카드 색상 인식 오류</p>
+                </div>
+                <div style="background: #e8f5e9; padding: 15px; border-radius: 8px;">
+                    <h4>🎥 카메라 전환</h4>
+                    <p>멀티 카메라 전환시 연속성 깨짐</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 차트 초기화
+        const ctx1 = document.getElementById('confidenceChart').getContext('2d');
+        const confidenceChart = new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: ['0s', '10s', '20s', '30s', '40s', '50s', '60s'],
+                datasets: [{
+                    label: '감지 신뢰도',
+                    data: [20, 35, 85, 90, 88, 45, 25],
+                    borderColor: '#4CAF50',
+                    backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                    tension: 0.4
+                }, {
+                    label: '임계값',
+                    data: [75, 75, 75, 75, 75, 75, 75],
+                    borderColor: 'red',
+                    borderDash: [5, 5],
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        const ctx2 = document.getElementById('contributionChart').getContext('2d');
+        const contributionChart = new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['카드 출현', '딜링 모션', '시간 패턴', '활동 증가'],
+                datasets: [{
+                    data: [35, 40, 15, 10],
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0']
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+        // 시뮬레이션 애니메이션
+        function animateScores() {
+            const scores = [
+                { id: 'card-score', value: 30, max: 35 },
+                { id: 'dealing-score', value: 35, max: 40 },
+                { id: 'time-score', value: 12, max: 15 },
+                { id: 'activity-score', value: 8, max: 10 }
+            ];
+
+            let total = 0;
+            scores.forEach((score, index) => {
+                setTimeout(() => {
+                    const element = document.getElementById(score.id);
+                    const percentage = (score.value / score.max) * 100;
+                    element.style.width = percentage + '%';
+                    element.textContent = `${score.value}/${score.max}점`;
+                    total += score.value;
+                    
+                    // 총점 업데이트
+                    const totalElement = document.getElementById('total-start-score');
+                    totalElement.style.width = total + '%';
+                    totalElement.textContent = `${total}/100점`;
+                    
+                    if (total >= 75) {
+                        totalElement.style.background = 'linear-gradient(to right, #4CAF50, #8BC34A)';
+                    }
+                }, index * 500);
+            });
+        }
+
+        // 파라미터 업데이트
+        function updateSimulation() {
+            const cardSens = document.getElementById('card-sensitivity').value;
+            const motionFrames = document.getElementById('motion-frames').value;
+            const threshold = document.getElementById('start-threshold').value;
+            
+            document.getElementById('card-value').textContent = `${cardSens}장 이상 증가시 감지`;
+            document.getElementById('motion-value').textContent = `${motionFrames}프레임 연속 감지 필요`;
+            document.getElementById('threshold-value').textContent = `${threshold}점 이상시 핸드 시작`;
+            
+            // 임계선 위치 업데이트
+            document.querySelector('.score-bar:last-child .threshold-line').style.left = threshold + '%';
+        }
+
+        // 페이지 로드시 애니메이션 시작
+        setTimeout(animateScores, 1000);
+    </script>
+</body>
+</html>
