@@ -5,9 +5,9 @@ AI 기반 온라인 포커 영상 분석 도구
 ## 🚀 바로 사용하기
 
 ### 온라인 데모
-- **GitHub Pages**: https://YOUR_USERNAME.github.io/Archive-MAM/
-- **Netlify**: [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/YOUR_USERNAME/Archive-MAM)
-- **Vercel**: [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/YOUR_USERNAME/Archive-MAM)
+- **GitHub Pages**: https://garimto81.github.io/archive-mam/
+- **Netlify**: [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/garimto81/archive-mam)
+- **Vercel**: [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/garimto81/archive-mam)
 
 ## 📋 기능
 
