@@ -334,9 +334,21 @@
                         </div>
                     </div>
                     
-                    <button class="btn btn-success mt-3" onclick="exportSmartResults()">
-                        📥 스마트 분석 결과 다운로드
-                    </button>
+                    <div class="mt-3">
+                        <button class="btn btn-success me-2" onclick="exportSmartResults()">
+                            📥 분석 결과 다운로드 (JSON)
+                        </button>
+                        <button class="btn btn-info me-2" onclick="exportToCSV()">
+                            📊 CSV로 내보내기
+                        </button>
+                        <button class="btn btn-warning me-2" onclick="clearStoredPatterns()">
+                            🗑️ 저장된 패턴 삭제
+                        </button>
+                        <button class="btn btn-secondary" onclick="importPatterns()">
+                            📂 패턴 가져오기
+                        </button>
+                        <input type="file" id="importFile" accept=".json" style="display: none;" onchange="loadImportedPatterns(event)">
+                    </div>
                 </div>
             `;
             
@@ -351,6 +363,9 @@
                 overlay.height = smartVideoPlayer.videoHeight;
                 
                 smartUIDetector = new SmartUIDetector(smartVideoPlayer, overlay);
+                
+                // 기존 저장된 패턴 로드
+                smartUIDetector.loadFromLocalStorage();
             });
         }
 
@@ -662,11 +677,46 @@
                     startTime: startTime,
                     endTime: endTime,
                     duration: endTime - startTime,
-                    confidence: 0.9
+                    confidence: 0.9,
+                    videoName: videoFile ? videoFile.name : 'unknown'
                 };
                 
                 this.uiPatterns.push(pattern);
                 this.updateLearnedPatterns();
+                
+                // 브라우저 로컬 스토리지에 자동 저장
+                this.saveToLocalStorage();
+            }
+            
+            saveToLocalStorage() {
+                const storageData = {
+                    patterns: this.uiPatterns,
+                    lastUpdated: new Date().toISOString(),
+                    videoName: videoFile ? videoFile.name : 'unknown'
+                };
+                
+                try {
+                    localStorage.setItem('smartUIPatterns', JSON.stringify(storageData));
+                    updateSmartStatus('✅ 패턴이 브라우저에 자동 저장되었습니다.');
+                } catch (e) {
+                    console.warn('로컬 스토리지 저장 실패:', e);
+                }
+            }
+            
+            loadFromLocalStorage() {
+                try {
+                    const stored = localStorage.getItem('smartUIPatterns');
+                    if (stored) {
+                        const data = JSON.parse(stored);
+                        this.uiPatterns = data.patterns || [];
+                        this.updateLearnedPatterns();
+                        updateSmartStatus(`📂 저장된 ${this.uiPatterns.length}개 패턴을 불러왔습니다.`);
+                        return true;
+                    }
+                } catch (e) {
+                    console.warn('로컬 스토리지 로드 실패:', e);
+                }
+                return false;
             }
             
             updateLearnedPatterns() {
@@ -763,6 +813,97 @@
             linkElement.click();
             
             updateSmartStatus('✅ 스마트 분석 결과가 다운로드되었습니다.');
+        }
+        
+        // CSV로 내보내기
+        function exportToCSV() {
+            if (!smartUIDetector || smartUIDetector.uiPatterns.length === 0) {
+                alert('학습된 UI 패턴이 없습니다.');
+                return;
+            }
+            
+            const csvHeaders = 'ID,비디오명,시작시간,종료시간,지속시간,신뢰도,예측핸드종료,예측핸드시작\n';
+            const csvRows = smartUIDetector.uiPatterns.map(pattern => {
+                const predictedHandEnd = pattern.duration >= 15 ? formatTime(Math.max(0, pattern.startTime - 15)) : 'N/A';
+                const predictedHandStart = pattern.duration >= 15 ? formatTime(pattern.endTime + 15) : 'N/A';
+                
+                return [
+                    pattern.id,
+                    pattern.videoName || 'unknown',
+                    formatTime(pattern.startTime),
+                    formatTime(pattern.endTime),
+                    `${Math.floor(pattern.duration)}초`,
+                    `${Math.floor(pattern.confidence * 100)}%`,
+                    predictedHandEnd,
+                    predictedHandStart
+                ].join(',');
+            }).join('\n');
+            
+            const csvContent = csvHeaders + csvRows;
+            const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', url);
+            linkElement.setAttribute('download', 'ui_patterns.csv');
+            linkElement.click();
+            
+            updateSmartStatus('✅ CSV 파일이 다운로드되었습니다.');
+        }
+        
+        // 저장된 패턴 삭제
+        function clearStoredPatterns() {
+            if (confirm('저장된 모든 UI 패턴을 삭제하시겠습니까?')) {
+                localStorage.removeItem('smartUIPatterns');
+                if (smartUIDetector) {
+                    smartUIDetector.uiPatterns = [];
+                    smartUIDetector.updateLearnedPatterns();
+                    smartUIDetector.updateResults();
+                }
+                updateSmartStatus('✅ 저장된 패턴이 모두 삭제되었습니다.');
+            }
+        }
+        
+        // 패턴 가져오기
+        function importPatterns() {
+            document.getElementById('importFile').click();
+        }
+        
+        // 가져온 패턴 로드
+        function loadImportedPatterns(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    if (importedData.ui_patterns && Array.isArray(importedData.ui_patterns)) {
+                        if (smartUIDetector) {
+                            // 기존 패턴과 병합
+                            const existingIds = new Set(smartUIDetector.uiPatterns.map(p => p.id));
+                            const newPatterns = importedData.ui_patterns.filter(p => !existingIds.has(p.id));
+                            
+                            smartUIDetector.uiPatterns.push(...newPatterns);
+                            smartUIDetector.updateLearnedPatterns();
+                            smartUIDetector.updateResults();
+                            smartUIDetector.saveToLocalStorage();
+                            
+                            updateSmartStatus(`✅ ${newPatterns.length}개의 새로운 패턴을 가져왔습니다.`);
+                        }
+                    } else {
+                        alert('올바른 패턴 파일이 아닙니다.');
+                    }
+                } catch (error) {
+                    alert('파일을 읽는 중 오류가 발생했습니다.');
+                    console.error('Import error:', error);
+                }
+            };
+            reader.readAsText(file);
+            
+            // 파일 입력 초기화
+            event.target.value = '';
         }
 
         // 드래그 앤 드롭
