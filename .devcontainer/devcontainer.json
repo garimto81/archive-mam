@@ -1,0 +1,46 @@
+{
+  "name": "Poker MAM Development",
+  "image": "mcr.microsoft.com/devcontainers/python:3.9",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.9"
+    },
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter",
+        "github.copilot",
+        "github.vscode-pull-request-github"
+      ],
+      "settings": {
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "python.formatting.provider": "black",
+        "python.testing.pytestEnabled": true
+      }
+    }
+  },
+  
+  "postCreateCommand": "pip install -r requirements.txt && python setup_test_env.py",
+  
+  "forwardPorts": [5000, 8080],
+  
+  "remoteUser": "vscode",
+  
+  "mounts": [
+    "source=${localWorkspaceFolder}/videos,target=/workspace/videos,type=bind,consistency=cached"
+  ],
+  
+  "runArgs": ["--shm-size=1g"],
+  
+  "containerEnv": {
+    "DISPLAY": ":0"
+  }
+}

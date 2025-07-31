@@ -31,8 +31,8 @@ def create_sample_video(output_path="test_videos/sample_poker_video.mp4",
     out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
     
     total_frames = duration * fps
-    print(f"🎬 샘플 비디오 생성 시작: {output_path}")
-    print(f"📹 설정: {width}x{height}, {fps}FPS, {duration}초 ({total_frames} 프레임)")
+    print(f"[VIDEO] 샘플 비디오 생성 시작: {output_path}")
+    print(f"[INFO] 설정: {width}x{height}, {fps}FPS, {duration}초 ({total_frames} 프레임)")
     
     # 포커 테이블 설정
     table_center = (width // 2, height // 2)
@@ -95,7 +95,7 @@ def create_sample_video(output_path="test_videos/sample_poker_video.mp4",
             print(f"진행률: {progress:.1f}%")
     
     out.release()
-    print(f"✅ 샘플 비디오 생성 완료: {output_path}")
+    print(f"[DONE] 샘플 비디오 생성 완료: {output_path}")
     return output_path
 
 def generate_hand_scenarios(duration, fps):
@@ -281,6 +281,6 @@ if __name__ == "__main__":
         fps=30
     )
     
-    print("🎬 샘플 비디오 생성 완료!")
+    print("[COMPLETE] 샘플 비디오 생성 완료!")
     print("📁 파일 위치: test_videos/sample_poker_tournament.mp4")
     print("🔧 이 비디오로 핸드 감지 시스템을 테스트할 수 있습니다.")

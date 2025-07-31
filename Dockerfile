@@ -1,40 +1,36 @@
-# Poker MAM Analysis System Docker Configuration
 FROM python:3.9-slim
 
-# 작업 디렉토리 설정
-WORKDIR /app
-
-# 시스템 패키지 업데이트 및 필수 패키지 설치
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    wget \
-    curl \
-    git \
     ffmpeg \
-    libopencv-dev \
-    python3-opencv \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libgomp1 \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libgtk-3-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Python 종속성 설치
+# Set working directory
+WORKDIR /app
+
+# Copy requirements first for better caching
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 애플리케이션 코드 복사
+# Copy application files
 COPY . .
 
-# 필요한 디렉토리 생성
-RUN mkdir -p temp_videos analysis_results static/results
+# Create necessary directories
+RUN mkdir -p videos test_videos temp_videos analysis_results static/results logs
 
-# 포트 노출
+# Generate sample video
+RUN python src/generate_sample_video.py || true
+
+# Expose port
 EXPOSE 5000
 
-# 환경 변수 설정
-ENV FLASK_ENV=production
-ENV FLASK_DEBUG=0
-ENV PYTHONPATH=/app
-
-# 헬스체크 추가
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:5000/ || exit 1
-
-# 애플리케이션 실행
-CMD ["python", "run_poker_app.py", "prod", "--port", "5000", "--workers", "4"]
+# Default command
+CMD ["python", "run_poker_app.py", "--host", "0.0.0.0"]

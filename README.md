@@ -2,6 +2,14 @@
 
 포커 대회 영상에서 AI 기반 핸드 경계 감지 및 길이 분석을 수행하는 종합적인 미디어 자산 관리 시스템입니다. YouTube 스트리밍, 로컬 파일 브라우징, 실시간 분석 기능을 제공합니다.
 
+## 🌐 온라인에서 바로 테스트하기
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?template=your-username/Archive-MAM)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/your-username/Archive-MAM)
+[![Run Tests](https://github.com/your-username/Archive-MAM/actions/workflows/test.yml/badge.svg)](https://github.com/your-username/Archive-MAM/actions)
+
+**로컬 설치 없이 브라우저에서 바로 실행!** 자세한 내용은 [온라인 테스트 가이드](README_ONLINE.md)를 참조하세요.
+
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![Flask](https://img.shields.io/badge/Flask-2.0+-green.svg)
 ![OpenCV](https://img.shields.io/badge/OpenCV-4.0+-red.svg)
@@ -92,7 +100,12 @@ Archive-MAM/
 
 ## 🚀 빠른 시작
 
-### 1. 환경 설정
+### 온라인 실행 (추천) 🌐
+로컬 설치 없이 브라우저에서 바로 실행:
+- **[GitHub Codespaces에서 실행](https://github.com/codespaces/new?template=your-username/Archive-MAM)** - VS Code 환경
+- **[Gitpod에서 실행](https://gitpod.io/#https://github.com/your-username/Archive-MAM)** - 빠른 시작
+
+### 로컬 설치
 
 ```bash
 # 저장소 클론

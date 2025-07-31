@@ -1,0 +1,83 @@
+name: Poker MAM Tests
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9]
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg libglib2.0-0 libsm6 libxext6 libxrender-dev libgomp1
+    
+    - name: Cache pip packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov
+    
+    - name: Create test directories
+      run: |
+        python -c "from pathlib import Path; [Path(d).mkdir(exist_ok=True) for d in ['videos', 'test_videos', 'temp_videos', 'analysis_results']]"
+    
+    - name: Generate sample video
+      run: |
+        python src/generate_sample_video.py
+      continue-on-error: true
+    
+    - name: Run quick tests
+      run: |
+        python quick_test.py
+    
+    - name: Test Fast Detector
+      run: |
+        python -m src.fast_hand_detector
+      continue-on-error: true
+    
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results-${{ matrix.python-version }}
+        path: |
+          analysis_results/
+          *.log
+  
+  docker-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Build Docker image
+      run: |
+        docker build -t poker-mam .
+    
+    - name: Run Docker container test
+      run: |
+        docker run --rm poker-mam python quick_test.py
