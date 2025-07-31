@@ -13,7 +13,7 @@ numpy==1.24.3
 pandas==2.0.3
 
 # 시스템 모니터링
-psutil==5.9.5
+psutil==7.0.0
 
 # HTTP 요청
 requests==2.31.0
