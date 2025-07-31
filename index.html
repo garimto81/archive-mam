@@ -56,6 +56,12 @@
             margin: 10px 0;
             border-radius: 10px;
             border-left: 4px solid #e74c3c;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .hand-card:hover {
+            background: #1a4a7a;
+            transform: translateX(5px);
         }
         .stats-grid {
             display: grid;
@@ -78,6 +84,20 @@
             max-width: 100%;
             margin: 20px 0;
             border-radius: 10px;
+        }
+        #videoPlayer {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .video-container {
+            background: #0f3460;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
         }
     </style>
 </head>
@@ -111,6 +131,13 @@
         <!-- 결과 표시 -->
         <div class="results" id="results">
             <h3>📊 분석 결과</h3>
+            
+            <!-- 비디오 플레이어 -->
+            <div class="video-container">
+                <h4>🎬 영상 재생</h4>
+                <video id="videoPlayer" controls></video>
+                <p class="text-muted mt-2">핸드를 클릭하면 해당 구간으로 이동합니다</p>
+            </div>
             
             <div class="stats-grid">
                 <div class="stat-box">
@@ -249,6 +276,10 @@
             document.getElementById('progressContainer').style.display = 'none';
             document.getElementById('results').style.display = 'block';
             
+            // 비디오 플레이어에 영상 설정
+            const videoPlayer = document.getElementById('videoPlayer');
+            videoPlayer.src = URL.createObjectURL(videoFile);
+            
             // 통계 표시
             document.getElementById('totalHands').textContent = analysisResults.totalHands;
             document.getElementById('avgDuration').textContent = analysisResults.avgDuration;
@@ -257,7 +288,7 @@
             // 핸드 목록 표시
             const handsList = document.getElementById('handsList');
             handsList.innerHTML = analysisResults.hands.map(hand => `
-                <div class="hand-card">
+                <div class="hand-card" onclick="seekToHand(${hand.startTime})">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <strong>핸드 #${hand.id}</strong>
@@ -272,6 +303,19 @@
                     </div>
                 </div>
             `).join('');
+        }
+
+        // 핸드 구간으로 이동
+        function seekToHand(startTime) {
+            const videoPlayer = document.getElementById('videoPlayer');
+            videoPlayer.currentTime = startTime;
+            videoPlayer.play();
+            
+            // 스크롤을 비디오 플레이어로 이동
+            document.querySelector('.video-container').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
         }
 
         // 시간 포맷
