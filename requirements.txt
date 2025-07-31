@@ -24,7 +24,7 @@ tqdm==4.65.0
 
 # 추가 의존성 (선택사항)
 matplotlib==3.7.2
-seaborn==0.12.2
+seaborn==0.13.2
 
 # 기존 프로젝트 종속성 유지
 fastapi==0.104.1
