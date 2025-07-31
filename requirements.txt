@@ -16,7 +16,7 @@ pandas==2.0.3
 psutil==5.9.5
 
 # HTTP 요청
-requests==2.31.0
+requests==2.32.4
 
 # 유틸리티
 Pillow==10.0.0
