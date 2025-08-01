@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI 구간 마킹 시스템 - Archive-MAM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f0f0f;
+            color: #ffffff;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            margin-bottom: 20px;
+            color: #4CAF50;
+            text-align: center;
+        }
+        
+        .video-section {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        video {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #45a049;
+        }
+        
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #da190b;
+        }
+        
+        .btn-secondary {
+            background: #666;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #555;
+        }
+        
+        .btn-warning {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #e68900;
+        }
+        
+        /* 타임라인 스타일 */
+        .timeline-container {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .timeline {
+            position: relative;
+            height: 60px;
+            background: #333;
+            border-radius: 5px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .timeline-segment {
+            position: absolute;
+            height: 100%;
+            transition: all 0.3s;
+        }
+        
+        .ui-segment {
+            background: #f44336;
+            opacity: 0.8;
+        }
+        
+        .game-segment {
+            background: #4CAF50;
+            opacity: 0.6;
+        }
+        
+        .buffer-segment {
+            background: #ff9800;
+            opacity: 0.5;
+        }
+        
+        .current-time-indicator {
+            position: absolute;
+            width: 2px;
+            height: 100%;
+            background: #ffffff;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .timeline-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        /* UI 구간 목록 */
+        .segments-panel {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .segment-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .segment-item {
+            background: #2a2a2a;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .segment-info {
+            flex: 1;
+        }
+        
+        .segment-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        /* 핸드 미리보기 */
+        .hands-preview {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .hand-item {
+            background: #2a2a2a;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        /* 상태 표시 */
+        .status-bar {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4CAF50;
+        }
+        
+        .marking-active {
+            background: #ff9800;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        /* 입력 필드 */
+        input[type="file"] {
+            background: #2a2a2a;
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        
+        /* 통계 정보 */
+        .stats-panel {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .stat-card {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #999;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 UI 구간 마킹 시스템</h1>
+        
+        <!-- 상태 표시 -->
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-indicator" id="markingIndicator"></div>
+                <span id="markingStatus">대기 중</span>
+            </div>
+            <div class="status-item">
+                <span>현재 시간: <span id="currentTime">00:00</span></span>
+            </div>
+            <div class="status-item">
+                <span>총 길이: <span id="totalDuration">00:00</span></span>
+            </div>
+        </div>
+        
+        <!-- 비디오 파일 선택 -->
+        <input type="file" id="videoFile" accept="video/*">
+        
+        <!-- 비디오 섹션 -->
+        <div class="video-section">
+            <video id="video" controls></video>
+            
+            <div class="controls">
+                <button class="btn-primary" onclick="startUIMarking()">
+                    🚀 UI 구간 시작
+                </button>
+                <button class="btn-danger" onclick="endUIMarking()">
+                    🛑 UI 구간 종료
+                </button>
+                <button class="btn-secondary" onclick="cancelMarking()">
+                    ❌ 마킹 취소
+                </button>
+                <button class="btn-warning" onclick="jumpToTime()">
+                    ⏩ 시간 이동
+                </button>
+                <button class="btn-secondary" onclick="playbackSpeed()">
+                    ⚡ 배속 변경
+                </button>
+            </div>
+        </div>
+        
+        <!-- 타임라인 -->
+        <div class="timeline-container">
+            <h3>📊 타임라인</h3>
+            <div class="timeline" id="timeline">
+                <div class="current-time-indicator" id="timeIndicator"></div>
+            </div>
+            <div class="timeline-labels">
+                <span>00:00</span>
+                <span id="timelineEnd">00:00</span>
+            </div>
+        </div>
+        
+        <!-- UI 구간 목록 -->
+        <div class="segments-panel">
+            <h3>📋 UI 구간 목록</h3>
+            <div class="segment-list" id="segmentList"></div>
+        </div>
+        
+        <!-- 핸드 미리보기 -->
+        <div class="hands-preview">
+            <h3>🃏 예상 핸드 목록</h3>
+            <div id="handsList"></div>
+        </div>
+        
+        <!-- 통계 정보 -->
+        <div class="stats-panel">
+            <div class="stat-card">
+                <div class="stat-value" id="totalSegments">0</div>
+                <div class="stat-label">UI 구간 수</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalHands">0</div>
+                <div class="stat-label">예상 핸드 수</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avgHandDuration">00:00</div>
+                <div class="stat-label">평균 핸드 시간</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalGameTime">00:00</div>
+                <div class="stat-label">총 게임 시간</div>
+            </div>
+        </div>
+        
+        <!-- 액션 버튼 -->
+        <div class="controls" style="margin-top: 20px;">
+            <button class="btn-primary" onclick="exportData()">
+                💾 데이터 내보내기
+            </button>
+            <button class="btn-secondary" onclick="importData()">
+                📂 데이터 가져오기
+            </button>
+            <button class="btn-warning" onclick="clearAll()">
+                🗑️ 전체 초기화
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // 전역 변수
+        let video = null;
+        let uiSegments = [];
+        let currentMarkingStart = null;
+        let isMarking = false;
+        
+        // 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            video = document.getElementById('video');
+            
+            // 비디오 파일 선택
+            document.getElementById('videoFile').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    video.src = URL.createObjectURL(file);
+                    video.addEventListener('loadedmetadata', () => {
+                        updateTotalDuration();
+                        updateTimeline();
+                    });
+                }
+            });
+            
+            // 비디오 시간 업데이트
+            video.addEventListener('timeupdate', () => {
+                updateCurrentTime();
+                updateTimeIndicator();
+            });
+            
+            // 타임라인 클릭
+            document.getElementById('timeline').addEventListener('click', (e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const percentage = x / rect.width;
+                video.currentTime = video.duration * percentage;
+            });
+        });
+        
+        // UI 구간 마킹 시작
+        function startUIMarking() {
+            if (!video.src) {
+                alert('먼저 비디오를 선택해주세요.');
+                return;
+            }
+            
+            if (isMarking) {
+                alert('이미 마킹 중입니다. 종료 버튼을 눌러주세요.');
+                return;
+            }
+            
+            currentMarkingStart = video.currentTime;
+            isMarking = true;
+            
+            updateMarkingStatus('UI 구간 마킹 중...', true);
+        }
+        
+        // UI 구간 마킹 종료
+        function endUIMarking() {
+            if (!isMarking) {
+                alert('마킹을 시작하지 않았습니다.');
+                return;
+            }
+            
+            const endTime = video.currentTime;
+            const duration = endTime - currentMarkingStart;
+            
+            if (duration < 15) {
+                if (!confirm(`UI 구간이 ${duration.toFixed(1)}초로 15초 미만입니다. 계속하시겠습니까?`)) {
+                    return;
+                }
+            }
+            
+            // UI 구간 추가
+            const segment = {
+                id: Date.now(),
+                start: currentMarkingStart,
+                end: endTime,
+                duration: duration
+            };
+            
+            uiSegments.push(segment);
+            uiSegments.sort((a, b) => a.start - b.start);
+            
+            // 초기화
+            currentMarkingStart = null;
+            isMarking = false;
+            updateMarkingStatus('대기 중', false);
+            
+            // UI 업데이트
+            updateSegmentList();
+            updateTimeline();
+            updateHandsList();
+            updateStats();
+        }
+        
+        // 마킹 취소
+        function cancelMarking() {
+            currentMarkingStart = null;
+            isMarking = false;
+            updateMarkingStatus('대기 중', false);
+        }
+        
+        // 시간 이동
+        function jumpToTime() {
+            const time = prompt('이동할 시간을 입력하세요 (초):', '0');
+            if (time !== null) {
+                video.currentTime = parseFloat(time);
+            }
+        }
+        
+        // 배속 변경
+        function playbackSpeed() {
+            const speeds = [0.5, 1, 1.5, 2, 3, 5];
+            const currentIndex = speeds.indexOf(video.playbackRate);
+            const nextIndex = (currentIndex + 1) % speeds.length;
+            video.playbackRate = speeds[nextIndex];
+            alert(`재생 속도: ${speeds[nextIndex]}x`);
+        }
+        
+        // 상태 업데이트
+        function updateMarkingStatus(text, active) {
+            document.getElementById('markingStatus').textContent = text;
+            const indicator = document.getElementById('markingIndicator');
+            if (active) {
+                indicator.classList.add('marking-active');
+            } else {
+                indicator.classList.remove('marking-active');
+            }
+        }
+        
+        // 현재 시간 업데이트
+        function updateCurrentTime() {
+            const time = formatTime(video.currentTime);
+            document.getElementById('currentTime').textContent = time;
+        }
+        
+        // 총 길이 업데이트
+        function updateTotalDuration() {
+            const time = formatTime(video.duration);
+            document.getElementById('totalDuration').textContent = time;
+            document.getElementById('timelineEnd').textContent = time;
+        }
+        
+        // 타임라인 업데이트
+        function updateTimeline() {
+            const timeline = document.getElementById('timeline');
+            
+            // 기존 세그먼트 제거
+            timeline.querySelectorAll('.timeline-segment').forEach(el => el.remove());
+            
+            if (!video.duration) return;
+            
+            // UI 구간 추가
+            uiSegments.forEach(segment => {
+                const left = (segment.start / video.duration) * 100;
+                const width = ((segment.end - segment.start) / video.duration) * 100;
+                
+                const el = document.createElement('div');
+                el.className = 'timeline-segment ui-segment';
+                el.style.left = `${left}%`;
+                el.style.width = `${width}%`;
+                el.title = `UI: ${formatTime(segment.start)} - ${formatTime(segment.end)}`;
+                timeline.appendChild(el);
+                
+                // 버퍼 구간 추가 (15초 전후)
+                if (segment.start > 15) {
+                    const bufferStart = ((segment.start - 15) / video.duration) * 100;
+                    const bufferWidth = (15 / video.duration) * 100;
+                    
+                    const bufferEl = document.createElement('div');
+                    bufferEl.className = 'timeline-segment buffer-segment';
+                    bufferEl.style.left = `${bufferStart}%`;
+                    bufferEl.style.width = `${bufferWidth}%`;
+                    bufferEl.title = `버퍼: ${formatTime(segment.start - 15)} - ${formatTime(segment.start)}`;
+                    timeline.appendChild(bufferEl);
+                }
+                
+                if (segment.end + 15 < video.duration) {
+                    const bufferStart = (segment.end / video.duration) * 100;
+                    const bufferWidth = (15 / video.duration) * 100;
+                    
+                    const bufferEl = document.createElement('div');
+                    bufferEl.className = 'timeline-segment buffer-segment';
+                    bufferEl.style.left = `${bufferStart}%`;
+                    bufferEl.style.width = `${bufferWidth}%`;
+                    bufferEl.title = `버퍼: ${formatTime(segment.end)} - ${formatTime(segment.end + 15)}`;
+                    timeline.appendChild(bufferEl);
+                }
+            });
+        }
+        
+        // 시간 인디케이터 업데이트
+        function updateTimeIndicator() {
+            if (!video.duration) return;
+            
+            const indicator = document.getElementById('timeIndicator');
+            const percentage = (video.currentTime / video.duration) * 100;
+            indicator.style.left = `${percentage}%`;
+        }
+        
+        // UI 구간 목록 업데이트
+        function updateSegmentList() {
+            const list = document.getElementById('segmentList');
+            list.innerHTML = '';
+            
+            uiSegments.forEach(segment => {
+                const item = document.createElement('div');
+                item.className = 'segment-item';
+                item.innerHTML = `
+                    <div class="segment-info">
+                        <strong>UI 구간 #${uiSegments.indexOf(segment) + 1}</strong><br>
+                        시작: ${formatTime(segment.start)} | 종료: ${formatTime(segment.end)} | 길이: ${formatTime(segment.duration)}
+                    </div>
+                    <div class="segment-actions">
+                        <button class="btn-secondary" onclick="editSegment(${segment.id})">수정</button>
+                        <button class="btn-danger" onclick="deleteSegment(${segment.id})">삭제</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+        
+        // 핸드 목록 업데이트
+        function updateHandsList() {
+            const list = document.getElementById('handsList');
+            list.innerHTML = '';
+            
+            const hands = calculateHands();
+            
+            hands.forEach((hand, index) => {
+                const item = document.createElement('div');
+                item.className = 'hand-item';
+                item.innerHTML = `
+                    <strong>핸드 #${index + 1}</strong><br>
+                    시작: ${formatTime(hand.start)} | 종료: ${formatTime(hand.end)} | 길이: ${formatTime(hand.duration)}
+                `;
+                list.appendChild(item);
+            });
+        }
+        
+        // 핸드 계산
+        function calculateHands() {
+            const hands = [];
+            
+            if (uiSegments.length === 0) {
+                // UI가 없으면 전체가 하나의 핸드
+                if (video.duration) {
+                    hands.push({
+                        start: 0,
+                        end: video.duration,
+                        duration: video.duration
+                    });
+                }
+                return hands;
+            }
+            
+            // 첫 번째 핸드
+            const firstUI = uiSegments[0];
+            const firstHandEnd = Math.max(0, firstUI.start - 15);
+            if (firstHandEnd > 30) { // 최소 30초
+                hands.push({
+                    start: 0,
+                    end: firstHandEnd,
+                    duration: firstHandEnd
+                });
+            }
+            
+            // 중간 핸드들
+            for (let i = 0; i < uiSegments.length - 1; i++) {
+                const currentUI = uiSegments[i];
+                const nextUI = uiSegments[i + 1];
+                
+                const handStart = currentUI.end + 15;
+                const handEnd = nextUI.start - 15;
+                
+                if (handEnd - handStart > 30) { // 최소 30초
+                    hands.push({
+                        start: handStart,
+                        end: handEnd,
+                        duration: handEnd - handStart
+                    });
+                }
+            }
+            
+            // 마지막 핸드
+            const lastUI = uiSegments[uiSegments.length - 1];
+            const lastHandStart = lastUI.end + 15;
+            if (video.duration - lastHandStart > 30) { // 최소 30초
+                hands.push({
+                    start: lastHandStart,
+                    end: video.duration,
+                    duration: video.duration - lastHandStart
+                });
+            }
+            
+            return hands;
+        }
+        
+        // 통계 업데이트
+        function updateStats() {
+            const hands = calculateHands();
+            
+            document.getElementById('totalSegments').textContent = uiSegments.length;
+            document.getElementById('totalHands').textContent = hands.length;
+            
+            if (hands.length > 0) {
+                const avgDuration = hands.reduce((sum, hand) => sum + hand.duration, 0) / hands.length;
+                document.getElementById('avgHandDuration').textContent = formatTime(avgDuration);
+                
+                const totalGameTime = hands.reduce((sum, hand) => sum + hand.duration, 0);
+                document.getElementById('totalGameTime').textContent = formatTime(totalGameTime);
+            } else {
+                document.getElementById('avgHandDuration').textContent = '00:00';
+                document.getElementById('totalGameTime').textContent = '00:00';
+            }
+        }
+        
+        // 구간 수정
+        function editSegment(id) {
+            const segment = uiSegments.find(s => s.id === id);
+            if (!segment) return;
+            
+            const newStart = prompt('시작 시간 (초):', segment.start);
+            const newEnd = prompt('종료 시간 (초):', segment.end);
+            
+            if (newStart !== null && newEnd !== null) {
+                segment.start = parseFloat(newStart);
+                segment.end = parseFloat(newEnd);
+                segment.duration = segment.end - segment.start;
+                
+                uiSegments.sort((a, b) => a.start - b.start);
+                updateSegmentList();
+                updateTimeline();
+                updateHandsList();
+                updateStats();
+            }
+        }
+        
+        // 구간 삭제
+        function deleteSegment(id) {
+            if (confirm('이 UI 구간을 삭제하시겠습니까?')) {
+                uiSegments = uiSegments.filter(s => s.id !== id);
+                updateSegmentList();
+                updateTimeline();
+                updateHandsList();
+                updateStats();
+            }
+        }
+        
+        // 데이터 내보내기
+        function exportData() {
+            const hands = calculateHands();
+            const data = {
+                video: {
+                    duration: video.duration,
+                    name: document.getElementById('videoFile').files[0]?.name || 'unknown'
+                },
+                uiSegments: uiSegments,
+                hands: hands,
+                exportDate: new Date().toISOString()
+            };
+            
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ui_segments_${Date.now()}.json`;
+            a.click();
+            
+            URL.revokeObjectURL(url);
+        }
+        
+        // 데이터 가져오기
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        uiSegments = data.uiSegments || [];
+                        updateSegmentList();
+                        updateTimeline();
+                        updateHandsList();
+                        updateStats();
+                        alert('데이터를 성공적으로 가져왔습니다.');
+                    } catch (err) {
+                        alert('데이터 가져오기 실패: ' + err.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+        
+        // 전체 초기화
+        function clearAll() {
+            if (confirm('모든 UI 구간을 삭제하시겠습니까?')) {
+                uiSegments = [];
+                currentMarkingStart = null;
+                isMarking = false;
+                updateMarkingStatus('대기 중', false);
+                updateSegmentList();
+                updateTimeline();
+                updateHandsList();
+                updateStats();
+            }
+        }
+        
+        // 시간 포맷팅
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+    </script>
+</body>
+</html>
