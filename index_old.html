@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poker Hand Analyzer - 온라인 포커 영상 분석</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #1a1a2e;
+            color: #eee;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .container {
+            max-width: 900px;
+            margin-top: 50px;
+        }
+        .upload-zone {
+            border: 3px dashed #4a7c7e;
+            border-radius: 20px;
+            padding: 60px;
+            text-align: center;
+            background: #16213e;
+            transition: all 0.3s;
+        }
+        .upload-zone.dragover {
+            border-color: #f39c12;
+            background: #1e3a5f;
+        }
+        .btn-analyze {
+            background: #e74c3c;
+            border: none;
+            padding: 12px 40px;
+            font-size: 18px;
+            border-radius: 30px;
+            transition: all 0.3s;
+        }
+        .btn-analyze:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+        .progress-container {
+            display: none;
+            margin-top: 30px;
+        }
+        .results {
+            display: none;
+            margin-top: 30px;
+            background: #16213e;
+            padding: 30px;
+            border-radius: 15px;
+        }
+        .hand-card {
+            background: #0f3460;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-left: 4px solid #e74c3c;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .hand-card:hover {
+            background: #1a4a7a;
+            transform: translateX(5px);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .stat-box {
+            background: #0f3460;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #f39c12;
+        }
+        #videoPreview {
+            max-width: 100%;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        #videoPlayer {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .video-container {
+            background: #0f3460;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-5">🃏 Poker Hand Analyzer v2.0</h1>
+        <div class="text-center mb-4">
+            <div style="margin: 10px 0;">
+                <a href="unified_ui_recognition.html" class="btn btn-danger btn-lg" style="text-decoration: none; font-size: 20px; padding: 15px 30px;">
+                    🎯 통합 UI 인식 시스템 (NEW!)
+                </a>
+            </div>
+            <p class="text-muted mt-2">스마트 모드 + 구간 마킹 + 하이브리드 모드를 하나의 시스템으로 통합</p>
+            
+            <hr style="margin: 20px 0; border-color: #333;">
+            
+            <div style="margin: 10px 0;">
+                <a href="ui_segment_learning.html" class="btn btn-success btn-sm" style="text-decoration: none; margin: 5px;">
+                    🤖 AI 학습
+                </a>
+                <a href="incremental_learning_system.html" class="btn btn-primary btn-sm" style="text-decoration: none; margin: 5px;">
+                    🔄 점진적 학습
+                </a>
+            </div>
+            <p class="text-muted" style="font-size: 12px;">고급 기능: AI 모델 학습 및 지속적 개선</p>
+        </div>
+        <p class="text-center text-muted mb-5">🧠 스마트 UI 감지 - 사용자가 시간만 알려주면 시스템이 화면에서 UI를 찾아냅니다</p>
+        
+        
+        <!-- 업로드 영역 -->
+        <div class="upload-zone" id="uploadZone">
+            <h3>📹 포커 영상을 선택하세요</h3>
+            <p class="text-muted">MP4, AVI, MOV 형식 지원 (최대 500MB)</p>
+            <input type="file" id="videoInput" accept="video/*" class="form-control mb-3" style="max-width: 400px; margin: 0 auto;">
+            <div id="fileInfo" class="mt-3"></div>
+            <video id="videoPreview" controls style="display: none;"></video>
+            <button id="analyzeBtn" class="btn btn-danger btn-analyze mt-3" style="display: none;">
+                🚀 분석 시작
+            </button>
+        </div>
+
+        <!-- 진행률 표시 -->
+        <div class="progress-container" id="progressContainer">
+            <h4>분석 중...</h4>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" id="progressBar" 
+                     role="progressbar" style="width: 0%">0%</div>
+            </div>
+            <p class="text-muted mt-2" id="progressText">영상을 분석하고 있습니다...</p>
+        </div>
+
+        <!-- 결과 표시 -->
+        <div class="results" id="results">
+            <h3>📊 분석 결과</h3>
+            
+            <!-- 비디오 플레이어 -->
+            <div class="video-container">
+                <h4>🎬 영상 재생</h4>
+                <video id="videoPlayer" controls></video>
+                <p class="text-muted mt-2">핸드를 클릭하면 해당 구간으로 이동합니다</p>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-number" id="totalHands">0</div>
+                    <div>총 핸드 수</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="avgDuration">0</div>
+                    <div>평균 핸드 시간(초)</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="longestHand">0</div>
+                    <div>가장 긴 핸드(초)</div>
+                </div>
+            </div>
+
+            <h4 class="mt-4">🎯 감지된 핸드</h4>
+            <div id="handsList"></div>
+            
+            <button class="btn btn-success mt-3" onclick="downloadResults()">
+                📥 결과 다운로드 (JSON)
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let videoFile = null;
+        let analysisResults = null;
+        let analysisMode = 'smart'; // 기본값을 스마트 모드로
+        let smartUIDetector = null;
+
+        // 파일 선택 처리
+        document.getElementById('videoInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('video/')) {
+                videoFile = file;
+                displayVideoInfo(file);
+            } else {
+                alert('비디오 파일을 선택해주세요.');
+            }
+        });
+
+        // 비디오 정보 표시
+        function displayVideoInfo(file) {
+            const fileInfo = document.getElementById('fileInfo');
+            const videoPreview = document.getElementById('videoPreview');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            
+            fileInfo.innerHTML = `
+                <p><strong>파일명:</strong> ${file.name}</p>
+                <p><strong>크기:</strong> ${(file.size / 1024 / 1024).toFixed(2)} MB</p>
+            `;
+            
+            // 비디오 미리보기
+            const url = URL.createObjectURL(file);
+            videoPreview.src = url;
+            videoPreview.style.display = 'block';
+            analyzeBtn.style.display = 'inline-block';
+        }
+
+        // 분석 시작
+        document.getElementById('analyzeBtn').addEventListener('click', analyzeVideo);
+        
+        // 모드 설정
+        function setMode(mode) {
+            analysisMode = mode;
+            const autoBtn = document.getElementById('autoModeBtn');
+            const smartBtn = document.getElementById('smartModeBtn');
+            const description = document.getElementById('modeDescription');
+            
+            if (mode === 'auto') {
+                autoBtn.className = 'btn btn-warning me-3';
+                smartBtn.className = 'btn btn-outline-warning';
+                description.textContent = '자동 모드: 시스템이 휴리스틱으로 핸드를 자동 감지합니다';
+            } else {
+                autoBtn.className = 'btn btn-outline-warning me-3';
+                smartBtn.className = 'btn btn-warning';
+                description.textContent = '스마트 모드: UI 시작/종료만 알려주면 시스템이 화면 위치를 자동 감지합니다';
+            }
+        }
+
+        async function analyzeVideo() {
+            if (!videoFile) return;
+            
+            if (analysisMode === 'smart') {
+                // 스마트 모드: UI 마킹 인터페이스로 전환
+                startSmartAnalysis();
+            } else {
+                // 자동 모드: 기존 방식
+                document.getElementById('uploadZone').style.display = 'none';
+                document.getElementById('progressContainer').style.display = 'block';
+                await simulateAnalysis();
+            }
+        }
+        
+        // 스마트 분석 시작
+        function startSmartAnalysis() {
+            document.getElementById('uploadZone').style.display = 'none';
+            document.getElementById('modeSelection').style.display = 'none';
+            
+            // 스마트 UI 인터페이스 표시
+            showSmartInterface();
+        }
+        
+        // 스마트 인터페이스 표시
+        function showSmartInterface() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.style.display = 'block';
+            
+            // 기존 결과 내용을 스마트 인터페이스로 교체
+            resultsDiv.innerHTML = `
+                <h3>🧠 스마트 UI 감지 모드</h3>
+                <p class="text-muted">UI가 나타나면 "UI 감지 시작", 사라지면 "UI 감지 종료"를 클릭하세요</p>
+                
+                <!-- 비디오 플레이어 -->
+                <div class="video-container" style="position: relative;">
+                    <h4>🎬 영상 재생</h4>
+                    <div style="position: relative; display: inline-block;">
+                        <video id="smartVideoPlayer" controls style="width: 100%; max-width: 600px; border-radius: 10px;"></video>
+                        <canvas id="analysisOverlay" style="position: absolute; top: 0; left: 0; pointer-events: none; border-radius: 10px;"></canvas>
+                    </div>
+                    
+                    <!-- 스마트 컨트롤 -->
+                    <div style="text-align: center; margin: 20px 0;">
+                        <button id="smartDetectBtn" onclick="toggleSmartDetection()" style="background: linear-gradient(45deg, #e74c3c, #f39c12); color: white; border: none; padding: 15px 30px; font-size: 20px; border-radius: 25px; cursor: pointer; min-width: 200px;">
+                            🔍 UI 감지 시작
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 분석 결과 -->
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <h5>📊 화면 영역 분석</h5>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0;">
+                            <div class="detection-cell" id="smart-cell-0" style="background: #0f3460; padding: 10px; border-radius: 8px; text-align: center; border: 2px solid transparent; font-size: 12px;">좌상단<br><span id="smart-score-0">0%</span></div>
+                            <div class="detection-cell" id="smart-cell-1" style="background: #0f3460; padding: 10px; border-radius: 8px; text-align: center; border: 2px solid transparent; font-size: 12px;">상단<br><span id="smart-score-1">0%</span></div>
+                            <div class="detection-cell" id="smart-cell-2" style="background: #0f3460; padding: 10px; border-radius: 8px; text-align: center; border: 2px solid transparent; font-size: 12px;">우상단<br><span id="smart-score-2">0%</span></div>
+                            <div class="detection-cell" id="smart-cell-3" style="background: #0f3460; padding: 10px; border-radius: 8px; text-align: center; border: 2px solid transparent; font-size: 12px;">좌측<br><span id="smart-score-3">0%</span></div>
+                            <div class="detection-cell" id="smart-cell-4" style="background: #0f3460; padding: 10px; border-radius: 8px; text-align: center; border: 2px solid transparent; font-size: 12px;">중앙<br><span id="smart-score-4">0%</span></div>
+                            <div class="detection-cell" id="smart-cell-5" style="background: #0f3460; padding: 10px; border-radius: 8px; text-align: center; border: 2px solid transparent; font-size: 12px;">우측<br><span id="smart-score-5">0%</span></div>
+                            <div class="detection-cell" id="smart-cell-6" style="background: #0f3460; padding: 10px; border-radius: 8px; text-align: center; border: 2px solid transparent; font-size: 12px;">좌하단<br><span id="smart-score-6">0%</span></div>
+                            <div class="detection-cell" id="smart-cell-7" style="background: #0f3460; padding: 10px; border-radius: 8px; text-align: center; border: 2px solid transparent; font-size: 12px;">하단<br><span id="smart-score-7">0%</span></div>
+                            <div class="detection-cell" id="smart-cell-8" style="background: #0f3460; padding: 10px; border-radius: 8px; text-align: center; border: 2px solid transparent; font-size: 12px;">우하단<br><span id="smart-score-8">0%</span></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>🎯 감지 상태</h5>
+                        <div id="smartStatus" style="background: #0f3460; padding: 15px; border-radius: 8px; margin: 10px 0; text-align: center;">
+                            비디오를 재생하고 UI가 나타나면 "UI 감지 시작" 버튼을 클릭하세요
+                        </div>
+                        
+                        <h5>📝 학습된 UI 패턴</h5>
+                        <div id="learnedUIPatterns" style="max-height: 200px; overflow-y: auto; background: #0f3460; padding: 10px; border-radius: 8px;">
+                            아직 학습된 패턴이 없습니다
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 결과 섹션 -->
+                <div id="smartResults" style="display: none; margin-top: 30px;">
+                    <h4>🎯 분석 결과</h4>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-number" id="smartTotalUI">0</div>
+                            <div>감지된 UI</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number" id="smartPredictedHands">0</div>
+                            <div>예측 핸드 수</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number" id="smartAccuracy">95</div>
+                            <div>예상 정확도(%)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <button class="btn btn-success me-2" onclick="exportSmartResults()">
+                            📥 분석 결과 다운로드 (JSON)
+                        </button>
+                        <button class="btn btn-info me-2" onclick="exportToCSV()">
+                            📊 CSV로 내보내기
+                        </button>
+                        <button class="btn btn-warning me-2" onclick="clearStoredPatterns()">
+                            🗑️ 저장된 패턴 삭제
+                        </button>
+                        <button class="btn btn-secondary" onclick="importPatterns()">
+                            📂 패턴 가져오기
+                        </button>
+                        <input type="file" id="importFile" accept=".json" style="display: none;" onchange="loadImportedPatterns(event)">
+                    </div>
+                </div>
+            `;
+            
+            // 비디오 설정
+            const smartVideoPlayer = document.getElementById('smartVideoPlayer');
+            smartVideoPlayer.src = URL.createObjectURL(videoFile);
+            
+            // 스마트 감지기 초기화
+            smartVideoPlayer.addEventListener('loadedmetadata', () => {
+                const overlay = document.getElementById('analysisOverlay');
+                overlay.width = smartVideoPlayer.videoWidth;
+                overlay.height = smartVideoPlayer.videoHeight;
+                
+                smartUIDetector = new SmartUIDetector(smartVideoPlayer, overlay);
+                
+                // 기존 저장된 패턴 로드
+                smartUIDetector.loadFromLocalStorage();
+            });
+        }
+
+        // 분석 시뮬레이션 (실제 구현에서는 OpenCV.js 또는 서버 API 사용)
+        async function simulateAnalysis() {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            
+            // 진행률 시뮬레이션
+            for (let i = 0; i <= 100; i += 5) {
+                progressBar.style.width = i + '%';
+                progressBar.textContent = i + '%';
+                
+                if (i < 30) {
+                    progressText.textContent = '영상 프레임 추출 중...';
+                } else if (i < 60) {
+                    progressText.textContent = '핸드 경계 감지 중...';
+                } else if (i < 90) {
+                    progressText.textContent = '핸드 길이 분석 중...';
+                } else {
+                    progressText.textContent = '결과 생성 중...';
+                }
+                
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            // 샘플 결과 생성
+            generateSampleResults();
+            displayResults();
+        }
+
+        // 샘플 결과 생성
+        function generateSampleResults() {
+            const numHands = Math.floor(Math.random() * 15) + 10;
+            const hands = [];
+            
+            for (let i = 1; i <= numHands; i++) {
+                const duration = Math.floor(Math.random() * 240) + 30;
+                hands.push({
+                    id: i,
+                    startTime: (i - 1) * 120,
+                    endTime: (i - 1) * 120 + duration,
+                    duration: duration,
+                    category: getCategoryByDuration(duration)
+                });
+            }
+            
+            analysisResults = {
+                totalHands: numHands,
+                hands: hands,
+                avgDuration: Math.floor(hands.reduce((sum, h) => sum + h.duration, 0) / numHands),
+                longestHand: Math.max(...hands.map(h => h.duration))
+            };
+        }
+
+        // 핸드 카테고리 결정
+        function getCategoryByDuration(duration) {
+            if (duration < 45) return { name: '매우 짧음', color: '#e74c3c' };
+            if (duration < 90) return { name: '짧음', color: '#f39c12' };
+            if (duration < 180) return { name: '보통', color: '#3498db' };
+            if (duration < 300) return { name: '김', color: '#2ecc71' };
+            return { name: '매우 김', color: '#9b59b6' };
+        }
+
+        // 결과 표시
+        function displayResults() {
+            document.getElementById('progressContainer').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+            
+            // 비디오 플레이어에 영상 설정
+            const videoPlayer = document.getElementById('videoPlayer');
+            videoPlayer.src = URL.createObjectURL(videoFile);
+            
+            // 통계 표시
+            document.getElementById('totalHands').textContent = analysisResults.totalHands;
+            document.getElementById('avgDuration').textContent = analysisResults.avgDuration;
+            document.getElementById('longestHand').textContent = analysisResults.longestHand;
+            
+            // 핸드 목록 표시
+            const handsList = document.getElementById('handsList');
+            handsList.innerHTML = analysisResults.hands.map(hand => `
+                <div class="hand-card" onclick="seekToHand(${hand.startTime})">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>핸드 #${hand.id}</strong>
+                            <span class="badge" style="background: ${hand.category.color}; margin-left: 10px;">
+                                ${hand.category.name}
+                            </span>
+                        </div>
+                        <div>
+                            <span>${formatTime(hand.startTime)} - ${formatTime(hand.endTime)}</span>
+                            <strong class="text-warning ms-3">${hand.duration}초</strong>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 핸드 구간으로 이동
+        function seekToHand(startTime) {
+            const videoPlayer = document.getElementById('videoPlayer');
+            videoPlayer.currentTime = startTime;
+            videoPlayer.play();
+            
+            // 스크롤을 비디오 플레이어로 이동
+            document.querySelector('.video-container').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+        }
+
+        // 시간 포맷
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // 결과 다운로드
+        function downloadResults() {
+            if (!analysisResults) return;
+            
+            const dataStr = JSON.stringify(analysisResults, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = 'poker_analysis_results.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+        
+        // 스마트 UI 감지기 클래스
+        class SmartUIDetector {
+            constructor(video, canvas) {
+                this.video = video;
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.isDetecting = false;
+                this.detectionStart = null;
+                this.frameAnalysisInterval = null;
+                this.uiPatterns = [];
+                this.tempCanvas = document.createElement('canvas');
+                this.tempCtx = this.tempCanvas.getContext('2d');
+            }
+            
+            startDetection() {
+                this.isDetecting = true;
+                this.detectionStart = this.video.currentTime;
+                
+                // 실시간 분석 시작
+                this.frameAnalysisInterval = setInterval(() => {
+                    this.analyzeFrame();
+                }, 200); // 0.2초마다
+                
+                updateSmartStatus('🔄 UI 감지 중... 화면을 9개 영역으로 나누어 분석하고 있습니다.');
+            }
+            
+            stopDetection() {
+                if (!this.isDetecting) return;
+                
+                this.isDetecting = false;
+                clearInterval(this.frameAnalysisInterval);
+                
+                const detectionEnd = this.video.currentTime;
+                const duration = detectionEnd - this.detectionStart;
+                
+                if (duration >= 3) {
+                    this.learnUIPattern(this.detectionStart, detectionEnd);
+                    updateSmartStatus(`✅ UI 패턴 학습 완료: ${formatTime(this.detectionStart)} - ${formatTime(detectionEnd)} (${Math.floor(duration)}초)`);
+                    this.updateResults();
+                } else {
+                    updateSmartStatus('⚠️ 감지 시간이 너무 짧습니다 (최소 3초 이상)');
+                }
+                
+                this.resetGrid();
+            }
+            
+            analyzeFrame() {
+                if (!this.isDetecting || this.video.paused) return;
+                
+                // 비디오를 임시 캔버스에 그리기
+                this.tempCanvas.width = this.video.videoWidth;
+                this.tempCanvas.height = this.video.videoHeight;
+                this.tempCtx.drawImage(this.video, 0, 0);
+                
+                const imageData = this.tempCtx.getImageData(0, 0, this.tempCanvas.width, this.tempCanvas.height);
+                const regionScores = this.analyzeRegions(imageData);
+                
+                this.updateDetectionGrid(regionScores);
+                this.drawAnalysisOverlay(regionScores);
+            }
+            
+            analyzeRegions(imageData) {
+                const regions = [];
+                const width = imageData.width;
+                const height = imageData.height;
+                const data = imageData.data;
+                
+                // 3x3 그리드로 나누기
+                for (let row = 0; row < 3; row++) {
+                    for (let col = 0; col < 3; col++) {
+                        const startX = Math.floor(col * width / 3);
+                        const endX = Math.floor((col + 1) * width / 3);
+                        const startY = Math.floor(row * height / 3);
+                        const endY = Math.floor((row + 1) * height / 3);
+                        
+                        const regionScore = this.analyzeRegion(data, width, startX, endX, startY, endY);
+                        regions.push(regionScore);
+                    }
+                }
+                
+                return regions;
+            }
+            
+            analyzeRegion(data, width, startX, endX, startY, endY) {
+                let totalPixels = 0;
+                let edgePixels = 0;
+                let colorCounts = {};
+                
+                for (let y = startY; y < endY; y++) {
+                    for (let x = startX; x < endX; x++) {
+                        const idx = (y * width + x) * 4;
+                        const r = data[idx];
+                        const g = data[idx + 1];
+                        const b = data[idx + 2];
+                        
+                        totalPixels++;
+                        
+                        // 색상 그룹화
+                        const colorKey = `${Math.floor(r/64)*64},${Math.floor(g/64)*64},${Math.floor(b/64)*64}`;
+                        colorCounts[colorKey] = (colorCounts[colorKey] || 0) + 1;
+                        
+                        // 간단한 엣지 감지
+                        if (x > startX && y > startY) {
+                            const prevIdx = ((y-1) * width + (x-1)) * 4;
+                            const diff = Math.abs(r - data[prevIdx]) + Math.abs(g - data[prevIdx + 1]) + Math.abs(b - data[prevIdx + 2]);
+                            if (diff > 60) edgePixels++;
+                        }
+                    }
+                }
+                
+                // UI 특성 계산
+                const maxColorCount = Math.max(...Object.values(colorCounts));
+                const uniformityScore = maxColorCount / totalPixels;
+                const edgeScore = edgePixels / totalPixels;
+                
+                // UI 점수 (균일도가 높고 엣지가 많으면 UI 가능성 높음)
+                const uiScore = (uniformityScore * 0.7 + edgeScore * 0.3) * 100;
+                return Math.min(uiScore, 100);
+            }
+            
+            updateDetectionGrid(scores) {
+                scores.forEach((score, idx) => {
+                    const cell = document.getElementById(`smart-cell-${idx}`);
+                    const scoreSpan = document.getElementById(`smart-score-${idx}`);
+                    
+                    if (cell && scoreSpan) {
+                        scoreSpan.textContent = Math.floor(score) + '%';
+                        
+                        if (score > 50) {
+                            cell.style.borderColor = '#e74c3c';
+                            cell.style.backgroundColor = 'rgba(231, 76, 60, 0.2)';
+                        } else {
+                            cell.style.borderColor = 'transparent';
+                            cell.style.backgroundColor = '#0f3460';
+                        }
+                    }
+                });
+            }
+            
+            drawAnalysisOverlay(scores) {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                const cellWidth = this.canvas.width / 3;
+                const cellHeight = this.canvas.height / 3;
+                
+                for (let row = 0; row < 3; row++) {
+                    for (let col = 0; col < 3; col++) {
+                        const idx = row * 3 + col;
+                        const score = scores[idx];
+                        
+                        const x = col * cellWidth;
+                        const y = row * cellHeight;
+                        
+                        // 그리드 라인
+                        this.ctx.strokeStyle = '#f39c12';
+                        this.ctx.lineWidth = 1;
+                        this.ctx.strokeRect(x, y, cellWidth, cellHeight);
+                        
+                        // UI 감지 시 강조
+                        if (score > 50) {
+                            this.ctx.fillStyle = 'rgba(231, 76, 60, 0.3)';
+                            this.ctx.fillRect(x, y, cellWidth, cellHeight);
+                        }
+                        
+                        // 점수 표시
+                        this.ctx.fillStyle = '#fff';
+                        this.ctx.font = '16px Arial';
+                        this.ctx.fillText(Math.floor(score) + '%', x + 5, y + 20);
+                    }
+                }
+            }
+            
+            learnUIPattern(startTime, endTime) {
+                const pattern = {
+                    id: Date.now(),
+                    startTime: startTime,
+                    endTime: endTime,
+                    duration: endTime - startTime,
+                    confidence: 0.9,
+                    videoName: videoFile ? videoFile.name : 'unknown'
+                };
+                
+                this.uiPatterns.push(pattern);
+                this.updateLearnedPatterns();
+                
+                // 브라우저 로컬 스토리지에 자동 저장
+                this.saveToLocalStorage();
+            }
+            
+            saveToLocalStorage() {
+                const storageData = {
+                    patterns: this.uiPatterns,
+                    lastUpdated: new Date().toISOString(),
+                    videoName: videoFile ? videoFile.name : 'unknown'
+                };
+                
+                try {
+                    localStorage.setItem('smartUIPatterns', JSON.stringify(storageData));
+                    updateSmartStatus('✅ 패턴이 브라우저에 자동 저장되었습니다.');
+                } catch (e) {
+                    console.warn('로컬 스토리지 저장 실패:', e);
+                }
+            }
+            
+            loadFromLocalStorage() {
+                try {
+                    const stored = localStorage.getItem('smartUIPatterns');
+                    if (stored) {
+                        const data = JSON.parse(stored);
+                        this.uiPatterns = data.patterns || [];
+                        this.updateLearnedPatterns();
+                        updateSmartStatus(`📂 저장된 ${this.uiPatterns.length}개 패턴을 불러왔습니다.`);
+                        return true;
+                    }
+                } catch (e) {
+                    console.warn('로컬 스토리지 로드 실패:', e);
+                }
+                return false;
+            }
+            
+            updateLearnedPatterns() {
+                const container = document.getElementById('learnedUIPatterns');
+                if (!container) return;
+                
+                if (this.uiPatterns.length === 0) {
+                    container.innerHTML = '아직 학습된 패턴이 없습니다';
+                    return;
+                }
+                
+                container.innerHTML = this.uiPatterns.map((pattern, idx) => `
+                    <div style="background: #1a1a2e; padding: 8px; border-radius: 4px; margin: 5px 0; font-size: 12px;">
+                        <strong>패턴 ${idx + 1}:</strong> ${formatTime(pattern.startTime)} - ${formatTime(pattern.endTime)}<br>
+                        <small>길이: ${Math.floor(pattern.duration)}초, 신뢰도: ${Math.floor(pattern.confidence * 100)}%</small>
+                    </div>
+                `).join('');
+            }
+            
+            updateResults() {
+                document.getElementById('smartResults').style.display = 'block';
+                document.getElementById('smartTotalUI').textContent = this.uiPatterns.length;
+                
+                // 15초 이상 UI로 핸드 경계 예측
+                const longUIPatterns = this.uiPatterns.filter(p => p.duration >= 15);
+                document.getElementById('smartPredictedHands').textContent = longUIPatterns.length;
+            }
+            
+            resetGrid() {
+                for (let i = 0; i < 9; i++) {
+                    const cell = document.getElementById(`smart-cell-${i}`);
+                    const score = document.getElementById(`smart-score-${i}`);
+                    if (cell) {
+                        cell.style.borderColor = 'transparent';
+                        cell.style.backgroundColor = '#0f3460';
+                    }
+                    if (score) score.textContent = '0%';
+                }
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            }
+        }
+        
+        // 스마트 감지 토글
+        function toggleSmartDetection() {
+            if (!smartUIDetector) return;
+            
+            const button = document.getElementById('smartDetectBtn');
+            
+            if (!smartUIDetector.isDetecting) {
+                smartUIDetector.startDetection();
+                button.innerHTML = '🛑 UI 감지 종료';
+                button.style.animation = 'pulse 2s infinite';
+            } else {
+                smartUIDetector.stopDetection();
+                button.innerHTML = '🔍 UI 감지 시작';
+                button.style.animation = 'none';
+            }
+        }
+        
+        // 스마트 상태 업데이트
+        function updateSmartStatus(message) {
+            const status = document.getElementById('smartStatus');
+            if (status) {
+                status.textContent = message;
+            }
+        }
+        
+        // 스마트 결과 내보내기
+        function exportSmartResults() {
+            if (!smartUIDetector || smartUIDetector.uiPatterns.length === 0) {
+                alert('학습된 UI 패턴이 없습니다.');
+                return;
+            }
+            
+            const results = {
+                analysis_type: 'smart_ui_detection',
+                video_duration: document.getElementById('smartVideoPlayer').duration,
+                ui_patterns: smartUIDetector.uiPatterns,
+                predicted_hands: smartUIDetector.uiPatterns.filter(p => p.duration >= 15).map(p => ({
+                    estimated_end: Math.max(0, p.startTime - 15),
+                    estimated_start: p.endTime + 15,
+                    confidence: p.confidence,
+                    source_ui: p
+                })),
+                created_at: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(results, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', 'smart_ui_analysis.json');
+            linkElement.click();
+            
+            updateSmartStatus('✅ 스마트 분석 결과가 다운로드되었습니다.');
+        }
+        
+        // CSV로 내보내기
+        function exportToCSV() {
+            if (!smartUIDetector || smartUIDetector.uiPatterns.length === 0) {
+                alert('학습된 UI 패턴이 없습니다.');
+                return;
+            }
+            
+            const csvHeaders = 'ID,비디오명,시작시간,종료시간,지속시간,신뢰도,예측핸드종료,예측핸드시작\n';
+            const csvRows = smartUIDetector.uiPatterns.map(pattern => {
+                const predictedHandEnd = pattern.duration >= 15 ? formatTime(Math.max(0, pattern.startTime - 15)) : 'N/A';
+                const predictedHandStart = pattern.duration >= 15 ? formatTime(pattern.endTime + 15) : 'N/A';
+                
+                return [
+                    pattern.id,
+                    pattern.videoName || 'unknown',
+                    formatTime(pattern.startTime),
+                    formatTime(pattern.endTime),
+                    `${Math.floor(pattern.duration)}초`,
+                    `${Math.floor(pattern.confidence * 100)}%`,
+                    predictedHandEnd,
+                    predictedHandStart
+                ].join(',');
+            }).join('\n');
+            
+            const csvContent = csvHeaders + csvRows;
+            const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', url);
+            linkElement.setAttribute('download', 'ui_patterns.csv');
+            linkElement.click();
+            
+            updateSmartStatus('✅ CSV 파일이 다운로드되었습니다.');
+        }
+        
+        // 저장된 패턴 삭제
+        function clearStoredPatterns() {
+            if (confirm('저장된 모든 UI 패턴을 삭제하시겠습니까?')) {
+                localStorage.removeItem('smartUIPatterns');
+                if (smartUIDetector) {
+                    smartUIDetector.uiPatterns = [];
+                    smartUIDetector.updateLearnedPatterns();
+                    smartUIDetector.updateResults();
+                }
+                updateSmartStatus('✅ 저장된 패턴이 모두 삭제되었습니다.');
+            }
+        }
+        
+        // 패턴 가져오기
+        function importPatterns() {
+            document.getElementById('importFile').click();
+        }
+        
+        // 가져온 패턴 로드
+        function loadImportedPatterns(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    if (importedData.ui_patterns && Array.isArray(importedData.ui_patterns)) {
+                        if (smartUIDetector) {
+                            // 기존 패턴과 병합
+                            const existingIds = new Set(smartUIDetector.uiPatterns.map(p => p.id));
+                            const newPatterns = importedData.ui_patterns.filter(p => !existingIds.has(p.id));
+                            
+                            smartUIDetector.uiPatterns.push(...newPatterns);
+                            smartUIDetector.updateLearnedPatterns();
+                            smartUIDetector.updateResults();
+                            smartUIDetector.saveToLocalStorage();
+                            
+                            updateSmartStatus(`✅ ${newPatterns.length}개의 새로운 패턴을 가져왔습니다.`);
+                        }
+                    } else {
+                        alert('올바른 패턴 파일이 아닙니다.');
+                    }
+                } catch (error) {
+                    alert('파일을 읽는 중 오류가 발생했습니다.');
+                    console.error('Import error:', error);
+                }
+            };
+            reader.readAsText(file);
+            
+            // 파일 입력 초기화
+            event.target.value = '';
+        }
+
+        // 드래그 앤 드롭
+        const uploadZone = document.getElementById('uploadZone');
+        
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+        
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+        
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('video/')) {
+                document.getElementById('videoInput').files = files;
+                videoFile = files[0];
+                displayVideoInfo(files[0]);
+            }
+        });
+    </script>
+</body>
+</html>

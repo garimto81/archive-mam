@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>점진적 학습 시스템 - Archive-MAM</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.0.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f0f0f;
+            color: #ffffff;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            margin-bottom: 20px;
+            color: #4CAF50;
+            text-align: center;
+        }
+        
+        /* 대시보드 */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-card {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .dashboard-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 5px;
+        }
+        
+        .dashboard-label {
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .dashboard-change {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .change-positive {
+            color: #4CAF50;
+        }
+        
+        .change-negative {
+            color: #f44336;
+        }
+        
+        /* 학습 히스토리 */
+        .learning-history {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .history-item {
+            background: #2a2a2a;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .history-info {
+            flex: 1;
+        }
+        
+        .history-date {
+            color: #999;
+            font-size: 12px;
+        }
+        
+        .history-stats {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .stat-badge {
+            background: #4CAF50;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: white;
+        }
+        
+        /* 데이터 중복 체크 */
+        .data-validation {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .validation-item {
+            background: #2a2a2a;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status-new {
+            color: #4CAF50;
+        }
+        
+        .status-duplicate {
+            color: #ff9800;
+        }
+        
+        .status-similar {
+            color: #2196F3;
+        }
+        
+        /* 학습 섹션 */
+        .learning-section {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .learning-mode {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .mode-card {
+            flex: 1;
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .mode-card.active {
+            border-color: #4CAF50;
+            background: #1e3a1e;
+        }
+        
+        .mode-card:hover {
+            background: #333;
+        }
+        
+        /* 진행률 바 */
+        .progress-container {
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #2196F3);
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        /* 버튼 스타일 */
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #45a049;
+        }
+        
+        .btn-primary:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        
+        .btn-warning {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn-info {
+            background: #2196F3;
+            color: white;
+        }
+        
+        /* 입력 필드 */
+        input[type="file"] {
+            background: #2a2a2a;
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        
+        /* 모델 성능 차트 */
+        .performance-chart {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 200px;
+            background: #2a2a2a;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .chart-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #4CAF50;
+            transition: all 0.3s;
+        }
+        
+        /* 데이터 품질 지표 */
+        .quality-metrics {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .quality-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .quality-bar {
+            width: 150px;
+            height: 8px;
+            background: #333;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .quality-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        
+        .quality-excellent {
+            background: #4CAF50;
+        }
+        
+        .quality-good {
+            background: #8BC34A;
+        }
+        
+        .quality-fair {
+            background: #ff9800;
+        }
+        
+        .quality-poor {
+            background: #f44336;
+        }
+        
+        /* 알림 시스템 */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background: #4CAF50;
+        }
+        
+        .notification.warning {
+            background: #ff9800;
+        }
+        
+        .notification.error {
+            background: #f44336;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 점진적 학습 시스템</h1>
+        
+        <!-- 대시보드 -->
+        <div class="dashboard">
+            <div class="dashboard-card">
+                <div class="dashboard-value" id="totalSamples">0</div>
+                <div class="dashboard-label">총 학습 샘플</div>
+                <div class="dashboard-change" id="samplesChange">+0 (이번 세션)</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="dashboard-value" id="modelAccuracy">0%</div>
+                <div class="dashboard-label">현재 모델 정확도</div>
+                <div class="dashboard-change" id="accuracyChange">+0% (개선)</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="dashboard-value" id="uniqueVideos">0</div>
+                <div class="dashboard-label">학습된 영상 수</div>
+                <div class="dashboard-change" id="videosChange">+0 (새 영상)</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="dashboard-value" id="learningVersion">v1.0</div>
+                <div class="dashboard-label">모델 버전</div>
+                <div class="dashboard-change" id="versionChange">최신</div>
+            </div>
+        </div>
+        
+        <!-- 새 데이터 추가 -->
+        <div class="learning-section">
+            <h2>📥 새 데이터 추가</h2>
+            
+            <input type="file" id="newSegmentData" accept=".json">
+            <input type="file" id="newVideoFile" accept="video/*">
+            
+            <div class="learning-mode">
+                <div class="mode-card active" onclick="selectMode('incremental')">
+                    <h4>🔄 점진적 학습</h4>
+                    <p>기존 모델에 새 데이터만 추가 학습</p>
+                    <small>빠르고 효율적</small>
+                </div>
+                <div class="mode-card" onclick="selectMode('full')">
+                    <h4>🔃 전체 재학습</h4>
+                    <p>모든 데이터로 처음부터 다시 학습</p>
+                    <small>더 정확하지만 느림</small>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="learningProgress">대기 중</div>
+                </div>
+            </div>
+            
+            <div>
+                <button class="btn-primary" onclick="analyzeNewData()">
+                    🔍 새 데이터 분석
+                </button>
+                <button class="btn-primary" onclick="startIncrementalLearning()" disabled id="learnBtn">
+                    🚀 학습 시작
+                </button>
+                <button class="btn-info" onclick="exportModel()">
+                    💾 모델 내보내기
+                </button>
+                <button class="btn-warning" onclick="rollbackModel()">
+                    ↶ 이전 버전 복구
+                </button>
+            </div>
+        </div>
+        
+        <!-- 데이터 중복 검사 -->
+        <div class="data-validation">
+            <h3>🔍 데이터 중복 검사</h3>
+            <div id="validationResults"></div>
+        </div>
+        
+        <!-- 데이터 품질 지표 -->
+        <div class="quality-metrics">
+            <h3>📊 데이터 품질 지표</h3>
+            <div class="quality-item">
+                <span>데이터 다양성</span>
+                <div class="quality-bar">
+                    <div class="quality-fill quality-good" id="diversityScore" style="width: 0%"></div>
+                </div>
+                <span id="diversityText">0%</span>
+            </div>
+            <div class="quality-item">
+                <span>라벨 균형도</span>
+                <div class="quality-bar">
+                    <div class="quality-fill quality-fair" id="balanceScore" style="width: 0%"></div>
+                </div>
+                <span id="balanceText">0%</span>
+            </div>
+            <div class="quality-item">
+                <span>특징 분포</span>
+                <div class="quality-bar">
+                    <div class="quality-fill quality-excellent" id="distributionScore" style="width: 0%"></div>
+                </div>
+                <span id="distributionText">0%</span>
+            </div>
+        </div>
+        
+        <!-- 학습 히스토리 -->
+        <div class="learning-history">
+            <h3>📈 학습 히스토리</h3>
+            <div id="learningHistoryList"></div>
+        </div>
+        
+        <!-- 모델 성능 차트 -->
+        <div class="performance-chart">
+            <h3>📈 모델 성능 추이</h3>
+            <div class="chart-container" id="performanceChart"></div>
+        </div>
+    </div>
+    
+    <!-- 알림 -->
+    <div id="notification" class="notification"></div>
+    
+    <script>
+        // 전역 변수
+        let currentModel = null;
+        let learningHistory = [];
+        let dataHash = new Set();
+        let learningMode = 'incremental';
+        let newDataFeatures = [];
+        let modelVersions = [];
+        
+        // IndexedDB 관리
+        class LearningDataStore {
+            constructor() {
+                this.dbName = 'UILearningDB';
+                this.version = 1;
+                this.db = null;
+            }
+            
+            async init() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(this.dbName, this.version);
+                    
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => {
+                        this.db = request.result;
+                        resolve();
+                    };
+                    
+                    request.onupgradeneeded = (event) => {
+                        const db = event.target.result;
+                        
+                        // 학습 데이터 저장소
+                        if (!db.objectStoreNames.contains('learningData')) {
+                            const store = db.createObjectStore('learningData', { keyPath: 'hash' });
+                            store.createIndex('timestamp', 'timestamp', { unique: false });
+                            store.createIndex('videoName', 'videoName', { unique: false });
+                        }
+                        
+                        // 모델 버전 저장소
+                        if (!db.objectStoreNames.contains('modelVersions')) {
+                            const store = db.createObjectStore('modelVersions', { keyPath: 'version' });
+                            store.createIndex('timestamp', 'timestamp', { unique: false });
+                        }
+                        
+                        // 학습 히스토리 저장소
+                        if (!db.objectStoreNames.contains('learningHistory')) {
+                            const store = db.createObjectStore('learningHistory', { keyPath: 'id', autoIncrement: true });
+                            store.createIndex('timestamp', 'timestamp', { unique: false });
+                        }
+                    };
+                });
+            }
+            
+            async saveData(hash, data) {
+                const transaction = this.db.transaction(['learningData'], 'readwrite');
+                const store = transaction.objectStore('learningData');
+                await store.put({ hash, ...data, timestamp: Date.now() });
+            }
+            
+            async getData(hash) {
+                const transaction = this.db.transaction(['learningData'], 'readonly');
+                const store = transaction.objectStore('learningData');
+                return new Promise((resolve) => {
+                    const request = store.get(hash);
+                    request.onsuccess = () => resolve(request.result);
+                });
+            }
+            
+            async getAllData() {
+                const transaction = this.db.transaction(['learningData'], 'readonly');
+                const store = transaction.objectStore('learningData');
+                return new Promise((resolve) => {
+                    const request = store.getAll();
+                    request.onsuccess = () => resolve(request.result);
+                });
+            }
+            
+            async saveModel(version, modelData, accuracy) {
+                const transaction = this.db.transaction(['modelVersions'], 'readwrite');
+                const store = transaction.objectStore('modelVersions');
+                await store.put({
+                    version,
+                    modelData,
+                    accuracy,
+                    timestamp: Date.now()
+                });
+            }
+            
+            async getModel(version) {
+                const transaction = this.db.transaction(['modelVersions'], 'readonly');
+                const store = transaction.objectStore('modelVersions');
+                return new Promise((resolve) => {
+                    const request = store.get(version);
+                    request.onsuccess = () => resolve(request.result);
+                });
+            }
+            
+            async saveHistory(historyData) {
+                const transaction = this.db.transaction(['learningHistory'], 'readwrite');
+                const store = transaction.objectStore('learningHistory');
+                await store.add({ ...historyData, timestamp: Date.now() });
+            }
+            
+            async getHistory() {
+                const transaction = this.db.transaction(['learningHistory'], 'readonly');
+                const store = transaction.objectStore('learningHistory');
+                return new Promise((resolve) => {
+                    const request = store.getAll();
+                    request.onsuccess = () => resolve(request.result.sort((a, b) => b.timestamp - a.timestamp));
+                });
+            }
+        }
+        
+        const dataStore = new LearningDataStore();
+        
+        // 초기화
+        document.addEventListener('DOMContentLoaded', async () => {
+            await dataStore.init();
+            await loadDashboard();
+            await loadLearningHistory();
+            
+            showNotification('시스템이 준비되었습니다.', 'success');
+        });
+        
+        // 대시보드 로드
+        async function loadDashboard() {
+            const allData = await dataStore.getAllData();
+            const history = await dataStore.getHistory();
+            
+            // 총 샘플 수
+            document.getElementById('totalSamples').textContent = allData.length;
+            
+            // 고유 비디오 수
+            const uniqueVideos = new Set(allData.map(d => d.videoName)).size;
+            document.getElementById('uniqueVideos').textContent = uniqueVideos;
+            
+            // 최신 정확도
+            if (history.length > 0) {
+                const latestAccuracy = history[0].accuracy || 0;
+                document.getElementById('modelAccuracy').textContent = Math.round(latestAccuracy * 100) + '%';
+            }
+            
+            // 모델 버전
+            const versionCount = history.length;
+            document.getElementById('learningVersion').textContent = `v${versionCount}.0`;
+        }
+        
+        // 학습 히스토리 로드
+        async function loadLearningHistory() {
+            const history = await dataStore.getHistory();
+            const listDiv = document.getElementById('learningHistoryList');
+            listDiv.innerHTML = '';
+            
+            history.slice(0, 10).forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div class="history-info">
+                        <strong>${item.videoName || '알 수 없음'}</strong>
+                        <div class="history-date">${new Date(item.timestamp).toLocaleString()}</div>
+                    </div>
+                    <div class="history-stats">
+                        <div class="stat-badge">샘플 +${item.newSamples || 0}</div>
+                        <div class="stat-badge">정확도 ${Math.round((item.accuracy || 0) * 100)}%</div>
+                    </div>
+                `;
+                listDiv.appendChild(historyItem);
+            });
+        }
+        
+        // 학습 모드 선택
+        function selectMode(mode) {
+            learningMode = mode;
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            event.target.closest('.mode-card').classList.add('active');
+        }
+        
+        // 새 데이터 분석
+        async function analyzeNewData() {
+            const segmentFile = document.getElementById('newSegmentData').files[0];
+            const videoFile = document.getElementById('newVideoFile').files[0];
+            
+            if (!segmentFile || !videoFile) {
+                showNotification('파일을 모두 선택해주세요.', 'warning');
+                return;
+            }
+            
+            showNotification('데이터 분석 중...', 'success');
+            
+            try {
+                // JSON 데이터 읽기
+                const segmentData = JSON.parse(await readFile(segmentFile));
+                
+                // 비디오 해시 생성
+                const videoHash = await generateFileHash(videoFile);
+                const videoName = videoFile.name;
+                
+                // 중복 검사
+                const existingData = await dataStore.getData(videoHash);
+                if (existingData) {
+                    showNotification('이미 학습된 영상입니다.', 'warning');
+                    updateValidationResults([{
+                        name: videoName,
+                        status: 'duplicate',
+                        message: '중복된 영상'
+                    }]);
+                    return;
+                }
+                
+                // 특징 추출 (간단한 시뮬레이션)
+                newDataFeatures = await extractFeaturesFromSegments(segmentData, videoFile);
+                
+                // 검증 결과 표시
+                updateValidationResults([{
+                    name: videoName,
+                    status: 'new',
+                    message: `새로운 데이터 (${newDataFeatures.length}개 샘플)`
+                }]);
+                
+                // 품질 지표 업데이트
+                updateQualityMetrics(newDataFeatures);
+                
+                document.getElementById('learnBtn').disabled = false;
+                showNotification('데이터 분석 완료!', 'success');
+                
+            } catch (error) {
+                showNotification('데이터 분석 실패: ' + error.message, 'error');
+            }
+        }
+        
+        // 점진적 학습 시작
+        async function startIncrementalLearning() {
+            if (newDataFeatures.length === 0) {
+                showNotification('먼저 새 데이터를 분석해주세요.', 'warning');
+                return;
+            }
+            
+            const progressBar = document.getElementById('learningProgress');
+            progressBar.textContent = '학습 준비 중...';
+            progressBar.style.width = '10%';
+            
+            try {
+                let model;
+                let existingData = [];
+                
+                if (learningMode === 'incremental' && currentModel) {
+                    // 점진적 학습: 기존 모델 사용
+                    model = currentModel;
+                    progressBar.textContent = '기존 모델 로드됨';
+                    progressBar.style.width = '20%';
+                } else {
+                    // 전체 재학습: 모든 데이터 로드
+                    existingData = await dataStore.getAllData();
+                    model = createNewModel();
+                    progressBar.textContent = '새 모델 생성됨';
+                    progressBar.style.width = '30%';
+                }
+                
+                // 학습 데이터 준비
+                const allFeatures = learningMode === 'incremental' ? 
+                    newDataFeatures : 
+                    [...existingData.flatMap(d => d.features || []), ...newDataFeatures];
+                
+                progressBar.textContent = '학습 데이터 준비됨';
+                progressBar.style.width = '40%';
+                
+                // 모델 학습
+                const accuracy = await trainModel(model, allFeatures, (progress) => {
+                    const totalProgress = 40 + (progress * 50);
+                    progressBar.textContent = `학습 중... ${Math.round(progress * 100)}%`;
+                    progressBar.style.width = totalProgress + '%';
+                });
+                
+                // 새 데이터 저장
+                const videoFile = document.getElementById('newVideoFile').files[0];
+                const videoHash = await generateFileHash(videoFile);
+                await dataStore.saveData(videoHash, {
+                    videoName: videoFile.name,
+                    features: newDataFeatures
+                });
+                
+                // 모델 저장
+                const newVersion = `v${Date.now()}`;
+                const modelData = await model.save('indexeddb://ui-model-' + newVersion);
+                await dataStore.saveModel(newVersion, modelData, accuracy);
+                
+                // 히스토리 저장
+                await dataStore.saveHistory({
+                    videoName: videoFile.name,
+                    newSamples: newDataFeatures.length,
+                    accuracy: accuracy,
+                    mode: learningMode
+                });
+                
+                currentModel = model;
+                
+                progressBar.textContent = '학습 완료!';
+                progressBar.style.width = '100%';
+                
+                // 대시보드 업데이트
+                await loadDashboard();
+                await loadLearningHistory();
+                
+                showNotification(`학습 완료! 정확도: ${Math.round(accuracy * 100)}%`, 'success');
+                
+                // 변화량 표시
+                const samplesChange = document.getElementById('samplesChange');
+                samplesChange.textContent = `+${newDataFeatures.length} (이번 세션)`;
+                samplesChange.className = 'dashboard-change change-positive';
+                
+            } catch (error) {
+                showNotification('학습 실패: ' + error.message, 'error');
+                progressBar.textContent = '학습 실패';
+                progressBar.style.width = '0%';
+            }
+        }
+        
+        // 파일 해시 생성
+        async function generateFileHash(file) {
+            const buffer = await file.arrayBuffer();
+            const wordArray = CryptoJS.lib.WordArray.create(buffer);
+            return CryptoJS.SHA256(wordArray).toString();
+        }
+        
+        // 파일 읽기
+        function readFile(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = e => resolve(e.target.result);
+                reader.onerror = reject;
+                reader.readAsText(file);
+            });
+        }
+        
+        // 특징 추출 시뮬레이션
+        async function extractFeaturesFromSegments(segmentData, videoFile) {
+            const features = [];
+            
+            // 실제 구현에서는 비디오 프레임을 분석
+            segmentData.uiSegments.forEach(segment => {
+                // UI 시작
+                features.push({
+                    colorUniformity: 80 + Math.random() * 15,
+                    textDensity: 85 + Math.random() * 10,
+                    edgeDensity: 40 + Math.random() * 15,
+                    layoutScore: 75 + Math.random() * 20,
+                    label: 'ui_start',
+                    time: segment.start
+                });
+                
+                // UI 종료
+                features.push({
+                    colorUniformity: 82 + Math.random() * 12,
+                    textDensity: 87 + Math.random() * 8,
+                    edgeDensity: 38 + Math.random() * 18,
+                    layoutScore: 78 + Math.random() * 17,
+                    label: 'ui_end',
+                    time: segment.end
+                });
+                
+                // 게임 중간
+                const midTime = (segment.start + segment.end) / 2;
+                features.push({
+                    colorUniformity: 40 + Math.random() * 20,
+                    textDensity: 25 + Math.random() * 15,
+                    edgeDensity: 75 + Math.random() * 20,
+                    layoutScore: 35 + Math.random() * 25,
+                    label: 'game',
+                    time: midTime
+                });
+            });
+            
+            return features;
+        }
+        
+        // 새 모델 생성
+        function createNewModel() {
+            const model = tf.sequential({
+                layers: [
+                    tf.layers.dense({ inputShape: [4], units: 16, activation: 'relu' }),
+                    tf.layers.dropout({ rate: 0.2 }),
+                    tf.layers.dense({ units: 8, activation: 'relu' }),
+                    tf.layers.dense({ units: 3, activation: 'softmax' })
+                ]
+            });
+            
+            model.compile({
+                optimizer: 'adam',
+                loss: 'categoricalCrossentropy',
+                metrics: ['accuracy']
+            });
+            
+            return model;
+        }
+        
+        // 모델 학습
+        async function trainModel(model, features, progressCallback) {
+            const xs = features.map(f => [f.colorUniformity, f.textDensity, f.edgeDensity, f.layoutScore]);
+            const ys = features.map(f => {
+                if (f.label === 'ui_start') return [1, 0, 0];
+                if (f.label === 'ui_end') return [0, 1, 0];
+                return [0, 0, 1];
+            });
+            
+            const xTensor = tf.tensor2d(xs);
+            const yTensor = tf.tensor2d(ys);
+            
+            const history = await model.fit(xTensor, yTensor, {
+                epochs: 30,
+                validationSplit: 0.2,
+                callbacks: {
+                    onEpochEnd: (epoch, logs) => {
+                        const progress = (epoch + 1) / 30;
+                        progressCallback(progress);
+                    }
+                }
+            });
+            
+            xTensor.dispose();
+            yTensor.dispose();
+            
+            const finalAccuracy = history.history.val_acc || history.history.acc;
+            return finalAccuracy[finalAccuracy.length - 1];
+        }
+        
+        // 검증 결과 업데이트
+        function updateValidationResults(results) {
+            const div = document.getElementById('validationResults');
+            div.innerHTML = '';
+            
+            results.forEach(result => {
+                const item = document.createElement('div');
+                item.className = 'validation-item';
+                item.innerHTML = `
+                    <div>
+                        <strong>${result.name}</strong><br>
+                        <small>${result.message}</small>
+                    </div>
+                    <div class="status-${result.status}">${getStatusText(result.status)}</div>
+                `;
+                div.appendChild(item);
+            });
+        }
+        
+        // 상태 텍스트
+        function getStatusText(status) {
+            switch (status) {
+                case 'new': return '새 데이터';
+                case 'duplicate': return '중복';
+                case 'similar': return '유사함';
+                default: return '알 수 없음';
+            }
+        }
+        
+        // 품질 지표 업데이트
+        function updateQualityMetrics(features) {
+            // 데이터 다양성 (특징값의 분산)
+            const diversityScore = calculateDiversity(features);
+            document.getElementById('diversityScore').style.width = diversityScore + '%';
+            document.getElementById('diversityText').textContent = Math.round(diversityScore) + '%';
+            
+            // 라벨 균형도
+            const balanceScore = calculateBalance(features);
+            document.getElementById('balanceScore').style.width = balanceScore + '%';
+            document.getElementById('balanceText').textContent = Math.round(balanceScore) + '%';
+            
+            // 특징 분포
+            const distributionScore = calculateDistribution(features);
+            document.getElementById('distributionScore').style.width = distributionScore + '%';
+            document.getElementById('distributionText').textContent = Math.round(distributionScore) + '%';
+        }
+        
+        // 다양성 계산
+        function calculateDiversity(features) {
+            const colorValues = features.map(f => f.colorUniformity);
+            const variance = colorValues.reduce((sum, val) => {
+                const mean = colorValues.reduce((a, b) => a + b) / colorValues.length;
+                return sum + Math.pow(val - mean, 2);
+            }, 0) / colorValues.length;
+            
+            return Math.min(100, variance * 2);
+        }
+        
+        // 균형도 계산
+        function calculateBalance(features) {
+            const labelCounts = {};
+            features.forEach(f => {
+                labelCounts[f.label] = (labelCounts[f.label] || 0) + 1;
+            });
+            
+            const counts = Object.values(labelCounts);
+            const maxCount = Math.max(...counts);
+            const minCount = Math.min(...counts);
+            
+            return (minCount / maxCount) * 100;
+        }
+        
+        // 분포 계산
+        function calculateDistribution(features) {
+            // 특징값들이 고르게 분포되어 있는지 확인
+            const ranges = ['colorUniformity', 'textDensity', 'edgeDensity', 'layoutScore'];
+            let totalCoverage = 0;
+            
+            ranges.forEach(range => {
+                const values = features.map(f => f[range]);
+                const min = Math.min(...values);
+                const max = Math.max(...values);
+                const coverage = (max - min) / 100; // 0-100 범위 기준
+                totalCoverage += coverage;
+            });
+            
+            return (totalCoverage / ranges.length) * 100;
+        }
+        
+        // 모델 내보내기
+        async function exportModel() {
+            if (!currentModel) {
+                showNotification('내보낼 모델이 없습니다.', 'warning');
+                return;
+            }
+            
+            try {
+                await currentModel.save('downloads://ui-detection-model');
+                showNotification('모델이 다운로드되었습니다.', 'success');
+            } catch (error) {
+                showNotification('모델 내보내기 실패: ' + error.message, 'error');
+            }
+        }
+        
+        // 모델 롤백
+        async function rollbackModel() {
+            const history = await dataStore.getHistory();
+            if (history.length < 2) {
+                showNotification('롤백할 이전 버전이 없습니다.', 'warning');
+                return;
+            }
+            
+            try {
+                const previousVersion = history[1];
+                const modelData = await dataStore.getModel(previousVersion.version);
+                currentModel = await tf.loadLayersModel(modelData.modelData);
+                
+                showNotification('이전 버전으로 롤백되었습니다.', 'success');
+                await loadDashboard();
+            } catch (error) {
+                showNotification('롤백 실패: ' + error.message, 'error');
+            }
+        }
+        
+        // 알림 표시
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
