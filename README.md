@@ -6,8 +6,6 @@ AI 기반 온라인 포커 영상 분석 도구
 
 ### 온라인 데모
 - **GitHub Pages**: https://garimto81.github.io/archive-mam/
-- **Netlify**: [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/garimto81/archive-mam)
-- **Vercel**: [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/garimto81/archive-mam)
 
 ## 📋 기능
 
@@ -20,19 +18,21 @@ AI 기반 온라인 포커 영상 분석 도구
 
 - 순수 JavaScript (프레임워크 없음)
 - Bootstrap 5 UI
-- WebAssembly (계획)
-- 정적 호스팅 가능
+- GitHub Pages로 간단 배포
 
-## 📦 배포
+## 📦 GitHub Pages 배포
 
 ```bash
-# GitHub Pages
+# 1. 저장소 클론
+git clone https://github.com/your-username/archive-mam.git
+cd archive-mam
+
+# 2. 변경사항 업로드
 git add .
-git commit -m "Deploy"
+git commit -m "Update content"
 git push origin main
 
-# Settings > Pages > Source: main branch
-
-# Netlify/Vercel
-# 위 배포 버튼 클릭
+# 3. GitHub 설정
+# GitHub 저장소 → Settings → Pages → Source: main branch 선택
+# 자동으로 https://your-username.github.io/archive-mam/ 생성됨
 ```

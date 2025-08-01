@@ -77,7 +77,7 @@
 
 ### **4. 시스템 아키텍처 및 기술 스택 🌐 v2.0 업데이트**
 
-*   **웹 기반 프론트엔드 (Web Frontend) 🚀 NEW:**
+*   **웹 기반 프론트엔드 (메인 시스템) 🚀:**
     *   **기술:** Vanilla JavaScript + TensorFlow.js + HTML5 Canvas
     *   **배포:** GitHub Pages (https://garimto81.github.io/archive-mam/)
     *   **특징:** 
@@ -89,31 +89,15 @@
         - **통합 UI 인식 시스템** (unified_ui_recognition.html)
         - **고속 UI 인식 시스템** (optimized_ui_recognition.html) - 20-50배 고속화
         - **점진적 학습 시스템** (incremental_learning_system.html)
-*   **전통적 프론트엔드 (Traditional Frontend):**
-    *   **기술:** React.js 또는 Vue.js
-    *   **역할:** 사용자 인터페이스(UI) 제공, 영상 불러오기, 분석 결과 시각화, 검색 및 필터링 기능 구현
-*   **백엔드 (Backend):**
-    *   **기술:** Python (FastAPI, Django)
-    *   **역할:** API 서버, 비즈니스 로직 처리, 데이터베이스 관리, 영상 처리 작업 큐에 전달
-*   **AI/영상 처리 (AI/Video Processing) 🤖 v2.0:**
-    *   **브라우저 기반 (Browser-based) 🚀 NEW:**
-        - **TensorFlow.js:** 클라이언트 사이드 머신러닝
-        - **WebGL 가속:** GPU 활용 고속 연산
-        - **웹워커:** 멀티스레드 병렬 처리
-        - **IndexedDB:** 브라우저 내 모델 및 데이터 저장
-        - **실시간 특징 추출:** 색상 균일성, 텍스트 밀도, 엣지 밀도, 레이아웃 점수
-    *   **전통적 서버 기반 (Traditional Server-based):**
-        - **기술:** Python, OpenCV, TensorFlow/PyTorch, Tesseract OCR
-        - **역할:** 실제 영상 파일을 프레임 단위로 분석하여 핸드 감지, OCR, 플레이어 식별 등 핵심 AI 기능 수행
-*   **데이터베이스 (Database):**
-    *   **기술:** PostgreSQL 또는 MongoDB
-    *   **역할:** 영상 메타데이터, 각 핸드의 분석 정보(타임코드, 팟 사이즈, 참여자 등) 저장
-*   **작업 큐 (Task Queue):**
-    *   **기술:** Celery, RabbitMQ/Redis
-    *   **역할:** 시간이 오래 걸리는 영상 분석 작업을 백그라운드에서 비동기적으로 처리하여 서버 부하 분산
-*   **스토리지 (Storage):**
-    *   **기술:** 로컬 네트워크 스토리지(NAS) 또는 로컬 서버 스토리지
-    *   **역할:** 원본 영상 및 생성된 핸드 클립 파일 저장
+*   **AI/영상 처리 (브라우저 기반) 🤖:**
+    *   **TensorFlow.js:** 클라이언트 사이드 머신러닝
+    *   **WebGL 가속:** GPU 활용 고속 연산
+    *   **웹워커:** 멀티스레드 병렬 처리
+    *   **IndexedDB:** 브라우저 내 모델 및 데이터 저장
+    *   **실시간 특징 추출:** 색상 균일성, 텍스트 밀도, 엣지 밀도, 레이아웃 점수
+*   **로컬 스토리지:**
+    *   **브라우저 저장소:** IndexedDB, LocalStorage
+    *   **역할:** 분석 결과, 사용자 설정, 학습된 모델 저장
 
 ---
 ### **5. 개발 현황 및 성과 🎯 v2.0**
@@ -139,10 +123,11 @@
 *   **30분 영상:** 기존 30분 → 현재 1-2분 (15-30배 향상)
 *   **1시간 영상:** 기존 60분 → 현재 3-5분 (12-20배 향상)
 
-**🌐 배포된 시스템:**
-*   **메인 허브:** https://garimto81.github.io/archive-mam/
-*   **통합 시스템:** https://garimto81.github.io/archive-mam/unified_ui_recognition.html
-*   **고속 시스템:** https://garimto81.github.io/archive-mam/optimized_ui_recognition.html
+**🌐 GitHub Pages 배포 시스템:**
+*   **메인 허브:** https://your-username.github.io/archive-mam/
+*   **통합 시스템:** https://your-username.github.io/archive-mam/unified_ui_recognition.html
+*   **고속 시스템:** https://your-username.github.io/archive-mam/optimized_ui_recognition.html
+*   **배포 방법:** GitHub Pages 자동 배포 (Settings → Pages → main branch)
 
 ---
 ### **6. 향후 개발 단계 설계 (상세)**
@@ -208,8 +193,8 @@
 **🚀 고속 UI 인식 시스템 사용법:**
 
 **1. 시스템 접속**
-*   메인 허브: https://garimto81.github.io/archive-mam/
-*   고속 시스템: https://garimto81.github.io/archive-mam/optimized_ui_recognition.html
+*   메인 허브: https://your-username.github.io/archive-mam/
+*   고속 시스템: https://your-username.github.io/archive-mam/optimized_ui_recognition.html
 
 **2. 최적화 설정 (권장값)**
 *   **빠른 분석 (속도 우선):**

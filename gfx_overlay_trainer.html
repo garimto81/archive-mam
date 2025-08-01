@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GFX 오버레이 학습기 - RFID Poker Graphics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+        }
+        .card {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+        }
+        .btn-primary {
+            background-color: #238636;
+            border-color: #238636;
+        }
+        .btn-primary:hover {
+            background-color: #2ea043;
+            border-color: #2ea043;
+        }
+        .btn-danger {
+            background-color: #f85149;
+            border-color: #f85149;
+        }
+        #videoCanvas, #snapshotCanvas {
+            max-width: 100%;
+            border: 2px solid #30363d;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        .snapshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .snapshot-item {
+            position: relative;
+            border: 2px solid #30363d;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .snapshot-item.gfx {
+            border-color: #f85149;
+        }
+        .snapshot-item.game {
+            border-color: #238636;
+        }
+        .snapshot-item img {
+            width: 100%;
+            height: auto;
+        }
+        .snapshot-label {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .snapshot-label.gfx {
+            background-color: #f85149;
+        }
+        .snapshot-label.game {
+            background-color: #238636;
+        }
+        .feature-display {
+            background: #0d1117;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #30363d;
+            font-family: monospace;
+        }
+        .progress {
+            height: 25px;
+            background-color: #0d1117;
+        }
+        .timeline-control {
+            margin: 20px 0;
+        }
+        .btn-group-toggle .btn {
+            background-color: #161b22;
+            border-color: #30363d;
+            color: #c9d1d9;
+        }
+        .btn-group-toggle .btn.active {
+            background-color: #238636;
+            border-color: #238636;
+        }
+        .alert-warning {
+            background-color: #bb8009;
+            border-color: #bb8009;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1">🎰 GFX 오버레이 학습기</span>
+            <a href="index.html" class="btn btn-outline-light btn-sm">메인으로</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="alert alert-warning">
+            <strong>학습 방법:</strong> 영상을 재생하면서 GFX 오버레이가 나타나면 'GFX' 버튼을, 
+            실제 게임 화면이면 'Game' 버튼을 눌러 학습시키세요. 
+            최소 10개 이상의 GFX 샘플을 수집하면 더 정확한 감지가 가능합니다.
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">비디오 학습</h5>
+                        
+                        <!-- 비디오 업로드 -->
+                        <div class="mb-3">
+                            <input type="file" class="form-control" id="videoInput" accept="video/*">
+                        </div>
+                        
+                        <!-- 비디오 캔버스 -->
+                        <canvas id="videoCanvas" width="800" height="450"></canvas>
+                        
+                        <!-- 비디오 컨트롤 -->
+                        <div class="mt-3">
+                            <div class="btn-toolbar" role="toolbar">
+                                <div class="btn-group me-2" role="group">
+                                    <button class="btn btn-secondary" id="playBtn" disabled>
+                                        <i class="bi bi-play-fill"></i> 재생
+                                    </button>
+                                    <button class="btn btn-secondary" id="pauseBtn" disabled>
+                                        <i class="bi bi-pause-fill"></i> 일시정지
+                                    </button>
+                                </div>
+                                <div class="btn-group me-2" role="group">
+                                    <button class="btn btn-secondary" id="skipBackBtn" disabled>
+                                        <i class="bi bi-skip-backward-fill"></i> -5초
+                                    </button>
+                                    <button class="btn btn-secondary" id="skipForwardBtn" disabled>
+                                        <i class="bi bi-skip-forward-fill"></i> +5초
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 타임라인 슬라이더 -->
+                        <div class="timeline-control">
+                            <input type="range" class="form-range" id="timelineSlider" 
+                                   min="0" max="100" value="0" disabled>
+                            <div class="d-flex justify-content-between">
+                                <small id="currentTime">0:00</small>
+                                <small id="totalTime">0:00</small>
+                            </div>
+                        </div>
+                        
+                        <!-- 마킹 버튼 -->
+                        <div class="d-flex gap-2 mt-3">
+                            <button class="btn btn-danger btn-lg flex-fill" id="markGFXBtn" disabled>
+                                📺 GFX 오버레이
+                            </button>
+                            <button class="btn btn-success btn-lg flex-fill" id="markGameBtn" disabled>
+                                🎮 게임 화면
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <!-- 현재 프레임 특징 -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">현재 프레임 특징</h5>
+                        <div class="feature-display">
+                            <div>색상 균일도: <span id="colorUniformity">0.00</span></div>
+                            <div>텍스트 밀도: <span id="textDensity">0.00</span></div>
+                            <div>엣지 밀도: <span id="edgeDensity">0.00</span></div>
+                            <div>정적 점수: <span id="staticScore">0.00</span></div>
+                            <div class="mt-2">
+                                <strong>예측: <span id="prediction">-</span></strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 학습 통계 -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">학습 통계</h5>
+                        <div class="stats-box">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>GFX 샘플:</span>
+                                <span id="gfxCount" class="text-danger">0</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Game 샘플:</span>
+                                <span id="gameCount" class="text-success">0</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>총 샘플:</span>
+                                <span id="totalSamples">0</span>
+                            </div>
+                            <div class="progress mt-3">
+                                <div class="progress-bar bg-danger" id="gfxProgress" style="width: 0%"></div>
+                                <div class="progress-bar bg-success" id="gameProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 모델 관리 -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">모델 관리</h5>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" id="trainBtn" disabled>
+                                🧠 모델 학습
+                            </button>
+                            <button class="btn btn-success" id="saveBtn" disabled>
+                                💾 모델 저장
+                            </button>
+                            <button class="btn btn-secondary" id="loadBtn">
+                                📂 모델 불러오기
+                            </button>
+                            <button class="btn btn-outline-danger" id="clearBtn">
+                                🗑️ 샘플 초기화
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 수집된 샘플 -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">수집된 샘플</h5>
+                        <div class="btn-group btn-group-toggle mb-3" data-bs-toggle="buttons">
+                            <input type="radio" class="btn-check" name="sampleFilter" id="showAll" autocomplete="off" checked>
+                            <label class="btn btn-outline-secondary" for="showAll">전체</label>
+                            
+                            <input type="radio" class="btn-check" name="sampleFilter" id="showGFX" autocomplete="off">
+                            <label class="btn btn-outline-danger" for="showGFX">GFX만</label>
+                            
+                            <input type="radio" class="btn-check" name="sampleFilter" id="showGame" autocomplete="off">
+                            <label class="btn btn-outline-success" for="showGame">Game만</label>
+                        </div>
+                        <div class="snapshot-grid" id="snapshotGrid">
+                            <!-- 스냅샷이 동적으로 추가됨 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 전역 변수
+        let video = null;
+        let canvas = null;
+        let ctx = null;
+        let samples = [];
+        let model = null;
+        let isPlaying = false;
+        let animationId = null;
+        
+        // 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            canvas = document.getElementById('videoCanvas');
+            ctx = canvas.getContext('2d');
+            
+            // 이벤트 리스너
+            document.getElementById('videoInput').addEventListener('change', handleVideoUpload);
+            document.getElementById('playBtn').addEventListener('click', playVideo);
+            document.getElementById('pauseBtn').addEventListener('click', pauseVideo);
+            document.getElementById('skipBackBtn').addEventListener('click', () => skipVideo(-5));
+            document.getElementById('skipForwardBtn').addEventListener('click', () => skipVideo(5));
+            document.getElementById('timelineSlider').addEventListener('input', handleTimelineChange);
+            
+            document.getElementById('markGFXBtn').addEventListener('click', () => markFrame('gfx'));
+            document.getElementById('markGameBtn').addEventListener('click', () => markFrame('game'));
+            
+            document.getElementById('trainBtn').addEventListener('click', trainModel);
+            document.getElementById('saveBtn').addEventListener('click', saveModel);
+            document.getElementById('loadBtn').addEventListener('click', loadModel);
+            document.getElementById('clearBtn').addEventListener('click', clearSamples);
+            
+            // 필터 버튼
+            document.querySelectorAll('input[name="sampleFilter"]').forEach(radio => {
+                radio.addEventListener('change', filterSamples);
+            });
+            
+            // 저장된 샘플 로드
+            loadSamplesFromStorage();
+        });
+        
+        // 비디오 업로드 처리
+        function handleVideoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            video = document.createElement('video');
+            video.src = URL.createObjectURL(file);
+            video.addEventListener('loadedmetadata', () => {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                
+                // 버튼 활성화
+                document.getElementById('playBtn').disabled = false;
+                document.getElementById('pauseBtn').disabled = false;
+                document.getElementById('skipBackBtn').disabled = false;
+                document.getElementById('skipForwardBtn').disabled = false;
+                document.getElementById('timelineSlider').disabled = false;
+                document.getElementById('markGFXBtn').disabled = false;
+                document.getElementById('markGameBtn').disabled = false;
+                
+                // 타임라인 설정
+                document.getElementById('timelineSlider').max = video.duration;
+                document.getElementById('totalTime').textContent = formatTime(video.duration);
+                
+                // 첫 프레임 표시
+                video.currentTime = 0;
+                drawFrame();
+            });
+            
+            video.addEventListener('timeupdate', updateTimeline);
+        }
+        
+        // 비디오 재생
+        function playVideo() {
+            if (!video) return;
+            video.play();
+            isPlaying = true;
+            animate();
+        }
+        
+        // 비디오 일시정지
+        function pauseVideo() {
+            if (!video) return;
+            video.pause();
+            isPlaying = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+        }
+        
+        // 비디오 스킵
+        function skipVideo(seconds) {
+            if (!video) return;
+            video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + seconds));
+            drawFrame();
+        }
+        
+        // 타임라인 변경 처리
+        function handleTimelineChange(event) {
+            if (!video) return;
+            video.currentTime = parseFloat(event.target.value);
+            drawFrame();
+        }
+        
+        // 타임라인 업데이트
+        function updateTimeline() {
+            if (!video) return;
+            document.getElementById('timelineSlider').value = video.currentTime;
+            document.getElementById('currentTime').textContent = formatTime(video.currentTime);
+        }
+        
+        // 애니메이션 루프
+        function animate() {
+            if (isPlaying) {
+                drawFrame();
+                animationId = requestAnimationFrame(animate);
+            }
+        }
+        
+        // 프레임 그리기 및 특징 분석
+        function drawFrame() {
+            if (!video) return;
+            
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            analyzeFrame();
+        }
+        
+        // 프레임 분석
+        function analyzeFrame() {
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const features = extractFeatures(imageData);
+            
+            // UI 업데이트
+            document.getElementById('colorUniformity').textContent = features.colorUniformity.toFixed(2);
+            document.getElementById('textDensity').textContent = features.textDensity.toFixed(2);
+            document.getElementById('edgeDensity').textContent = features.edgeDensity.toFixed(2);
+            document.getElementById('staticScore').textContent = features.staticScore.toFixed(2);
+            
+            // 예측 (모델이 있는 경우)
+            if (model) {
+                const prediction = predictFrame(features);
+                document.getElementById('prediction').textContent = 
+                    prediction > 0.5 ? 'GFX 오버레이' : '게임 화면';
+                document.getElementById('prediction').style.color = 
+                    prediction > 0.5 ? '#f85149' : '#238636';
+            }
+        }
+        
+        // 특징 추출
+        function extractFeatures(imageData) {
+            const data = imageData.data;
+            
+            // 색상 균일도
+            const colorUniformity = calculateColorUniformity(data);
+            
+            // 텍스트 밀도 (엣지 기반 추정)
+            const textDensity = estimateTextDensity(data, imageData.width, imageData.height);
+            
+            // 엣지 밀도
+            const edgeDensity = calculateEdgeDensity(data, imageData.width, imageData.height);
+            
+            // 정적 점수 (프레임 간 차이로 추정)
+            const staticScore = 0.5; // 실제로는 이전 프레임과 비교
+            
+            return {
+                colorUniformity,
+                textDensity,
+                edgeDensity,
+                staticScore,
+                timestamp: video ? video.currentTime : 0
+            };
+        }
+        
+        // 색상 균일도 계산
+        function calculateColorUniformity(data) {
+            const colorMap = {};
+            const sampleRate = 100;
+            
+            for (let i = 0; i < data.length; i += sampleRate * 4) {
+                const r = Math.floor(data[i] / 32) * 32;
+                const g = Math.floor(data[i + 1] / 32) * 32;
+                const b = Math.floor(data[i + 2] / 32) * 32;
+                const color = `${r},${g},${b}`;
+                
+                colorMap[color] = (colorMap[color] || 0) + 1;
+            }
+            
+            const colors = Object.values(colorMap).sort((a, b) => b - a);
+            const top5 = colors.slice(0, 5).reduce((a, b) => a + b, 0);
+            const total = colors.reduce((a, b) => a + b, 0);
+            
+            return total > 0 ? top5 / total : 0;
+        }
+        
+        // 텍스트 밀도 추정
+        function estimateTextDensity(data, width, height) {
+            let highContrastCount = 0;
+            const threshold = 100;
+            
+            for (let y = 0; y < height - 1; y++) {
+                for (let x = 0; x < width - 1; x++) {
+                    const idx = (y * width + x) * 4;
+                    const idx_right = idx + 4;
+                    const idx_down = idx + width * 4;
+                    
+                    // 수평 엣지
+                    const diffH = Math.abs(data[idx] - data[idx_right]) +
+                                  Math.abs(data[idx + 1] - data[idx_right + 1]) +
+                                  Math.abs(data[idx + 2] - data[idx_right + 2]);
+                    
+                    // 수직 엣지
+                    const diffV = Math.abs(data[idx] - data[idx_down]) +
+                                  Math.abs(data[idx + 1] - data[idx_down + 1]) +
+                                  Math.abs(data[idx + 2] - data[idx_down + 2]);
+                    
+                    if (diffH > threshold || diffV > threshold) {
+                        highContrastCount++;
+                    }
+                }
+            }
+            
+            return highContrastCount / (width * height);
+        }
+        
+        // 엣지 밀도 계산
+        function calculateEdgeDensity(data, width, height) {
+            let edgeCount = 0;
+            const threshold = 50;
+            
+            for (let i = 0; i < data.length - 4; i += 4) {
+                const diff = Math.abs(data[i] - data[i + 4]);
+                if (diff > threshold) edgeCount++;
+            }
+            
+            return edgeCount / (data.length / 4);
+        }
+        
+        // 프레임 마킹
+        function markFrame(type) {
+            if (!video || !canvas) return;
+            
+            // 현재 프레임 캡처
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = 200;
+            tempCanvas.height = 112;
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.drawImage(canvas, 0, 0, 200, 112);
+            
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const features = extractFeatures(imageData);
+            
+            const sample = {
+                type: type,
+                features: features,
+                image: tempCanvas.toDataURL('image/jpeg', 0.7),
+                timestamp: video.currentTime,
+                id: Date.now()
+            };
+            
+            samples.push(sample);
+            updateSampleDisplay();
+            updateStats();
+            saveSamplesToStorage();
+            
+            // 학습 버튼 활성화
+            if (samples.length >= 10) {
+                document.getElementById('trainBtn').disabled = false;
+            }
+            
+            // 시각적 피드백
+            const btn = type === 'gfx' ? 
+                document.getElementById('markGFXBtn') : 
+                document.getElementById('markGameBtn');
+            
+            btn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                btn.style.transform = 'scale(1)';
+            }, 100);
+        }
+        
+        // 샘플 표시 업데이트
+        function updateSampleDisplay() {
+            const grid = document.getElementById('snapshotGrid');
+            grid.innerHTML = '';
+            
+            const filter = document.querySelector('input[name="sampleFilter"]:checked').id;
+            let filteredSamples = samples;
+            
+            if (filter === 'showGFX') {
+                filteredSamples = samples.filter(s => s.type === 'gfx');
+            } else if (filter === 'showGame') {
+                filteredSamples = samples.filter(s => s.type === 'game');
+            }
+            
+            filteredSamples.forEach(sample => {
+                const item = document.createElement('div');
+                item.className = `snapshot-item ${sample.type}`;
+                item.innerHTML = `
+                    <img src="${sample.image}" alt="Sample">
+                    <span class="snapshot-label ${sample.type}">
+                        ${sample.type.toUpperCase()}
+                    </span>
+                    <button class="btn btn-sm btn-danger position-absolute bottom-0 end-0 m-1" 
+                            onclick="removeSample('${sample.id}')">
+                        ×
+                    </button>
+                `;
+                grid.appendChild(item);
+            });
+        }
+        
+        // 샘플 제거
+        function removeSample(id) {
+            samples = samples.filter(s => s.id != id);
+            updateSampleDisplay();
+            updateStats();
+            saveSamplesToStorage();
+        }
+        
+        // 통계 업데이트
+        function updateStats() {
+            const gfxCount = samples.filter(s => s.type === 'gfx').length;
+            const gameCount = samples.filter(s => s.type === 'game').length;
+            const total = samples.length;
+            
+            document.getElementById('gfxCount').textContent = gfxCount;
+            document.getElementById('gameCount').textContent = gameCount;
+            document.getElementById('totalSamples').textContent = total;
+            
+            if (total > 0) {
+                document.getElementById('gfxProgress').style.width = `${(gfxCount / total) * 100}%`;
+                document.getElementById('gameProgress').style.width = `${(gameCount / total) * 100}%`;
+            } else {
+                document.getElementById('gfxProgress').style.width = '0%';
+                document.getElementById('gameProgress').style.width = '0%';
+            }
+        }
+        
+        // 필터 샘플
+        function filterSamples() {
+            updateSampleDisplay();
+        }
+        
+        // 모델 학습
+        function trainModel() {
+            if (samples.length < 10) {
+                alert('최소 10개 이상의 샘플이 필요합니다.');
+                return;
+            }
+            
+            // 간단한 통계 기반 모델
+            const gfxSamples = samples.filter(s => s.type === 'gfx');
+            const gameSamples = samples.filter(s => s.type === 'game');
+            
+            // 각 특징의 평균 계산
+            const gfxFeatures = calculateAverageFeatures(gfxSamples);
+            const gameFeatures = calculateAverageFeatures(gameSamples);
+            
+            model = {
+                gfx: gfxFeatures,
+                game: gameFeatures,
+                patterns: gfxSamples.map(s => s.features),
+                threshold: 0.5
+            };
+            
+            document.getElementById('saveBtn').disabled = false;
+            alert('모델 학습이 완료되었습니다!');
+        }
+        
+        // 평균 특징 계산
+        function calculateAverageFeatures(samples) {
+            if (samples.length === 0) return null;
+            
+            const sum = samples.reduce((acc, sample) => {
+                acc.colorUniformity += sample.features.colorUniformity;
+                acc.textDensity += sample.features.textDensity;
+                acc.edgeDensity += sample.features.edgeDensity;
+                acc.staticScore += sample.features.staticScore;
+                return acc;
+            }, { colorUniformity: 0, textDensity: 0, edgeDensity: 0, staticScore: 0 });
+            
+            const count = samples.length;
+            return {
+                colorUniformity: sum.colorUniformity / count,
+                textDensity: sum.textDensity / count,
+                edgeDensity: sum.edgeDensity / count,
+                staticScore: sum.staticScore / count
+            };
+        }
+        
+        // 프레임 예측
+        function predictFrame(features) {
+            if (!model) return 0.5;
+            
+            // 간단한 유사도 기반 예측
+            let maxSimilarity = 0;
+            
+            for (const pattern of model.patterns) {
+                const similarity = calculateSimilarity(features, pattern);
+                maxSimilarity = Math.max(maxSimilarity, similarity);
+            }
+            
+            return maxSimilarity;
+        }
+        
+        // 유사도 계산
+        function calculateSimilarity(f1, f2) {
+            const colorDiff = Math.abs(f1.colorUniformity - f2.colorUniformity);
+            const textDiff = Math.abs(f1.textDensity - f2.textDensity);
+            const edgeDiff = Math.abs(f1.edgeDensity - f2.edgeDensity);
+            
+            // 역 거리 (가까울수록 1에 가까움)
+            const avgDiff = (colorDiff + textDiff + edgeDiff) / 3;
+            return 1 - Math.min(avgDiff, 1);
+        }
+        
+        // 모델 저장
+        function saveModel() {
+            if (!model) return;
+            
+            localStorage.setItem('gfxModel', JSON.stringify(model));
+            alert('모델이 저장되었습니다!');
+        }
+        
+        // 모델 불러오기
+        function loadModel() {
+            const savedModel = localStorage.getItem('gfxModel');
+            if (savedModel) {
+                model = JSON.parse(savedModel);
+                alert('모델을 불러왔습니다!');
+            } else {
+                alert('저장된 모델이 없습니다.');
+            }
+        }
+        
+        // 샘플 초기화
+        function clearSamples() {
+            if (confirm('모든 샘플을 삭제하시겠습니까?')) {
+                samples = [];
+                updateSampleDisplay();
+                updateStats();
+                saveSamplesToStorage();
+                document.getElementById('trainBtn').disabled = true;
+                document.getElementById('saveBtn').disabled = true;
+            }
+        }
+        
+        // 로컬 스토리지에 샘플 저장
+        function saveSamplesToStorage() {
+            // 이미지 데이터가 크므로 제한적으로 저장
+            const simplifiedSamples = samples.slice(-50).map(s => ({
+                type: s.type,
+                features: s.features,
+                timestamp: s.timestamp,
+                id: s.id
+            }));
+            
+            localStorage.setItem('gfxSamples', JSON.stringify(simplifiedSamples));
+        }
+        
+        // 로컬 스토리지에서 샘플 로드
+        function loadSamplesFromStorage() {
+            const saved = localStorage.getItem('gfxSamples');
+            if (saved) {
+                const loaded = JSON.parse(saved);
+                // 이미지 없이 로드된 샘플은 특징만 사용
+                samples = loaded;
+                updateStats();
+                
+                if (samples.length >= 10) {
+                    document.getElementById('trainBtn').disabled = false;
+                }
+            }
+        }
+        
+        // 시간 포맷
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+    </script>
+</body>
+</html>

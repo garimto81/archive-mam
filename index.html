@@ -3,168 +3,316 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Poker Hand Analyzer - 온라인 포커 영상 분석</title>
+    <title>🃏 Poker Hand Analyzer - RFID GFX 기반 핸드 분류</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background: #1a1a2e;
-            color: #eee;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
         }
-        .container {
-            max-width: 900px;
-            margin-top: 50px;
-        }
-        .main-btn {
-            background: linear-gradient(45deg, #e74c3c, #f39c12);
-            border: none;
-            padding: 20px 40px;
-            font-size: 24px;
-            border-radius: 30px;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-            color: white;
-            margin: 10px;
-        }
-        .main-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-            color: white;
-        }
-        .sub-btn {
-            background: #2a2a2a;
-            border: 1px solid #444;
-            padding: 10px 20px;
-            font-size: 14px;
-            border-radius: 20px;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-            color: #ccc;
-            margin: 5px;
-        }
-        .sub-btn:hover {
-            background: #333;
-            color: white;
-            border-color: #666;
-        }
-        .hero-section {
+        .hero {
+            background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+            padding: 60px 0;
             text-align: center;
-            padding: 40px 0;
         }
-        .feature-card {
-            background: #16213e;
-            padding: 30px;
-            border-radius: 15px;
-            margin: 20px 0;
-            text-align: center;
-            border: 2px solid transparent;
-            transition: all 0.3s;
+        .card {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            transition: transform 0.3s ease;
         }
-        .feature-card:hover {
-            border-color: #4a7c7e;
+        .card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .btn-primary {
+            background-color: #238636;
+            border-color: #238636;
+        }
+        .btn-primary:hover {
+            background-color: #2ea043;
+            border-color: #2ea043;
+        }
+        .btn-danger {
+            background-color: #f85149;
+            border-color: #f85149;
+        }
+        .btn-danger:hover {
+            background-color: #da3633;
+            border-color: #da3633;
         }
         .feature-icon {
-            font-size: 48px;
+            font-size: 3rem;
             margin-bottom: 20px;
         }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        .new-badge {
-            background: #ff5252;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-size: 12px;
-            font-weight: bold;
-            animation: pulse 2s infinite;
+        .status-badge {
             display: inline-block;
-            margin-left: 10px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .status-new {
+            background-color: #f85149;
+            color: white;
+        }
+        .highlight-card {
+            border: 2px solid #f85149;
+            background: linear-gradient(135deg, #1c2128 0%, #161b22 100%);
+        }
+        .workflow-step {
+            text-align: center;
+            padding: 20px;
+        }
+        .workflow-arrow {
+            font-size: 2rem;
+            color: #58a6ff;
+            margin: 0 10px;
+        }
+        .alert-info {
+            background-color: #1f6feb;
+            border-color: #1f6feb;
+            color: white;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="hero-section">
-            <h1 class="mb-4">🃏 Poker Hand Analyzer v2.0</h1>
-            <p class="lead mb-5">포커 영상을 자동으로 분석하여 핸드를 구분합니다</p>
-            
-            <!-- 메인 버튼 -->
-            <div class="mb-5">
-                <a href="unified_ui_recognition.html" class="main-btn">
-                    🎯 통합 UI 인식 시스템 시작
-                    <span class="new-badge">NEW!</span>
-                </a>
-                
-                <a href="optimized_ui_recognition.html" class="main-btn" style="background: linear-gradient(45deg, #ff6b35, #f7931e);">
-                    🚀 고속 UI 인식 시스템
-                    <span class="new-badge" style="background: #ff3333;">20-50x 고속화!</span>
-                </a>
+    <div class="hero">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-4">🃏 Poker Hand Analyzer</h1>
+            <p class="lead mb-4">
+                RFID GFX 오버레이 감지를 통한 정확한 포커 핸드 분류 시스템<br>
+                <strong>15초 규칙</strong>으로 정확한 핸드 경계를 자동으로 결정합니다
+            </p>
+            <div class="alert alert-info d-inline-block">
+                <strong>🚀 완전 온라인</strong> - 서버 없이 브라우저에서 모든 분석이 실행됩니다
             </div>
-            
-            <p class="text-muted mb-4">스마트 모드 + 구간 마킹 + 하이브리드 모드가 하나로 통합되었습니다</p>
-            
-            <hr style="margin: 40px 0; border-color: #333;">
-            
-            <!-- 부가 기능 -->
-            <h3 class="mb-4">🛠️ 고급 도구</h3>
-            <div class="mb-4">
-                <a href="ui_segment_learning.html" class="sub-btn">
-                    🤖 AI 모델 학습
-                </a>
-                <a href="incremental_learning_system.html" class="sub-btn">
-                    🔄 점진적 학습
-                </a>
-            </div>
-        </div>
-        
-        <!-- 기능 소개 -->
-        <div class="row">
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="feature-icon">🧠</div>
-                    <h4>스마트 모드</h4>
-                    <p>1초 1프레임 자동 분석으로 UI 패턴을 실시간 학습</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="feature-icon">📍</div>
-                    <h4>구간 마킹</h4>
-                    <p>UI 구간을 직접 지정하여 정확한 핸드 분리</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="feature-icon">🔄</div>
-                    <h4>하이브리드</h4>
-                    <p>AI 예측과 수동 보정을 결합한 최적의 솔루션</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- 사용 방법 -->
-        <div class="mt-5 p-4" style="background: #16213e; border-radius: 15px;">
-            <h3 class="mb-3">📖 사용 방법</h3>
-            <ol style="line-height: 2;">
-                <li>통합 UI 인식 시스템을 시작합니다</li>
-                <li>분석할 포커 영상을 선택합니다</li>
-                <li>상황에 맞는 모드를 선택합니다 (스마트/구간 마킹/하이브리드)</li>
-                <li>UI 구간을 표시하거나 AI가 자동으로 감지하도록 합니다</li>
-                <li>분리된 핸드 결과를 확인하고 내보냅니다</li>
-            </ol>
-        </div>
-        
-        <!-- 푸터 -->
-        <div class="text-center mt-5 pb-5" style="color: #666;">
-            <p>Archive-MAM Project | AI-Powered Poker Video Analysis</p>
-            <p style="font-size: 12px;">Developed with TensorFlow.js and Computer Vision</p>
         </div>
     </div>
+
+    <div class="container my-5">
+        <!-- 워크플로우 -->
+        <div class="text-center mb-5">
+            <h2 class="mb-4">🔄 간단한 2단계 워크플로우</h2>
+            <div class="d-flex justify-content-center align-items-center flex-wrap">
+                <div class="workflow-step">
+                    <div class="feature-icon">🎰</div>
+                    <h5>1. GFX 학습</h5>
+                    <p>방송사별 GFX 패턴 학습</p>
+                </div>
+                <span class="workflow-arrow">→</span>
+                <div class="workflow-step">
+                    <div class="feature-icon">🃏</div>
+                    <h5>2. 핸드 분류</h5>
+                    <p>자동 핸드 감지 및 분류</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 핵심 기능 -->
+        <div class="row g-4 mb-5">
+            <!-- GFX 오버레이 학습기 -->
+            <div class="col-md-6">
+                <div class="card h-100 highlight-card">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">🎰</div>
+                        <h3 class="card-title">GFX 오버레이 학습기</h3>
+                        <span class="status-badge status-new mb-3">STEP 1</span>
+                        <p class="card-text">
+                            포커 방송의 RFID GFX 오버레이 패턴을 학습시킵니다.
+                        </p>
+                        <ul class="text-start mb-4">
+                            <li>영상을 재생하며 GFX/Game 구분 마킹</li>
+                            <li>색상 균일도, 텍스트 밀도 등 특징 자동 추출</li>
+                            <li>최소 10개 샘플로 높은 정확도 달성</li>
+                            <li>학습된 모델을 로컬에 저장</li>
+                        </ul>
+                        <a href="gfx_overlay_trainer.html" class="btn btn-danger btn-lg">
+                            🎰 GFX 학습 시작
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 포커 핸드 분류기 -->
+            <div class="col-md-6">
+                <div class="card h-100 highlight-card">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">🃏</div>
+                        <h3 class="card-title">포커 핸드 분류기</h3>
+                        <span class="status-badge status-new mb-3">STEP 2</span>
+                        <p class="card-text">
+                            학습된 GFX 모델로 포커 핸드를 자동 분류합니다.
+                        </p>
+                        <ul class="text-start mb-4">
+                            <li>GFX 출현 - 15초 = 핸드 시작점</li>
+                            <li>GFX 소멸 + 15초 = 핸드 종료점</li>
+                            <li>실시간 분석 진행률 표시</li>
+                            <li>JSON 형식으로 결과 내보내기</li>
+                        </ul>
+                        <a href="poker_hand_classifier.html" class="btn btn-primary btn-lg">
+                            🃏 핸드 분류 시작
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 15초 규칙 설명 -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">⏱️ 15초 규칙이란?</h3>
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <p class="mb-3">
+                                    포커 방송에서 RFID GFX 오버레이는 핸드가 시작된 후 약 15초 뒤에 나타나고,
+                                    핸드가 끝나기 약 15초 전에 사라집니다.
+                                </p>
+                                <ul>
+                                    <li><strong>핸드 시작</strong> = GFX 출현 시점 - 15초</li>
+                                    <li><strong>핸드 종료</strong> = GFX 소멸 시점 + 15초</li>
+                                </ul>
+                                <p class="text-muted mb-0">
+                                    이 규칙을 활용하면 GFX 감지만으로도 정확한 핸드 경계를 결정할 수 있습니다.
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <div style="font-size: 5rem;">⏱️</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 빠른 시작 가이드 -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">🚀 빠른 시작 가이드</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="text-danger">Step 1: GFX 패턴 학습</h5>
+                                <ol>
+                                    <li>GFX 오버레이 학습기를 엽니다</li>
+                                    <li>포커 영상을 업로드합니다</li>
+                                    <li>영상을 재생하며 GFX가 보이면 'GFX' 버튼 클릭</li>
+                                    <li>실제 게임 화면이면 'Game' 버튼 클릭</li>
+                                    <li>10개 이상 샘플 수집 후 '모델 학습' → '모델 저장'</li>
+                                </ol>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="text-primary">Step 2: 핸드 자동 분류</h5>
+                                <ol>
+                                    <li>포커 핸드 분류기를 엽니다</li>
+                                    <li>'GFX 모델 로드' 버튼으로 학습된 모델 불러오기</li>
+                                    <li>분석할 포커 영상 업로드</li>
+                                    <li>'분석 시작' 클릭하고 완료 대기</li>
+                                    <li>감지된 핸드 목록을 JSON으로 다운로드</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GFX 오버레이 예시 -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">📺 RFID GFX 오버레이 예시</h3>
+                        <p>포커 방송에서 볼 수 있는 전형적인 GFX 오버레이 정보:</p>
+                        <div class="row">
+                            <div class="col-md-3 text-center mb-3">
+                                <div class="p-3" style="background: #0d1117; border-radius: 10px;">
+                                    <div style="font-size: 2rem;">🃏</div>
+                                    <strong>홀카드 표시</strong><br>
+                                    <small>♠A ♥K</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center mb-3">
+                                <div class="p-3" style="background: #0d1117; border-radius: 10px;">
+                                    <div style="font-size: 2rem;">💰</div>
+                                    <strong>팟 사이즈</strong><br>
+                                    <small>POT: $125,000</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center mb-3">
+                                <div class="p-3" style="background: #0d1117; border-radius: 10px;">
+                                    <div style="font-size: 2rem;">📊</div>
+                                    <strong>승률 표시</strong><br>
+                                    <small>72% vs 28%</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center mb-3">
+                                <div class="p-3" style="background: #0d1117; border-radius: 10px;">
+                                    <div style="font-size: 2rem;">🎯</div>
+                                    <strong>액션 표시</strong><br>
+                                    <small>RAISE $50,000</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 추가 도구 -->
+        <h3 class="text-center mb-4">🛠️ 추가 분석 도구</h3>
+        <div class="row g-4">
+            <!-- 기존 도구들 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">⚡</div>
+                        <h5 class="card-title">고속 UI 인식</h5>
+                        <p class="card-text">
+                            20-50배 빠른 속도로 대용량 영상 분석
+                        </p>
+                        <a href="optimized_ui_recognition.html" class="btn btn-secondary">열기</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">🎯</div>
+                        <h5 class="card-title">통합 UI 인식</h5>
+                        <p class="card-text">
+                            다양한 모드를 통한 정확한 핸드 감지
+                        </p>
+                        <a href="unified_ui_recognition.html" class="btn btn-secondary">열기</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">📊</div>
+                        <h5 class="card-title">핸드 시각화</h5>
+                        <p class="card-text">
+                            감지된 핸드의 시각적 분석과 통계
+                        </p>
+                        <a href="hand_detection_visualization.html" class="btn btn-secondary">열기</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-center py-4 mt-5">
+        <div class="container">
+            <p class="mb-0">
+                🃏 Poker Hand Analyzer | RFID GFX 기반 핸드 분류 시스템<br>
+                <small class="text-muted">GitHub Pages에서 완전 무료로 실행됩니다</small>
+            </p>
+        </div>
+    </footer>
 </body>
 </html>
