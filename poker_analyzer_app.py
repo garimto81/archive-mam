@@ -37,6 +37,14 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 app.secret_key = 'poker_analyzer_secret_key_2024'
 
+# UI 학습 API 추가
+try:
+    from src.ui_learning_api import ui_learning_bp
+    app.register_blueprint(ui_learning_bp)
+    logger.info("UI Learning API loaded successfully")
+except ImportError:
+    logger.warning("UI Learning API not available - install scikit-learn")
+
 # 설정
 UPLOAD_FOLDER = 'temp_videos'
 RESULTS_FOLDER = 'analysis_results'
@@ -330,6 +338,11 @@ def analyze_file_task(video_path, task_id, use_fast_mode=False):
 def index():
     """메인 페이지"""
     return render_template('index.html')
+
+@app.route('/advanced_ui_learning.html')
+def advanced_ui_learning():
+    """고급 UI 학습 페이지"""
+    return send_file('advanced_ui_learning.html')
 
 @app.route('/analyze', methods=['POST'])
 def analyze():

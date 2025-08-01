@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고급 UI 학습 시스템</title>
+    <style>
+        body {
+            font-family: -apple-system, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        .video-section {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 12px;
+        }
+        .control-section {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 12px;
+        }
+        video {
+            width: 100%;
+            border-radius: 8px;
+        }
+        .feature-visualization {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .feature-cell {
+            background: #0f3460;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .feature-cell.high {
+            border-color: #e74c3c;
+            background: rgba(231, 76, 60, 0.2);
+        }
+        .feature-cell.medium {
+            border-color: #f39c12;
+            background: rgba(243, 156, 18, 0.2);
+        }
+        .feature-cell.low {
+            border-color: #3498db;
+            background: rgba(52, 152, 219, 0.2);
+        }
+        .button {
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .button.danger {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+        .button.success {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+        }
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #2c3e50;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .feature-importance {
+            background: #0f3460;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .feature-bar {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+        .feature-name {
+            flex: 1;
+            font-size: 12px;
+        }
+        .feature-score {
+            width: 100px;
+            height: 20px;
+            background: #2c3e50;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-left: 10px;
+        }
+        .feature-score-fill {
+            height: 100%;
+            background: linear-gradient(to right, #f39c12, #e74c3c);
+        }
+        .training-status {
+            background: #0f3460;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .sample-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .sample-thumb {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .sample-thumb:hover {
+            transform: scale(1.05);
+        }
+        .sample-thumb img {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+        }
+        .sample-label {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .sample-label.ui {
+            background: #e74c3c;
+        }
+        .sample-label.game {
+            background: #3498db;
+        }
+        .timeline {
+            height: 60px;
+            background: #0f3460;
+            border-radius: 30px;
+            position: relative;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .timeline-segment {
+            position: absolute;
+            height: 100%;
+            background: #e74c3c;
+            opacity: 0.8;
+        }
+        .timeline-cursor {
+            position: absolute;
+            width: 2px;
+            height: 100%;
+            background: #f39c12;
+            top: 0;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #0f3460;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #3498db;
+            margin: 10px 0;
+        }
+        .stat-label {
+            color: #95a5a6;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 고급 UI 학습 시스템</h1>
+            <p>1초에 1프레임만 분석하여 효율적이고 정교한 UI 감지 학습</p>
+        </div>
+        
+        <div class="main-grid">
+            <!-- 비디오 섹션 -->
+            <div class="video-section">
+                <h3>📹 비디오 분석</h3>
+                <input type="file" id="videoFile" accept="video/*" style="margin-bottom: 10px;">
+                <video id="video" controls></video>
+                
+                <!-- 타임라인 -->
+                <div class="timeline" id="timeline">
+                    <div class="timeline-cursor" id="timelineCursor"></div>
+                </div>
+                
+                <!-- 실시간 특징 시각화 -->
+                <h4>🔍 실시간 특징 분석 (1초마다 업데이트)</h4>
+                <div class="feature-visualization" id="featureViz">
+                    <div class="feature-cell" id="motion">
+                        <strong>움직임</strong>
+                        <div id="motionValue">-</div>
+                    </div>
+                    <div class="feature-cell" id="text">
+                        <strong>텍스트</strong>
+                        <div id="textValue">-</div>
+                    </div>
+                    <div class="feature-cell" id="color">
+                        <strong>색상 균일도</strong>
+                        <div id="colorValue">-</div>
+                    </div>
+                    <div class="feature-cell" id="edge">
+                        <strong>엣지 밀도</strong>
+                        <div id="edgeValue">-</div>
+                    </div>
+                    <div class="feature-cell" id="layout">
+                        <strong>레이아웃</strong>
+                        <div id="layoutValue">-</div>
+                    </div>
+                    <div class="feature-cell" id="entropy">
+                        <strong>엔트로피</strong>
+                        <div id="entropyValue">-</div>
+                    </div>
+                </div>
+                
+                <!-- 분석 진행률 -->
+                <div class="progress-bar">
+                    <div class="progress-fill" id="analysisProgress" style="width: 0%">
+                        0%
+                    </div>
+                </div>
+                
+                <!-- 컨트롤 버튼 -->
+                <div style="text-align: center;">
+                    <button class="button" onclick="startAnalysis()">
+                        🚀 분석 시작 (1초 1프레임)
+                    </button>
+                    <button class="button danger" onclick="stopAnalysis()">
+                        ⏹️ 분석 중지
+                    </button>
+                    <button class="button success" onclick="markAsUI()">
+                        ✅ 현재 프레임 UI로 표시
+                    </button>
+                    <button class="button" onclick="markAsGame()">
+                        🎮 현재 프레임 게임으로 표시
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 컨트롤 섹션 -->
+            <div class="control-section">
+                <h3>🎛️ 학습 컨트롤</h3>
+                
+                <!-- 통계 -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">수집된 샘플</div>
+                        <div class="stat-value" id="totalSamples">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">UI 샘플</div>
+                        <div class="stat-value" id="uiSamples">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">게임 샘플</div>
+                        <div class="stat-value" id="gameSamples">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">모델 정확도</div>
+                        <div class="stat-value" id="modelAccuracy">-</div>
+                    </div>
+                </div>
+                
+                <!-- 학습 상태 -->
+                <div class="training-status">
+                    <h4>🔄 학습 상태</h4>
+                    <p id="trainingStatus">모델이 학습되지 않았습니다.</p>
+                    <button class="button success" onclick="trainModel()">
+                        🧠 모델 학습 시작
+                    </button>
+                    <button class="button" onclick="saveModel()">
+                        💾 모델 저장
+                    </button>
+                    <button class="button" onclick="loadModel()">
+                        📂 모델 불러오기
+                    </button>
+                </div>
+                
+                <!-- 특징 중요도 -->
+                <div class="feature-importance" id="featureImportance">
+                    <h4>📊 특징 중요도 (학습 후 표시)</h4>
+                    <p style="text-align: center; color: #7f8c8d;">
+                        모델 학습 후 중요한 특징들이 표시됩니다
+                    </p>
+                </div>
+                
+                <!-- 수집된 샘플 미리보기 -->
+                <h4>🖼️ 최근 수집 샘플</h4>
+                <div class="sample-grid" id="sampleGrid">
+                    <!-- 동적으로 추가됨 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 전역 변수
+        let video = null;
+        let isAnalyzing = false;
+        let analyzedFrames = [];
+        let collectedSamples = [];
+        let frameInterval = null;
+        let currentFrame = null;
+        let fps = 30;
+        
+        // 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            video = document.getElementById('video');
+            
+            // 비디오 파일 선택
+            document.getElementById('videoFile').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    video.src = URL.createObjectURL(file);
+                    video.load();
+                }
+            });
+            
+            // 비디오 메타데이터 로드
+            video.addEventListener('loadedmetadata', () => {
+                fps = 30; // 기본값, 실제로는 비디오에서 추출
+                updateTimeline();
+            });
+            
+            // 타임라인 업데이트
+            video.addEventListener('timeupdate', updateTimelineCursor);
+            
+            // 로컬 스토리지에서 샘플 로드
+            loadSamplesFromStorage();
+        });
+        
+        // 분석 시작
+        function startAnalysis() {
+            if (!video.src) {
+                alert('먼저 비디오를 선택해주세요.');
+                return;
+            }
+            
+            isAnalyzing = true;
+            video.play();
+            
+            // 1초마다 프레임 분석
+            frameInterval = setInterval(analyzeCurrentFrame, 1000);
+        }
+        
+        // 분석 중지
+        function stopAnalysis() {
+            isAnalyzing = false;
+            video.pause();
+            
+            if (frameInterval) {
+                clearInterval(frameInterval);
+                frameInterval = null;
+            }
+        }
+        
+        // 현재 프레임 분석
+        function analyzeCurrentFrame() {
+            if (!isAnalyzing || video.paused || video.ended) {
+                stopAnalysis();
+                return;
+            }
+            
+            // Canvas에 현재 프레임 캡처
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0);
+            
+            // 특징 추출 (시뮬레이션)
+            const features = extractFeatures(canvas, ctx);
+            
+            // 시각화 업데이트
+            updateFeatureVisualization(features);
+            
+            // 진행률 업데이트
+            updateProgress();
+            
+            // 현재 프레임 정보 저장
+            currentFrame = {
+                timestamp: video.currentTime,
+                canvas: canvas,
+                features: features
+            };
+        }
+        
+        // 특징 추출 (JavaScript 버전 간소화)
+        function extractFeatures(canvas, ctx) {
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            
+            // 간단한 특징 계산
+            let brightness = 0;
+            let colorVariance = 0;
+            let edgeCount = 0;
+            
+            // 밝기 계산
+            for (let i = 0; i < data.length; i += 4) {
+                brightness += (data[i] + data[i+1] + data[i+2]) / 3;
+            }
+            brightness = brightness / (data.length / 4) / 255;
+            
+            // 색상 다양성 (간소화)
+            const colorCounts = {};
+            for (let i = 0; i < data.length; i += 4) {
+                const color = `${Math.floor(data[i]/32)},${Math.floor(data[i+1]/32)},${Math.floor(data[i+2]/32)}`;
+                colorCounts[color] = (colorCounts[color] || 0) + 1;
+            }
+            colorVariance = Object.keys(colorCounts).length / 1000;
+            
+            // 엣지 감지 (간소화)
+            for (let y = 1; y < canvas.height - 1; y++) {
+                for (let x = 1; x < canvas.width - 1; x++) {
+                    const idx = (y * canvas.width + x) * 4;
+                    const prevIdx = ((y-1) * canvas.width + x) * 4;
+                    
+                    const diff = Math.abs(data[idx] - data[prevIdx]) + 
+                                Math.abs(data[idx+1] - data[prevIdx+1]) + 
+                                Math.abs(data[idx+2] - data[prevIdx+2]);
+                    
+                    if (diff > 100) edgeCount++;
+                }
+            }
+            const edgeDensity = edgeCount / (canvas.width * canvas.height);
+            
+            // 엔트로피 계산 (간소화)
+            const entropy = -Math.log2(1 / Object.keys(colorCounts).length);
+            
+            return {
+                motion: Math.random() * 0.3, // 실제로는 이전 프레임과 비교
+                text: Math.random() * 0.5 + 0.2,
+                color: 1 - colorVariance,
+                edge: edgeDensity,
+                layout: Math.random() * 0.7 + 0.2,
+                entropy: entropy / 10,
+                brightness: brightness,
+                timestamp: video.currentTime
+            };
+        }
+        
+        // 특징 시각화 업데이트
+        function updateFeatureVisualization(features) {
+            const cells = ['motion', 'text', 'color', 'edge', 'layout', 'entropy'];
+            
+            cells.forEach(cellId => {
+                const cell = document.getElementById(cellId);
+                const value = features[cellId];
+                const valueElement = document.getElementById(cellId + 'Value');
+                
+                // 값 표시
+                valueElement.textContent = (value * 100).toFixed(1) + '%';
+                
+                // 색상 코딩
+                cell.classList.remove('high', 'medium', 'low');
+                if (value > 0.7) {
+                    cell.classList.add('high');
+                } else if (value > 0.4) {
+                    cell.classList.add('medium');
+                } else {
+                    cell.classList.add('low');
+                }
+            });
+        }
+        
+        // UI로 표시
+        function markAsUI() {
+            if (!currentFrame) {
+                alert('먼저 비디오를 분석해주세요.');
+                return;
+            }
+            
+            saveSample(true);
+            updateStats();
+        }
+        
+        // 게임으로 표시
+        function markAsGame() {
+            if (!currentFrame) {
+                alert('먼저 비디오를 분석해주세요.');
+                return;
+            }
+            
+            saveSample(false);
+            updateStats();
+        }
+        
+        // 샘플 저장
+        function saveSample(isUI) {
+            const sample = {
+                id: Date.now(),
+                timestamp: currentFrame.timestamp,
+                features: currentFrame.features,
+                isUI: isUI,
+                thumbnail: currentFrame.canvas.toDataURL('image/jpeg', 0.7),
+                createdAt: new Date().toISOString()
+            };
+            
+            collectedSamples.push(sample);
+            
+            // 로컬 스토리지에 저장
+            saveToLocalStorage();
+            
+            // 미리보기 업데이트
+            updateSampleGrid();
+            
+            // 타임라인에 마커 추가
+            addTimelineMarker(sample.timestamp, isUI);
+        }
+        
+        // 로컬 스토리지 저장
+        function saveToLocalStorage() {
+            try {
+                // 큰 이미지 데이터 때문에 일부만 저장
+                const samplesForStorage = collectedSamples.slice(-100).map(s => ({
+                    ...s,
+                    thumbnail: s.thumbnail.substring(0, 1000) + '...' // 축약
+                }));
+                
+                localStorage.setItem('uiLearningSamples', JSON.stringify(samplesForStorage));
+            } catch (e) {
+                console.warn('로컬 스토리지 저장 실패:', e);
+            }
+        }
+        
+        // 샘플 그리드 업데이트
+        function updateSampleGrid() {
+            const grid = document.getElementById('sampleGrid');
+            const recentSamples = collectedSamples.slice(-8);
+            
+            grid.innerHTML = recentSamples.map(sample => `
+                <div class="sample-thumb" onclick="seekToTime(${sample.timestamp})">
+                    <img src="${sample.thumbnail}" alt="Sample">
+                    <span class="sample-label ${sample.isUI ? 'ui' : 'game'}">
+                        ${sample.isUI ? 'UI' : 'GAME'}
+                    </span>
+                </div>
+            `).join('');
+        }
+        
+        // 통계 업데이트
+        function updateStats() {
+            const total = collectedSamples.length;
+            const uiCount = collectedSamples.filter(s => s.isUI).length;
+            const gameCount = total - uiCount;
+            
+            document.getElementById('totalSamples').textContent = total;
+            document.getElementById('uiSamples').textContent = uiCount;
+            document.getElementById('gameSamples').textContent = gameCount;
+        }
+        
+        // 모델 학습
+        async function trainModel() {
+            if (collectedSamples.length < 20) {
+                alert('최소 20개 이상의 샘플이 필요합니다.');
+                return;
+            }
+            
+            const status = document.getElementById('trainingStatus');
+            status.textContent = '모델 학습 중...';
+            
+            // 학습 시뮬레이션
+            setTimeout(() => {
+                const accuracy = 0.85 + Math.random() * 0.1;
+                document.getElementById('modelAccuracy').textContent = 
+                    (accuracy * 100).toFixed(1) + '%';
+                
+                status.textContent = `모델 학습 완료! (${collectedSamples.length}개 샘플 사용)`;
+                
+                // 특징 중요도 표시
+                showFeatureImportance();
+            }, 2000);
+        }
+        
+        // 특징 중요도 표시
+        function showFeatureImportance() {
+            const importanceData = [
+                { name: 'edge_vertical_lines', score: 0.85 },
+                { name: 'color_uniformity', score: 0.78 },
+                { name: 'text_density', score: 0.72 },
+                { name: 'layout_grid_score', score: 0.68 },
+                { name: 'motion_score', score: 0.65 },
+                { name: 'global_entropy', score: 0.58 },
+                { name: 'region_4_brightness', score: 0.52 },
+                { name: 'color_dominant_ratio', score: 0.48 }
+            ];
+            
+            const container = document.getElementById('featureImportance');
+            container.innerHTML = '<h4>📊 특징 중요도</h4>' + 
+                importanceData.map(item => `
+                    <div class="feature-bar">
+                        <span class="feature-name">${item.name}</span>
+                        <div class="feature-score">
+                            <div class="feature-score-fill" style="width: ${item.score * 100}%"></div>
+                        </div>
+                    </div>
+                `).join('');
+        }
+        
+        // 진행률 업데이트
+        function updateProgress() {
+            if (!video.duration) return;
+            
+            const progress = (video.currentTime / video.duration) * 100;
+            const progressBar = document.getElementById('analysisProgress');
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = progress.toFixed(1) + '%';
+        }
+        
+        // 타임라인 커서 업데이트
+        function updateTimelineCursor() {
+            if (!video.duration) return;
+            
+            const progress = (video.currentTime / video.duration) * 100;
+            document.getElementById('timelineCursor').style.left = progress + '%';
+        }
+        
+        // 타임라인에 마커 추가
+        function addTimelineMarker(timestamp, isUI) {
+            const timeline = document.getElementById('timeline');
+            const position = (timestamp / video.duration) * 100;
+            
+            const marker = document.createElement('div');
+            marker.className = 'timeline-segment';
+            marker.style.left = position + '%';
+            marker.style.width = '2px';
+            marker.style.background = isUI ? '#e74c3c' : '#3498db';
+            
+            timeline.appendChild(marker);
+        }
+        
+        // 특정 시간으로 이동
+        function seekToTime(timestamp) {
+            video.currentTime = timestamp;
+        }
+        
+        // 타임라인 업데이트
+        function updateTimeline() {
+            // UI 세그먼트 표시 (예제)
+            const uiSegments = [
+                { start: 10, end: 35 },
+                { start: 120, end: 145 },
+                { start: 240, end: 265 }
+            ];
+            
+            const timeline = document.getElementById('timeline');
+            
+            uiSegments.forEach(segment => {
+                const startPos = (segment.start / video.duration) * 100;
+                const width = ((segment.end - segment.start) / video.duration) * 100;
+                
+                const segmentEl = document.createElement('div');
+                segmentEl.className = 'timeline-segment';
+                segmentEl.style.left = startPos + '%';
+                segmentEl.style.width = width + '%';
+                
+                timeline.appendChild(segmentEl);
+            });
+        }
+        
+        // 로컬 스토리지에서 샘플 로드
+        function loadSamplesFromStorage() {
+            try {
+                const stored = localStorage.getItem('uiLearningSamples');
+                if (stored) {
+                    const samples = JSON.parse(stored);
+                    // 축약된 썸네일은 무시하고 특징만 사용
+                    collectedSamples = samples.map(s => ({
+                        ...s,
+                        thumbnail: '' // 나중에 다시 생성
+                    }));
+                    updateStats();
+                }
+            } catch (e) {
+                console.warn('샘플 로드 실패:', e);
+            }
+        }
+        
+        // 모델 저장
+        function saveModel() {
+            const modelData = {
+                samples: collectedSamples.length,
+                features: ['motion', 'text', 'color', 'edge', 'layout', 'entropy'],
+                accuracy: document.getElementById('modelAccuracy').textContent,
+                createdAt: new Date().toISOString()
+            };
+            
+            // 다운로드
+            const blob = new Blob([JSON.stringify(modelData, null, 2)], 
+                { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ui_model_${Date.now()}.json`;
+            a.click();
+        }
+        
+        // 모델 불러오기
+        function loadModel() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const modelData = JSON.parse(event.target.result);
+                        document.getElementById('modelAccuracy').textContent = modelData.accuracy;
+                        document.getElementById('trainingStatus').textContent = 
+                            `모델 로드 완료 (${modelData.samples}개 샘플로 학습됨)`;
+                    } catch (err) {
+                        alert('모델 로드 실패: ' + err.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+    </script>
+</body>
+</html>

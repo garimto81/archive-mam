@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>그리드 크기 수정 테스트</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            padding: 20px;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .video-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            margin: 20px 0;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .status {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 3px solid #4CAF50;
+            background: #2a2a2a;
+        }
+        .error {
+            border-left-color: #f44336;
+        }
+        .warning {
+            border-left-color: #ff9800;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 그리드 크기 수정 테스트</h1>
+        
+        <div class="status">
+            <h3>테스트 상태</h3>
+            <div id="testStatus">테스트 준비 중...</div>
+        </div>
+        
+        <input type="file" id="videoFile" accept="video/*" style="margin: 10px 0;">
+        
+        <div class="video-container">
+            <video id="testVideo" controls>
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+            </video>
+            <canvas class="grid-overlay" id="testGridOverlay"></canvas>
+        </div>
+        
+        <div>
+            <button onclick="testGridSize()">그리드 크기 테스트</button>
+            <button onclick="toggleGrid()">그리드 표시/숨기기</button>
+            <button onclick="resizeTest()">크기 조정 테스트</button>
+        </div>
+        
+        <div id="testResults"></div>
+    </div>
+    
+    <script>
+        let video = null;
+        let gridOverlay = null;
+        let gridCtx = null;
+        let showGrid = false;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            video = document.getElementById('testVideo');
+            gridOverlay = document.getElementById('testGridOverlay');
+            gridCtx = gridOverlay.getContext('2d');
+            
+            // 비디오 로드 완료 시
+            video.addEventListener('loadedmetadata', () => {
+                addTestResult('✅ 비디오 로드 완료', 'success');
+                resizeGridOverlay();
+            });
+            
+            // 파일 선택
+            document.getElementById('videoFile').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    video.src = URL.createObjectURL(file);
+                    addTestResult('📁 새 비디오 파일 로드', 'info');
+                }
+            });
+            
+            // 윈도우 리사이즈
+            window.addEventListener('resize', () => {
+                resizeGridOverlay();
+                addTestResult('🔄 윈도우 리사이즈 감지', 'info');
+            });
+            
+            updateStatus('테스트 준비 완료');
+        });
+        
+        function resizeGridOverlay() {
+            if (!video || !gridOverlay) return;
+            
+            // 비디오의 실제 표시 크기 가져오기
+            const rect = video.getBoundingClientRect();
+            
+            // 이전 크기 저장
+            const oldWidth = gridOverlay.width;
+            const oldHeight = gridOverlay.height;
+            
+            // 새 크기 설정
+            gridOverlay.width = rect.width;
+            gridOverlay.height = rect.height;
+            
+            addTestResult(
+                `📏 그리드 크기 조정: ${oldWidth}x${oldHeight} → ${gridOverlay.width}x${gridOverlay.height}`,
+                oldWidth !== gridOverlay.width || oldHeight !== gridOverlay.height ? 'warning' : 'info'
+            );
+            
+            // 그리드 다시 그리기
+            if (showGrid) {
+                drawGrid();
+            }
+        }
+        
+        function drawGrid() {
+            if (!gridCtx || !gridOverlay) return;
+            
+            gridCtx.clearRect(0, 0, gridOverlay.width, gridOverlay.height);
+            
+            const cellWidth = gridOverlay.width / 3;
+            const cellHeight = gridOverlay.height / 3;
+            
+            for (let row = 0; row < 3; row++) {
+                for (let col = 0; col < 3; col++) {
+                    const x = col * cellWidth;
+                    const y = row * cellHeight;
+                    
+                    // 경계선
+                    gridCtx.strokeStyle = '#4CAF50';
+                    gridCtx.lineWidth = 2;
+                    gridCtx.strokeRect(x, y, cellWidth, cellHeight);
+                    
+                    // 영역 번호
+                    gridCtx.fillStyle = 'white';
+                    gridCtx.font = '20px Arial';
+                    gridCtx.textAlign = 'center';
+                    gridCtx.textBaseline = 'middle';
+                    gridCtx.fillText(
+                        `${row * 3 + col + 1}`,
+                        x + cellWidth / 2,
+                        y + cellHeight / 2
+                    );
+                }
+            }
+        }
+        
+        function testGridSize() {
+            updateStatus('그리드 크기 테스트 시작...');
+            
+            // 비디오 크기 확인
+            const videoRect = video.getBoundingClientRect();
+            const videoInfo = `비디오 크기: ${videoRect.width.toFixed(1)} x ${videoRect.height.toFixed(1)}`;
+            
+            // 그리드 크기 확인
+            const gridInfo = `그리드 크기: ${gridOverlay.width} x ${gridOverlay.height}`;
+            
+            // 일치 여부 확인
+            const isMatching = Math.abs(videoRect.width - gridOverlay.width) < 1 && 
+                              Math.abs(videoRect.height - gridOverlay.height) < 1;
+            
+            addTestResult(videoInfo, 'info');
+            addTestResult(gridInfo, 'info');
+            addTestResult(
+                isMatching ? '✅ 크기가 정확히 일치합니다!' : '❌ 크기가 일치하지 않습니다!',
+                isMatching ? 'success' : 'error'
+            );
+            
+            updateStatus('테스트 완료');
+            
+            // 그리드 표시
+            showGrid = true;
+            drawGrid();
+        }
+        
+        function toggleGrid() {
+            showGrid = !showGrid;
+            if (showGrid) {
+                drawGrid();
+                addTestResult('🎯 그리드 표시', 'info');
+            } else {
+                gridCtx.clearRect(0, 0, gridOverlay.width, gridOverlay.height);
+                addTestResult('🚫 그리드 숨김', 'info');
+            }
+        }
+        
+        function resizeTest() {
+            updateStatus('크기 조정 테스트...');
+            
+            // 비디오 컨테이너 크기 변경
+            const container = document.querySelector('.video-container');
+            const currentWidth = container.style.width || '100%';
+            
+            if (currentWidth === '100%') {
+                container.style.width = '600px';
+                addTestResult('📐 컨테이너 크기: 600px로 변경', 'warning');
+            } else {
+                container.style.width = '100%';
+                addTestResult('📐 컨테이너 크기: 100%로 변경', 'warning');
+            }
+            
+            // 잠시 후 그리드 크기 조정
+            setTimeout(() => {
+                resizeGridOverlay();
+                updateStatus('크기 조정 완료');
+            }, 100);
+        }
+        
+        function updateStatus(message) {
+            document.getElementById('testStatus').textContent = message;
+        }
+        
+        function addTestResult(message, type = 'info') {
+            const results = document.getElementById('testResults');
+            const result = document.createElement('div');
+            result.className = 'test-result';
+            
+            if (type === 'error') result.classList.add('error');
+            if (type === 'warning') result.classList.add('warning');
+            
+            const time = new Date().toLocaleTimeString();
+            result.innerHTML = `<strong>[${time}]</strong> ${message}`;
+            
+            results.insertBefore(result, results.firstChild);
+            
+            // 최대 10개만 유지
+            while (results.children.length > 10) {
+                results.removeChild(results.lastChild);
+            }
+        }
+    </script>
+</body>
+</html>
