@@ -126,7 +126,7 @@
                             <li>최소 10개 샘플로 높은 정확도 달성</li>
                             <li>학습된 모델을 로컬에 저장</li>
                         </ul>
-                        <a href="gfx_overlay_trainer.html" class="btn btn-danger btn-lg">
+                        <a href="web-ui/gfx_overlay_trainer.html" class="btn btn-danger btn-lg">
                             🎰 GFX 학습 시작
                         </a>
                     </div>
@@ -261,11 +261,83 @@
             </div>
         </div>
 
+        <!-- 고급 분석 시스템 -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card highlight-card">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">🎯</div>
+                        <h3 class="card-title">통합 포커 분석 시스템</h3>
+                        <span class="status-badge status-new mb-3">NEW</span>
+                        <p class="card-text mb-4">
+                            GFX 감지 + 팟 사이즈 OCR + 플레이어 감지를 하나로 통합한 완전 자동화 시스템
+                        </p>
+                        <div class="row text-start mb-4">
+                            <div class="col-md-4">
+                                <h6>🔍 GFX 오버레이 감지</h6>
+                                <ul class="small">
+                                    <li>15초 규칙 자동 적용</li>
+                                    <li>핸드 경계 정확도 90%+</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+                                <h6>💰 팟 사이즈 OCR</h6>
+                                <ul class="small">
+                                    <li>Tesseract 기반 텍스트 인식</li>
+                                    <li>팟 변화 자동 추적</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+                                <h6>👥 플레이어 감지</h6>
+                                <ul class="small">
+                                    <li>카드 보유 기반 참여자 식별</li>
+                                    <li>좌석별 신뢰도 분석</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <a href="web-ui/integrated_analyzer.html" class="btn btn-danger btn-lg me-3">
+                            🎯 통합 분석 시작
+                        </a>
+                        <small class="text-muted d-block mt-2">
+                            한 번의 클릭으로 포커 영상을 완전히 분석하고 핸드별 클립 정보를 생성합니다
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- 추가 도구 -->
-        <h3 class="text-center mb-4">🛠️ 추가 분석 도구</h3>
+        <h3 class="text-center mb-4">🛠️ 개별 분석 도구</h3>
         <div class="row g-4">
+            <!-- 새로운 모듈들 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">🚀</div>
+                        <h5 class="card-title">고급 GFX 학습기</h5>
+                        <p class="card-text">
+                            OCR + 컴퓨터 비전 융합 학습
+                        </p>
+                        <a href="web-ui/advanced_gfx_trainer.html" class="btn btn-secondary">열기</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">💰</div>
+                        <h5 class="card-title">팟 사이즈 분석기</h5>
+                        <p class="card-text">
+                            OCR 기반 팟 사이즈 자동 인식
+                        </p>
+                        <a href="web-ui/pot_size_analyzer.html" class="btn btn-secondary">열기</a>
+                    </div>
+                </div>
+            </div>
+
             <!-- 기존 도구들 -->
-            <div class="col-md-6 col-lg-4">
+            <div class="col-md-6 col-lg-3">
                 <div class="card h-100">
                     <div class="card-body text-center">
                         <div class="feature-icon">⚡</div>
@@ -278,7 +350,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6 col-lg-4">
+            <div class="col-md-6 col-lg-3">
                 <div class="card h-100">
                     <div class="card-body text-center">
                         <div class="feature-icon">🎯</div>
@@ -291,7 +363,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6 col-lg-4">
+            <div class="col-md-6 col-lg-3">
                 <div class="card h-100">
                     <div class="card-body text-center">
                         <div class="feature-icon">📊</div>

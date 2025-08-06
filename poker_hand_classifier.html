@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🃏 포커 핸드 분류기 - 자동 핸드 감지 시스템</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar-dark {
+            background-color: #161b22 !important;
+        }
+        .card {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+        }
+        .card:hover {
+            border-color: #58a6ff;
+            box-shadow: 0 0 10px rgba(88, 166, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #238636;
+            border-color: #238636;
+        }
+        .btn-primary:hover {
+            background-color: #2ea043;
+            border-color: #2ea043;
+        }
+        .btn-success {
+            background-color: #1f6feb;
+            border-color: #1f6feb;
+        }
+        .btn-success:hover {
+            background-color: #388bfd;
+            border-color: #388bfd;
+        }
+        .btn-danger {
+            background-color: #f85149;
+            border-color: #f85149;
+        }
+        .form-control, .form-select {
+            background-color: #21262d;
+            border-color: #30363d;
+            color: #c9d1d9;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: #21262d;
+            border-color: #58a6ff;
+            color: #c9d1d9;
+            box-shadow: 0 0 0 0.25rem rgba(88, 166, 255, 0.25);
+        }
+        #videoCanvas {
+            max-width: 100%;
+            border: 2px solid #30363d;
+            border-radius: 6px;
+            background-color: #000;
+        }
+        .progress {
+            height: 25px;
+            background-color: #21262d;
+        }
+        .progress-bar {
+            background-color: #238636;
+            font-weight: bold;
+        }
+        .alert-custom {
+            background-color: #1c2128;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #58a6ff;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: #8b949e;
+            margin-top: 5px;
+        }
+        .hand-item {
+            padding: 12px 15px;
+            margin: 8px 0;
+            background-color: #21262d;
+            border-radius: 8px;
+            border-left: 4px solid #238636;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .hand-item:hover {
+            background-color: #30363d;
+            transform: translateX(5px);
+        }
+        .hand-item.long-hand {
+            border-left-color: #f85149;
+        }
+        .hand-item.short-hand {
+            border-left-color: #ffa724;
+        }
+        .timeline-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 15px;
+            background-color: #0d1117;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1">🃏 포커 핸드 분류기</span>
+            <div>
+                <a href="index.html" class="btn btn-outline-light btn-sm me-2">메인</a>
+                <a href="web-ui/gfx_overlay_trainer.html" class="btn btn-outline-light btn-sm">GFX 학습기</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- 안내 메시지 -->
+        <div class="alert alert-custom mb-4">
+            <h5>🎯 15초 규칙 기반 자동 핸드 분류</h5>
+            <p class="mb-0">
+                학습된 GFX 모델을 사용하여 포커 영상을 자동으로 분석하고 핸드별로 분류합니다.
+                GFX 출현 -15초 = 핸드 시작, GFX 소멸 +15초 = 핸드 종료점으로 정확한 경계를 결정합니다.
+            </p>
+        </div>
+
+        <div class="row">
+            <!-- 왼쪽: 분석 설정 -->
+            <div class="col-lg-6">
+                <!-- 모델 및 비디오 로드 -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">📁 파일 로드</h5>
+                        
+                        <!-- GFX 모델 로드 -->
+                        <div class="mb-3">
+                            <label class="form-label">GFX 학습 모델</label>
+                            <div class="input-group">
+                                <input type="file" class="form-control" id="modelInput" 
+                                       accept=".json" onchange="handleModelUpload(event)">
+                                <button class="btn btn-outline-secondary" onclick="loadFromLocalStorage()">
+                                    💾 로컬 저장소
+                                </button>
+                            </div>
+                            <div class="small text-muted mt-1" id="modelStatus">모델이 로드되지 않았습니다</div>
+                        </div>
+                        
+                        <!-- 비디오 로드 -->
+                        <div class="mb-3">
+                            <label class="form-label">분석할 비디오 파일</label>
+                            <input type="file" class="form-control" id="videoInput" 
+                                   accept="video/*" onchange="handleVideoUpload(event)">
+                        </div>
+                        
+                        <!-- 분석 시작 -->
+                        <button class="btn btn-primary w-100" id="startAnalysisBtn" 
+                                onclick="startHandClassification()" disabled>
+                            🎯 핸드 분류 시작
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 분석 설정 -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">⚙️ 분석 설정</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">신뢰도 임계값</label>
+                                <input type="range" class="form-range" id="confidenceThreshold" 
+                                       min="0.5" max="0.95" step="0.05" value="0.75" 
+                                       oninput="updateThresholdDisplay()">
+                                <div class="small text-muted"><span id="thresholdValue">75</span>%</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">프레임 스킵</label>
+                                <select class="form-select" id="frameSkip">
+                                    <option value="5">5 (고정밀)</option>
+                                    <option value="10" selected>10 (권장)</option>
+                                    <option value="15">15 (고속)</option>
+                                    <option value="30">30 (초고속)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">최소 핸드 길이 (초)</label>
+                                <input type="number" class="form-control" id="minHandDuration" 
+                                       value="60" min="30" max="300">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">최대 핸드 길이 (초)</label>
+                                <input type="number" class="form-control" id="maxHandDuration" 
+                                       value="600" min="300" max="1200">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 비디오 미리보기 -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">📹 비디오 미리보기</h5>
+                        <canvas id="videoCanvas" width="480" height="270"></canvas>
+                        
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <button class="btn btn-secondary w-100" id="playBtn" 
+                                        onclick="playVideo()" disabled>▶️ 재생</button>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-secondary w-100" id="pauseBtn" 
+                                        onclick="pauseVideo()" disabled>⏸️ 일시정지</button>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <input type="range" class="form-range" id="timelineSlider" 
+                                   min="0" max="100" value="0" disabled oninput="seekVideo(this.value)">
+                            <div class="d-flex justify-content-between small text-muted">
+                                <span id="currentTime">0:00</span>
+                                <span id="totalTime">0:00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 오른쪽: 분석 결과 -->
+            <div class="col-lg-6">
+                <!-- 분석 진행 상황 -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">📊 분석 진행 상황</h5>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>진행률</span>
+                                <span id="progressPercent">0%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" id="progressBar" style="width: 0%">0%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="small text-muted">현재 시간</div>
+                                <div id="currentAnalysisTime">-</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="small text-muted">감지된 핸드</div>
+                                <div id="detectedHands">0</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-2 small text-muted" id="analysisStatus">대기 중...</div>
+                    </div>
+                </div>
+
+                <!-- 분석 통계 -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">📈 분석 통계</h5>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number" id="totalHands">0</div>
+                                <div class="stat-label">총 핸드</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="longHands">0</div>
+                                <div class="stat-label">긴 핸드</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="shortHands">0</div>
+                                <div class="stat-label">짧은 핸드</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="avgDuration">0s</div>
+                                <div class="stat-label">평균 길이</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 액션 버튼 -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">🔧 작업</h5>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-success" onclick="exportResults()" id="exportBtn" disabled>
+                                💾 결과 내보내기 (JSON)
+                            </button>
+                            <button class="btn btn-secondary" onclick="previewResults()">
+                                👁️ 결과 미리보기
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="clearResults()">
+                                🗑️ 결과 초기화
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 핸드 목록 -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="card-title mb-0">🃏 감지된 핸드 목록</h5>
+                            <div class="btn-group btn-group-sm">
+                                <input type="radio" class="btn-check" name="handFilter" id="filterAll" checked>
+                                <label class="btn btn-outline-secondary" for="filterAll">전체</label>
+                                
+                                <input type="radio" class="btn-check" name="handFilter" id="filterLong">
+                                <label class="btn btn-outline-danger" for="filterLong">긴 핸드</label>
+                                
+                                <input type="radio" class="btn-check" name="handFilter" id="filterShort">
+                                <label class="btn btn-outline-warning" for="filterShort">짧은 핸드</label>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-container" id="handsContainer">
+                            <div class="text-muted text-center py-4">
+                                분석을 시작하면 감지된 핸드가 여기에 표시됩니다.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 전역 변수
+        let gfxModel = null;
+        let video = null;
+        let canvas = null;
+        let ctx = null;
+        let isPlaying = false;
+        let animationId = null;
+        let analysisResults = [];
+        let isAnalyzing = false;
+
+        // 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            canvas = document.getElementById('videoCanvas');
+            ctx = canvas.getContext('2d');
+            
+            // 필터 이벤트 리스너
+            document.querySelectorAll('input[name="handFilter"]').forEach(radio => {
+                radio.addEventListener('change', updateHandsDisplay);
+            });
+            
+            updateThresholdDisplay();
+            console.log('포커 핸드 분류기 초기화 완료');
+        });
+
+        // 임계값 표시 업데이트
+        function updateThresholdDisplay() {
+            const value = Math.round(parseFloat(document.getElementById('confidenceThreshold').value) * 100);
+            document.getElementById('thresholdValue').textContent = value;
+        }
+
+        // GFX 모델 업로드
+        function handleModelUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    gfxModel = JSON.parse(e.target.result);
+                    document.getElementById('modelStatus').textContent = 
+                        `모델 로드 완료: ${gfxModel.samples?.length || 0}개 샘플`;
+                    document.getElementById('modelStatus').className = 'small text-success mt-1';
+                    checkAnalysisReady();
+                } catch (error) {
+                    alert('모델 파일을 읽을 수 없습니다.');
+                    console.error('모델 로드 오류:', error);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // 로컬 저장소에서 모델 로드
+        function loadFromLocalStorage() {
+            const savedModel = localStorage.getItem('gfxModel');
+            if (savedModel) {
+                try {
+                    gfxModel = JSON.parse(savedModel);
+                    document.getElementById('modelStatus').textContent = 
+                        `로컬 모델 로드 완료: ${gfxModel.samples?.length || 0}개 샘플`;
+                    document.getElementById('modelStatus').className = 'small text-success mt-1';
+                    checkAnalysisReady();
+                } catch (error) {
+                    alert('저장된 모델을 읽을 수 없습니다.');
+                }
+            } else {
+                alert('저장된 GFX 모델이 없습니다. 먼저 GFX 학습기에서 모델을 학습시켜 주세요.');
+            }
+        }
+
+        // 비디오 업로드
+        function handleVideoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            video = document.createElement('video');
+            video.src = URL.createObjectURL(file);
+            video.addEventListener('loadedmetadata', () => {
+                // 캔버스 크기 조정
+                const aspectRatio = video.videoWidth / video.videoHeight;
+                const maxWidth = 480;
+                const maxHeight = 270;
+                
+                if (aspectRatio > maxWidth / maxHeight) {
+                    canvas.width = maxWidth;
+                    canvas.height = maxWidth / aspectRatio;
+                } else {
+                    canvas.height = maxHeight;
+                    canvas.width = maxHeight * aspectRatio;
+                }
+                
+                // 컨트롤 활성화
+                enableVideoControls();
+                
+                // 첫 프레임 그리기
+                drawFrame();
+                
+                // 타임라인 설정
+                document.getElementById('timelineSlider').max = video.duration;
+                document.getElementById('totalTime').textContent = formatTime(video.duration);
+                
+                checkAnalysisReady();
+            });
+            
+            video.addEventListener('timeupdate', updateTimeline);
+        }
+
+        // 분석 준비 상태 확인
+        function checkAnalysisReady() {
+            const ready = gfxModel && video;
+            document.getElementById('startAnalysisBtn').disabled = !ready;
+        }
+
+        // 비디오 컨트롤 활성화
+        function enableVideoControls() {
+            document.getElementById('playBtn').disabled = false;
+            document.getElementById('pauseBtn').disabled = false;
+            document.getElementById('timelineSlider').disabled = false;
+        }
+
+        // 프레임 그리기
+        function drawFrame() {
+            if (!video) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        }
+
+        // 비디오 재생
+        function playVideo() {
+            if (!video) return;
+            video.play();
+            isPlaying = true;
+            animate();
+        }
+
+        // 비디오 일시정지
+        function pauseVideo() {
+            if (!video) return;
+            video.pause();
+            isPlaying = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+        }
+
+        // 비디오 이동
+        function seekVideo(value) {
+            if (!video) return;
+            video.currentTime = (value / 100) * video.duration;
+            drawFrame();
+        }
+
+        // 애니메이션 루프
+        function animate() {
+            if (isPlaying) {
+                drawFrame();
+                animationId = requestAnimationFrame(animate);
+            }
+        }
+
+        // 타임라인 업데이트
+        function updateTimeline() {
+            if (!video) return;
+            const progress = (video.currentTime / video.duration) * 100;
+            document.getElementById('timelineSlider').value = progress;
+            document.getElementById('currentTime').textContent = formatTime(video.currentTime);
+        }
+
+        // 시간 포맷
+        function formatTime(seconds) {
+            if (isNaN(seconds) || seconds < 0) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // 핸드 분류 시작
+        async function startHandClassification() {
+            if (isAnalyzing || !gfxModel || !video) return;
+            
+            isAnalyzing = true;
+            document.getElementById('startAnalysisBtn').disabled = true;
+            analysisResults = [];
+            
+            try {
+                await performHandClassification();
+            } catch (error) {
+                console.error('분석 오류:', error);
+                alert('분석 중 오류가 발생했습니다: ' + error.message);
+            } finally {
+                isAnalyzing = false;
+                document.getElementById('startAnalysisBtn').disabled = false;
+            }
+        }
+
+        // 핸드 분류 실행 (시뮬레이션)
+        async function performHandClassification() {
+            const frameSkip = parseInt(document.getElementById('frameSkip').value);
+            const confidenceThreshold = parseFloat(document.getElementById('confidenceThreshold').value);
+            const minDuration = parseInt(document.getElementById('minHandDuration').value);
+            const maxDuration = parseInt(document.getElementById('maxHandDuration').value);
+            
+            document.getElementById('analysisStatus').textContent = '영상 분석 중...';
+            
+            const totalFrames = Math.floor(video.duration * 30); // 30fps 가정
+            const sampleFrames = Math.floor(totalFrames / frameSkip);
+            
+            let gfxSegments = [];
+            let currentGfxStart = null;
+            
+            // GFX 구간 감지 시뮬레이션
+            for (let i = 0; i < sampleFrames; i++) {
+                const timestamp = (i * frameSkip) / 30;
+                video.currentTime = timestamp;
+                
+                await new Promise(resolve => {
+                    video.addEventListener('seeked', resolve, { once: true });
+                });
+                
+                drawFrame();
+                
+                // GFX 감지 시뮬레이션 (실제로는 모델 예측)
+                const isGfx = simulateGfxDetection(timestamp);
+                const confidence = Math.random() * 0.4 + 0.6; // 0.6-1.0
+                
+                if (isGfx && confidence >= confidenceThreshold) {
+                    if (currentGfxStart === null) {
+                        currentGfxStart = timestamp;
+                    }
+                } else if (currentGfxStart !== null) {
+                    // GFX 구간 종료
+                    const gfxEnd = timestamp;
+                    const handStart = Math.max(0, currentGfxStart - 15);
+                    const handEnd = Math.min(video.duration, gfxEnd + 15);
+                    const duration = handEnd - handStart;
+                    
+                    if (duration >= minDuration && duration <= maxDuration) {
+                        gfxSegments.push({
+                            handId: gfxSegments.length + 1,
+                            handStart: handStart,
+                            handEnd: handEnd,
+                            duration: duration,
+                            gfxStart: currentGfxStart,
+                            gfxEnd: gfxEnd,
+                            confidence: confidence
+                        });
+                    }
+                    
+                    currentGfxStart = null;
+                }
+                
+                // UI 업데이트
+                const progress = (i / sampleFrames) * 100;
+                updateProgress(progress);
+                document.getElementById('currentAnalysisTime').textContent = formatTime(timestamp);
+                document.getElementById('detectedHands').textContent = gfxSegments.length;
+                
+                await new Promise(resolve => setTimeout(resolve, 10));
+            }
+            
+            analysisResults = gfxSegments;
+            updateProgress(100);
+            updateStatistics();
+            updateHandsDisplay();
+            
+            document.getElementById('analysisStatus').textContent = 
+                `분석 완료 - ${gfxSegments.length}개 핸드 감지`;
+            document.getElementById('exportBtn').disabled = false;
+        }
+
+        // GFX 감지 시뮬레이션
+        function simulateGfxDetection(timestamp) {
+            // 시뮬레이션: 특정 시간대에 GFX가 있다고 가정
+            const minute = Math.floor(timestamp / 60);
+            const second = Math.floor(timestamp % 60);
+            
+            // 매 2-5분마다 30-60초 길이의 GFX 구간 시뮬레이션
+            return (minute % 3 === 0 || minute % 4 === 1) && second >= 10 && second <= 50;
+        }
+
+        // 진행률 업데이트
+        function updateProgress(percent) {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressPercent');
+            
+            progressBar.style.width = `${percent}%`;
+            progressBar.textContent = `${Math.round(percent)}%`;
+            progressText.textContent = `${Math.round(percent)}%`;
+        }
+
+        // 통계 업데이트
+        function updateStatistics() {
+            const longHandThreshold = 300; // 5분
+            const longHands = analysisResults.filter(h => h.duration > longHandThreshold).length;
+            const shortHands = analysisResults.length - longHands;
+            const avgDuration = analysisResults.length > 0 ? 
+                analysisResults.reduce((sum, h) => sum + h.duration, 0) / analysisResults.length : 0;
+            
+            document.getElementById('totalHands').textContent = analysisResults.length;
+            document.getElementById('longHands').textContent = longHands;
+            document.getElementById('shortHands').textContent = shortHands;
+            document.getElementById('avgDuration').textContent = `${Math.round(avgDuration)}s`;
+        }
+
+        // 핸드 목록 표시 업데이트
+        function updateHandsDisplay() {
+            const container = document.getElementById('handsContainer');
+            const filter = document.querySelector('input[name="handFilter"]:checked').id;
+            
+            let hands = [...analysisResults];
+            const longHandThreshold = 300; // 5분
+            
+            // 필터 적용
+            switch (filter) {
+                case 'filterLong':
+                    hands = hands.filter(h => h.duration > longHandThreshold);
+                    break;
+                case 'filterShort':
+                    hands = hands.filter(h => h.duration <= longHandThreshold);
+                    break;
+            }
+            
+            if (hands.length === 0) {
+                container.innerHTML = '<div class="text-muted text-center py-4">필터링된 핸드가 없습니다.</div>';
+                return;
+            }
+            
+            const html = hands.map(hand => {
+                const isLongHand = hand.duration > longHandThreshold;
+                const className = isLongHand ? 'long-hand' : 'short-hand';
+                
+                return `
+                    <div class="hand-item ${className}" onclick="jumpToHand(${hand.handStart})">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>핸드 ${hand.handId}</strong>
+                                <span class="text-muted ms-2">${formatTime(hand.handStart)} - ${formatTime(hand.handEnd)}</span>
+                            </div>
+                            <div class="text-end">
+                                <div class="text-warning"><strong>${Math.round(hand.duration)}초</strong></div>
+                                <small class="text-muted">신뢰도: ${Math.round(hand.confidence * 100)}%</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = html;
+        }
+
+        // 핸드로 이동
+        function jumpToHand(startTime) {
+            if (video) {
+                video.currentTime = startTime;
+                drawFrame();
+            }
+        }
+
+        // 결과 내보내기
+        function exportResults() {
+            if (analysisResults.length === 0) {
+                alert('분석 결과가 없습니다.');
+                return;
+            }
+            
+            const exportData = {
+                type: 'hand_classification',
+                timestamp: new Date().toISOString(),
+                video_duration: video.duration,
+                total_hands: analysisResults.length,
+                hands: analysisResults.map(hand => ({
+                    hand_id: hand.handId,
+                    start_time: hand.handStart,
+                    end_time: hand.handEnd,
+                    duration: hand.duration,
+                    gfx_start: hand.gfxStart,
+                    gfx_end: hand.gfxEnd,
+                    confidence: hand.confidence
+                }))
+            };
+            
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `hand_classification_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 결과 미리보기
+        function previewResults() {
+            if (analysisResults.length === 0) {
+                alert('분석 결과가 없습니다.');
+                return;
+            }
+            
+            const preview = analysisResults.slice(0, 5).map(hand => 
+                `핸드 ${hand.handId}: ${formatTime(hand.handStart)} - ${formatTime(hand.handEnd)} (${Math.round(hand.duration)}초)`
+            ).join('\n');
+            
+            alert(`감지된 핸드 (상위 5개):\n\n${preview}\n\n총 ${analysisResults.length}개 핸드가 감지되었습니다.`);
+        }
+
+        // 결과 초기화
+        function clearResults() {
+            if (confirm('분석 결과를 모두 삭제하시겠습니까?')) {
+                analysisResults = [];
+                updateStatistics();
+                updateHandsDisplay();
+                updateProgress(0);
+                
+                document.getElementById('analysisStatus').textContent = '대기 중...';
+                document.getElementById('currentAnalysisTime').textContent = '-';
+                document.getElementById('detectedHands').textContent = '0';
+                document.getElementById('exportBtn').disabled = true;
+            }
+        }
+    </script>
+</body>
+</html>

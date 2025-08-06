@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 팟 사이즈 분석기 - OCR 기반 자동 인식</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar-dark {
+            background-color: #161b22 !important;
+        }
+        .card {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+        }
+        .card:hover {
+            border-color: #58a6ff;
+            box-shadow: 0 0 10px rgba(88, 166, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #238636;
+            border-color: #238636;
+        }
+        .btn-primary:hover {
+            background-color: #2ea043;
+            border-color: #2ea043;
+        }
+        .btn-success {
+            background-color: #1f6feb;
+            border-color: #1f6feb;
+        }
+        .btn-success:hover {
+            background-color: #388bfd;
+            border-color: #388bfd;
+        }
+        .form-control, .form-select {
+            background-color: #21262d;
+            border-color: #30363d;
+            color: #c9d1d9;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: #21262d;
+            border-color: #58a6ff;
+            color: #c9d1d9;
+            box-shadow: 0 0 0 0.25rem rgba(88, 166, 255, 0.25);
+        }
+        #videoCanvas {
+            max-width: 100%;
+            border: 2px solid #30363d;
+            border-radius: 6px;
+            background-color: #000;
+        }
+        .roi-overlay {
+            position: absolute;
+            border: 2px dashed #ff6b6b;
+            background-color: rgba(255, 107, 107, 0.1);
+            pointer-events: none;
+        }
+        .roi-label {
+            position: absolute;
+            background-color: #ff6b6b;
+            color: white;
+            padding: 2px 6px;
+            font-size: 12px;
+            border-radius: 3px;
+            top: -20px;
+            left: 0;
+        }
+        .timeline-container {
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 10px;
+            background-color: #0d1117;
+        }
+        .timeline-item {
+            padding: 8px 12px;
+            margin: 4px 0;
+            background-color: #21262d;
+            border-radius: 6px;
+            border-left: 4px solid #238636;
+        }
+        .timeline-item:hover {
+            background-color: #30363d;
+            cursor: pointer;
+        }
+        .pot-change {
+            border-left-color: #f85149 !important;
+        }
+        .pot-stable {
+            border-left-color: #7c3aed !important;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #58a6ff;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: #8b949e;
+            margin-top: 5px;
+        }
+        .progress {
+            height: 20px;
+            background-color: #21262d;
+        }
+        .progress-bar {
+            background-color: #238636;
+        }
+        .alert-custom {
+            background-color: #1c2128;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1">💰 팟 사이즈 분석기</span>
+            <div>
+                <a href="../index.html" class="btn btn-outline-light btn-sm me-2">메인</a>
+                <a href="gfx_overlay_trainer.html" class="btn btn-outline-light btn-sm">GFX 학습기</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- 안내 메시지 -->
+        <div class="alert alert-custom mb-4">
+            <h5>🎯 팟 사이즈 자동 인식 시스템</h5>
+            <p class="mb-0">
+                포커 영상에서 팟 사이즈를 자동으로 인식하여 타임라인을 생성합니다. 
+                OCR 기술을 사용하여 화면의 팟 표시 영역을 분석합니다.
+            </p>
+        </div>
+
+        <div class="row">
+            <!-- 왼쪽: 비디오 및 컨트롤 -->
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">📹 비디오 분석</h5>
+                        
+                        <!-- 파일 업로드 -->
+                        <div class="mb-3">
+                            <label class="form-label">비디오 파일 선택</label>
+                            <input type="file" class="form-control" id="videoInput" 
+                                   accept="video/*" onchange="handleVideoUpload(event)">
+                        </div>
+                        
+                        <!-- 비디오 캔버스 -->
+                        <div class="position-relative mb-3">
+                            <canvas id="videoCanvas" width="640" height="360"></canvas>
+                            <!-- ROI 오버레이들이 여기에 동적으로 추가됨 -->
+                        </div>
+                        
+                        <!-- 비디오 컨트롤 -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="btn-group w-100" role="group">
+                                    <button class="btn btn-secondary" id="playBtn" onclick="playVideo()" disabled>
+                                        ▶️ 재생
+                                    </button>
+                                    <button class="btn btn-secondary" id="pauseBtn" onclick="pauseVideo()" disabled>
+                                        ⏸️ 일시정지
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="skipVideo(-10)" disabled id="skipBack">
+                                        ⏪ -10초
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="skipVideo(10)" disabled id="skipForward">
+                                        ⏩ +10초
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <button class="btn btn-primary w-100" id="analyzeBtn" 
+                                        onclick="startAnalysis()" disabled>
+                                    🔍 팟 사이즈 분석 시작
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 타임라인 슬라이더 -->
+                        <div class="mb-3">
+                            <label class="form-label">재생 위치</label>
+                            <input type="range" class="form-range" id="timelineSlider" 
+                                   min="0" max="100" value="0" disabled
+                                   oninput="seekVideo(this.value)">
+                            <div class="d-flex justify-content-between small text-muted">
+                                <span id="currentTime">0:00</span>
+                                <span id="totalTime">0:00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROI 설정 -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">🎯 ROI 영역 설정</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label">영역 이름</label>
+                                <select class="form-select" id="roiSelect" onchange="selectROI()">
+                                    <option value="center">중앙 팟 (기본)</option>
+                                    <option value="top">상단 팟</option>
+                                    <option value="bottom">하단 팟</option>
+                                    <option value="custom">사용자 정의</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">X</label>
+                                <input type="number" class="form-control" id="roiX" value="300" 
+                                       onchange="updateROI()" min="0">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Y</label>
+                                <input type="number" class="form-control" id="roiY" value="200" 
+                                       onchange="updateROI()" min="0">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">너비</label>
+                                <input type="number" class="form-control" id="roiWidth" value="200" 
+                                       onchange="updateROI()" min="50">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">높이</label>
+                                <input type="number" class="form-control" id="roiHeight" value="60" 
+                                       onchange="updateROI()" min="30">
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-success btn-sm" onclick="testROI()">
+                                🧪 현재 프레임 OCR 테스트
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="resetROI()">
+                                🔄 기본값 복원
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 오른쪽: 분석 결과 -->
+            <div class="col-lg-4">
+                <!-- 분석 상태 -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">📊 분석 상태</h5>
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between">
+                                <span>진행률</span>
+                                <span id="progressPercent">0%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="small text-muted" id="analysisStatus">대기 중...</div>
+                    </div>
+                </div>
+
+                <!-- 실시간 OCR 결과 -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">👁️ 실시간 OCR</h5>
+                        <div class="mb-2">
+                            <strong>인식 텍스트:</strong>
+                            <div id="ocrText" class="text-success">-</div>
+                        </div>
+                        <div class="mb-2">
+                            <strong>팟 값:</strong>
+                            <div id="potValue" class="text-warning">-</div>
+                        </div>
+                        <div>
+                            <strong>신뢰도:</strong>
+                            <div id="confidence" class="text-info">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 통계 -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">📈 통계</h5>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number" id="totalReadings">0</div>
+                                <div class="stat-label">총 읽기 수</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="validReadings">0</div>
+                                <div class="stat-label">유효 인식</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="maxPot">$0</div>
+                                <div class="stat-label">최대 팟</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="avgConfidence">0%</div>
+                                <div class="stat-label">평균 신뢰도</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 액션 버튼 -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">🔧 작업</h5>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-success" onclick="exportResults()" id="exportBtn" disabled>
+                                💾 결과 내보내기 (JSON)
+                            </button>
+                            <button class="btn btn-secondary" onclick="importResults()">
+                                📂 결과 불러오기
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="clearResults()">
+                                🗑️ 결과 초기화
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 팟 사이즈 타임라인 -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="card-title mb-0">⏱️ 팟 사이즈 타임라인</h5>
+                            <div class="btn-group btn-group-sm">
+                                <input type="radio" class="btn-check" name="timelineFilter" id="filterAll" checked>
+                                <label class="btn btn-outline-secondary" for="filterAll">전체</label>
+                                
+                                <input type="radio" class="btn-check" name="timelineFilter" id="filterChanges">
+                                <label class="btn btn-outline-warning" for="filterChanges">변화만</label>
+                                
+                                <input type="radio" class="btn-check" name="timelineFilter" id="filterHigh">
+                                <label class="btn btn-outline-success" for="filterHigh">고신뢰도만</label>
+                            </div>
+                        </div>
+                        <div class="timeline-container" id="timelineContainer">
+                            <div class="text-muted text-center py-4">
+                                분석을 시작하면 팟 사이즈 타임라인이 여기에 표시됩니다.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 전역 변수
+        let video = null;
+        let canvas = null;
+        let ctx = null;
+        let isPlaying = false;
+        let animationId = null;
+        let analysisResults = [];
+        let currentROI = { x: 300, y: 200, width: 200, height: 60 };
+        let isAnalyzing = false;
+
+        // 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            canvas = document.getElementById('videoCanvas');
+            ctx = canvas.getContext('2d');
+            
+            // ROI 오버레이 생성
+            createROIOverlay();
+            
+            // 이벤트 리스너
+            document.querySelectorAll('input[name="timelineFilter"]').forEach(radio => {
+                radio.addEventListener('change', updateTimelineDisplay);
+            });
+            
+            console.log('팟 사이즈 분석기 초기화 완료');
+        });
+
+        // 비디오 업로드 처리
+        function handleVideoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            video = document.createElement('video');
+            video.src = URL.createObjectURL(file);
+            video.addEventListener('loadedmetadata', () => {
+                // 캔버스 크기 조정
+                const aspectRatio = video.videoWidth / video.videoHeight;
+                const maxWidth = 640;
+                const maxHeight = 360;
+                
+                if (aspectRatio > maxWidth / maxHeight) {
+                    canvas.width = maxWidth;
+                    canvas.height = maxWidth / aspectRatio;
+                } else {
+                    canvas.height = maxHeight;
+                    canvas.width = maxHeight * aspectRatio;
+                }
+                
+                // 컨트롤 활성화
+                enableControls();
+                
+                // 첫 프레임 그리기
+                drawFrame();
+                
+                // 타임라인 설정
+                document.getElementById('timelineSlider').max = video.duration;
+                document.getElementById('totalTime').textContent = formatTime(video.duration);
+            });
+            
+            video.addEventListener('timeupdate', updateTimeline);
+        }
+
+        // 컨트롤 활성화
+        function enableControls() {
+            document.getElementById('playBtn').disabled = false;
+            document.getElementById('pauseBtn').disabled = false;
+            document.getElementById('skipBack').disabled = false;
+            document.getElementById('skipForward').disabled = false;
+            document.getElementById('timelineSlider').disabled = false;
+            document.getElementById('analyzeBtn').disabled = false;
+        }
+
+        // 프레임 그리기
+        function drawFrame() {
+            if (!video) return;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // 현재 프레임에서 실시간 OCR 테스트
+            if (!isAnalyzing) {
+                testCurrentFrameOCR();
+            }
+        }
+
+        // 비디오 재생
+        function playVideo() {
+            if (!video) return;
+            video.play();
+            isPlaying = true;
+            animate();
+        }
+
+        // 비디오 일시정지
+        function pauseVideo() {
+            if (!video) return;
+            video.pause();
+            isPlaying = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+        }
+
+        // 비디오 스킵
+        function skipVideo(seconds) {
+            if (!video) return;
+            video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + seconds));
+            drawFrame();
+        }
+
+        // 비디오 이동
+        function seekVideo(value) {
+            if (!video) return;
+            video.currentTime = (value / 100) * video.duration;
+            drawFrame();
+        }
+
+        // 애니메이션 루프
+        function animate() {
+            if (isPlaying) {
+                drawFrame();
+                animationId = requestAnimationFrame(animate);
+            }
+        }
+
+        // 타임라인 업데이트
+        function updateTimeline() {
+            if (!video) return;
+            const progress = (video.currentTime / video.duration) * 100;
+            document.getElementById('timelineSlider').value = progress;
+            document.getElementById('currentTime').textContent = formatTime(video.currentTime);
+        }
+
+        // 시간 포맷
+        function formatTime(seconds) {
+            if (isNaN(seconds) || seconds < 0) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // ROI 오버레이 생성
+        function createROIOverlay() {
+            const container = canvas.parentElement;
+            const overlay = document.createElement('div');
+            overlay.className = 'roi-overlay';
+            overlay.id = 'roiOverlay';
+            
+            const label = document.createElement('div');
+            label.className = 'roi-label';
+            label.textContent = 'POT ROI';
+            overlay.appendChild(label);
+            
+            container.appendChild(overlay);
+            updateROIOverlay();
+        }
+
+        // ROI 오버레이 업데이트
+        function updateROIOverlay() {
+            const overlay = document.getElementById('roiOverlay');
+            if (!overlay) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = rect.width / canvas.width;
+            const scaleY = rect.height / canvas.height;
+            
+            overlay.style.left = (rect.left - canvas.parentElement.getBoundingClientRect().left + currentROI.x * scaleX) + 'px';
+            overlay.style.top = (rect.top - canvas.parentElement.getBoundingClientRect().top + currentROI.y * scaleY) + 'px';
+            overlay.style.width = (currentROI.width * scaleX) + 'px';
+            overlay.style.height = (currentROI.height * scaleY) + 'px';
+        }
+
+        // ROI 선택
+        function selectROI() {
+            const select = document.getElementById('roiSelect');
+            const presets = {
+                center: { x: 300, y: 200, width: 200, height: 60 },
+                top: { x: 300, y: 50, width: 200, height: 40 },
+                bottom: { x: 300, y: 320, width: 200, height: 40 },
+                custom: currentROI
+            };
+            
+            if (presets[select.value]) {
+                currentROI = { ...presets[select.value] };
+                updateROIInputs();
+                updateROIOverlay();
+            }
+        }
+
+        // ROI 입력 업데이트
+        function updateROIInputs() {
+            document.getElementById('roiX').value = currentROI.x;
+            document.getElementById('roiY').value = currentROI.y;
+            document.getElementById('roiWidth').value = currentROI.width;
+            document.getElementById('roiHeight').value = currentROI.height;
+        }
+
+        // ROI 업데이트
+        function updateROI() {
+            currentROI.x = parseInt(document.getElementById('roiX').value);
+            currentROI.y = parseInt(document.getElementById('roiY').value);
+            currentROI.width = parseInt(document.getElementById('roiWidth').value);
+            currentROI.height = parseInt(document.getElementById('roiHeight').value);
+            
+            updateROIOverlay();
+            
+            // 사용자 정의로 변경
+            document.getElementById('roiSelect').value = 'custom';
+        }
+
+        // ROI 리셋
+        function resetROI() {
+            document.getElementById('roiSelect').value = 'center';
+            selectROI();
+        }
+
+        // 현재 프레임 OCR 테스트
+        function testCurrentFrameOCR() {
+            if (!video || !canvas) return;
+            
+            // 시뮬레이션된 OCR 결과 (실제로는 서버 API 호출)
+            const mockResults = generateMockOCR();
+            
+            // UI 업데이트
+            document.getElementById('ocrText').textContent = mockResults.text;
+            document.getElementById('potValue').textContent = mockResults.value ? `$${mockResults.value.toLocaleString()}` : '-';
+            document.getElementById('confidence').textContent = `${mockResults.confidence}%`;
+        }
+
+        // ROI 테스트
+        function testROI() {
+            if (!video) {
+                alert('비디오를 먼저 업로드해주세요.');
+                return;
+            }
+            
+            testCurrentFrameOCR();
+            alert(`ROI 테스트 완료!\n위치: (${currentROI.x}, ${currentROI.y})\n크기: ${currentROI.width} x ${currentROI.height}`);
+        }
+
+        // 모의 OCR 결과 생성
+        function generateMockOCR() {
+            const timestamp = video ? video.currentTime : 0;
+            const variations = [
+                { text: "POT $1,234", value: 1234, confidence: 85 },
+                { text: "$2,567", value: 2567, confidence: 92 },
+                { text: "Total: $890", value: 890, confidence: 78 },
+                { text: "3,456 BB", value: 3456, confidence: 88 },
+                { text: "$5.2K", value: 5200, confidence: 95 }
+            ];
+            
+            // 시간에 따라 다른 결과 반환
+            const index = Math.floor(timestamp / 10) % variations.length;
+            return variations[index];
+        }
+
+        // 분석 시작
+        async function startAnalysis() {
+            if (!video) {
+                alert('비디오를 먼저 업로드해주세요.');
+                return;
+            }
+            
+            if (isAnalyzing) return;
+            
+            isAnalyzing = true;
+            analysisResults = [];
+            
+            document.getElementById('analyzeBtn').disabled = true;
+            document.getElementById('analysisStatus').textContent = '분석 중...';
+            
+            const totalFrames = Math.floor(video.duration);
+            
+            for (let i = 0; i < totalFrames; i += 2) { // 2초마다 분석
+                video.currentTime = i;
+                await new Promise(resolve => {
+                    video.addEventListener('seeked', resolve, { once: true });
+                });
+                
+                drawFrame();
+                
+                // OCR 수행 (모의)
+                const result = generateMockOCR();
+                if (result.value) {
+                    analysisResults.push({
+                        timestamp: i,
+                        ...result
+                    });
+                }
+                
+                // 진행률 업데이트
+                const progress = (i / totalFrames) * 100;
+                document.getElementById('progressBar').style.width = `${progress}%`;
+                document.getElementById('progressPercent').textContent = `${Math.round(progress)}%`;
+                
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            // 분석 완료
+            isAnalyzing = false;
+            document.getElementById('analyzeBtn').disabled = false;
+            document.getElementById('analysisStatus').textContent = `분석 완료 - ${analysisResults.length}개 결과`;
+            document.getElementById('exportBtn').disabled = false;
+            
+            updateStats();
+            updateTimelineDisplay();
+        }
+
+        // 통계 업데이트
+        function updateStats() {
+            const validResults = analysisResults.filter(r => r.value > 0);
+            
+            document.getElementById('totalReadings').textContent = analysisResults.length;
+            document.getElementById('validReadings').textContent = validResults.length;
+            
+            if (validResults.length > 0) {
+                const maxPot = Math.max(...validResults.map(r => r.value));
+                const avgConfidence = validResults.reduce((sum, r) => sum + r.confidence, 0) / validResults.length;
+                
+                document.getElementById('maxPot').textContent = `$${maxPot.toLocaleString()}`;
+                document.getElementById('avgConfidence').textContent = `${Math.round(avgConfidence)}%`;
+            }
+        }
+
+        // 타임라인 표시 업데이트
+        function updateTimelineDisplay() {
+            const container = document.getElementById('timelineContainer');
+            const filter = document.querySelector('input[name="timelineFilter"]:checked').id;
+            
+            let filteredResults = [...analysisResults];
+            
+            switch (filter) {
+                case 'filterChanges':
+                    filteredResults = detectPotChanges(filteredResults);
+                    break;
+                case 'filterHigh':
+                    filteredResults = filteredResults.filter(r => r.confidence >= 80);
+                    break;
+            }
+            
+            if (filteredResults.length === 0) {
+                container.innerHTML = '<div class="text-muted text-center py-4">필터링된 결과가 없습니다.</div>';
+                return;
+            }
+            
+            const html = filteredResults.map(result => {
+                const changeClass = result.isChange ? 'pot-change' : '';
+                return `
+                    <div class="timeline-item ${changeClass}" onclick="jumpToTime(${result.timestamp})">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <strong>${formatTime(result.timestamp)}</strong>
+                                <span class="text-muted ms-2">${result.text}</span>
+                            </div>
+                            <div>
+                                <span class="text-warning">$${result.value.toLocaleString()}</span>
+                                <small class="text-muted ms-2">(${result.confidence}%)</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = html;
+        }
+
+        // 팟 변화 감지
+        function detectPotChanges(results) {
+            if (results.length < 2) return results;
+            
+            const changes = [results[0]];
+            let prevValue = results[0].value;
+            
+            for (let i = 1; i < results.length; i++) {
+                const current = results[i];
+                if (Math.abs(current.value - prevValue) / prevValue > 0.1) { // 10% 이상 변화
+                    current.isChange = true;
+                    changes.push(current);
+                    prevValue = current.value;
+                }
+            }
+            
+            return changes;
+        }
+
+        // 시간으로 이동
+        function jumpToTime(timestamp) {
+            if (video) {
+                video.currentTime = timestamp;
+                drawFrame();
+            }
+        }
+
+        // 결과 내보내기
+        function exportResults() {
+            if (analysisResults.length === 0) {
+                alert('분석 결과가 없습니다.');
+                return;
+            }
+            
+            const exportData = {
+                type: 'pot_size_analysis',
+                timestamp: new Date().toISOString(),
+                video_duration: video.duration,
+                roi_settings: currentROI,
+                total_readings: analysisResults.length,
+                results: analysisResults
+            };
+            
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `pot_analysis_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 결과 불러오기
+        function importResults() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        if (data.type === 'pot_size_analysis') {
+                            analysisResults = data.results || [];
+                            currentROI = data.roi_settings || currentROI;
+                            
+                            updateStats();
+                            updateTimelineDisplay();
+                            updateROIInputs();
+                            updateROIOverlay();
+                            
+                            document.getElementById('exportBtn').disabled = false;
+                            alert(`${analysisResults.length}개 결과를 불러왔습니다.`);
+                        } else {
+                            alert('올바른 분석 결과 파일이 아닙니다.');
+                        }
+                    } catch (error) {
+                        alert('파일을 읽을 수 없습니다.');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // 결과 초기화
+        function clearResults() {
+            if (confirm('모든 분석 결과를 삭제하시겠습니까?')) {
+                analysisResults = [];
+                updateStats();
+                updateTimelineDisplay();
+                
+                document.getElementById('progressBar').style.width = '0%';
+                document.getElementById('progressPercent').textContent = '0%';
+                document.getElementById('analysisStatus').textContent = '대기 중...';
+                document.getElementById('exportBtn').disabled = true;
+            }
+        }
+
+        // 윈도우 리사이즈 시 ROI 오버레이 업데이트
+        window.addEventListener('resize', () => {
+            setTimeout(updateROIOverlay, 100);
+        });
+    </script>
+</body>
+</html>

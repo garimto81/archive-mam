@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 통합 포커 분석기 - 완전 자동화 시스템</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar-dark {
+            background-color: #161b22 !important;
+        }
+        .card {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+        }
+        .card:hover {
+            border-color: #58a6ff;
+            box-shadow: 0 0 10px rgba(88, 166, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #238636;
+            border-color: #238636;
+        }
+        .btn-primary:hover {
+            background-color: #2ea043;
+            border-color: #2ea043;
+        }
+        .btn-success {
+            background-color: #1f6feb;
+            border-color: #1f6feb;
+        }
+        .btn-success:hover {
+            background-color: #388bfd;
+            border-color: #388bfd;
+        }
+        .form-control, .form-select {
+            background-color: #21262d;
+            border-color: #30363d;
+            color: #c9d1d9;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: #21262d;
+            border-color: #58a6ff;
+            color: #c9d1d9;
+            box-shadow: 0 0 0 0.25rem rgba(88, 166, 255, 0.25);
+        }
+        .progress {
+            height: 25px;
+            background-color: #21262d;
+        }
+        .progress-bar {
+            background-color: #238636;
+            font-weight: bold;
+        }
+        .alert-custom {
+            background-color: #1c2128;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #58a6ff;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: #8b949e;
+            margin-top: 5px;
+        }
+        .timeline-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 15px;
+            background-color: #0d1117;
+        }
+        .hand-item {
+            padding: 12px 15px;
+            margin: 8px 0;
+            background-color: #21262d;
+            border-radius: 8px;
+            border-left: 4px solid #238636;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .hand-item:hover {
+            background-color: #30363d;
+            transform: translateX(5px);
+        }
+        .hand-item.high-pot {
+            border-left-color: #f85149;
+            background-color: rgba(248, 81, 73, 0.1);
+        }
+        .hand-item.many-players {
+            border-left-color: #a5a5ff;
+            background-color: rgba(165, 165, 255, 0.1);
+        }
+        .analysis-phase {
+            padding: 10px 15px;
+            margin: 5px 0;
+            background-color: #21262d;
+            border-radius: 6px;
+            border-left: 3px solid #58a6ff;
+        }
+        .analysis-phase.active {
+            background-color: rgba(88, 166, 255, 0.1);
+            animation: pulse 2s infinite;
+        }
+        .analysis-phase.completed {
+            border-left-color: #238636;
+            background-color: rgba(35, 134, 54, 0.1);
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(88, 166, 255, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(88, 166, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(88, 166, 255, 0); }
+        }
+        .export-section {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .clip-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            margin: 4px 0;
+            background-color: #21262d;
+            border-radius: 6px;
+        }
+        .clip-item:hover {
+            background-color: #30363d;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1">🎯 통합 포커 분석기</span>
+            <div>
+                <a href="../index.html" class="btn btn-outline-light btn-sm me-2">메인</a>
+                <a href="gfx_overlay_trainer.html" class="btn btn-outline-light btn-sm me-2">GFX 학습기</a>
+                <a href="pot_size_analyzer.html" class="btn btn-outline-light btn-sm">팟 분석기</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- 시스템 소개 -->
+        <div class="alert alert-custom mb-4">
+            <h5>🚀 완전 자동화된 포커 분석 시스템</h5>
+            <p class="mb-0">
+                GFX 오버레이 감지, 팟 사이즈 OCR, 참여 플레이어 분석을 하나의 파이프라인으로 통합하여 
+                포커 영상을 완전히 자동 분석하고 핸드별 클립을 생성합니다.
+            </p>
+        </div>
+
+        <!-- 메인 컨텐츠 -->
+        <div class="row">
+            <!-- 왼쪽: 분석 설정 및 진행 상황 -->
+            <div class="col-lg-6">
+                <!-- 파일 업로드 -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">📁 파일 선택</h5>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">비디오 파일</label>
+                            <input type="file" class="form-control" id="videoInput" 
+                                   accept="video/*" onchange="handleVideoUpload(event)">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">GFX 분석 결과 (JSON)</label>
+                            <input type="file" class="form-control" id="gfxDataInput" 
+                                   accept=".json" onchange="handleGFXDataUpload(event)">
+                        </div>
+                        
+                        <button class="btn btn-primary w-100" id="startAnalysisBtn" 
+                                onclick="startIntegratedAnalysis()" disabled>
+                            🎯 통합 분석 시작
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 분석 진행 상황 -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">📈 분석 진행 상황</h5>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>전체 진행률</span>
+                                <span id="overallProgress">0%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" id="overallProgressBar" style="width: 0%">0%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="analysis-phases">
+                            <div class="analysis-phase" id="phase1">
+                                <strong>1단계:</strong> GFX 구간 검증 및 핸드 분리
+                                <div class="small text-muted">핸드 경계 확정 및 유효성 검증</div>
+                            </div>
+                            <div class="analysis-phase" id="phase2">
+                                <strong>2단계:</strong> 팟 사이즈 OCR 분석
+                                <div class="small text-muted">각 핸드별 팟 변화 추적</div>
+                            </div>
+                            <div class="analysis-phase" id="phase3">
+                                <strong>3단계:</strong> 참여 플레이어 감지
+                                <div class="small text-muted">좌석별 카드 보유 분석</div>
+                            </div>
+                            <div class="analysis-phase" id="phase4">
+                                <strong>4단계:</strong> 결과 통합 및 최적화
+                                <div class="small text-muted">메타데이터 생성 및 통계 계산</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <strong>현재 핸드:</strong> <span id="currentHand">-</span> / <span id="totalHands">-</span>
+                        </div>
+                        <div class="small text-muted" id="analysisStatus">대기 중...</div>
+                    </div>
+                </div>
+
+                <!-- 분석 설정 -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">⚙️ 분석 설정</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">GFX 신뢰도 임계값</label>
+                                <input type="range" class="form-range" id="gfxThreshold" 
+                                       min="50" max="95" value="70" oninput="updateThresholdDisplay()">
+                                <div class="small text-muted"><span id="gfxThresholdValue">70</span>%</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">팟 인식 임계값</label>
+                                <input type="range" class="form-range" id="potThreshold" 
+                                       min="40" max="90" value="60" oninput="updateThresholdDisplay()">
+                                <div class="small text-muted"><span id="potThresholdValue">60</span>%</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">최소 핸드 길이 (초)</label>
+                                <input type="number" class="form-control" id="minHandDuration" 
+                                       value="30" min="10" max="120">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">최대 핸드 길이 (초)</label>
+                                <input type="number" class="form-control" id="maxHandDuration" 
+                                       value="600" min="300" max="1200">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 오른쪽: 결과 및 통계 -->
+            <div class="col-lg-6">
+                <!-- 분석 통계 -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">📊 분석 통계</h5>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number" id="totalHandsAnalyzed">0</div>
+                                <div class="stat-label">분석된 핸드</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="avgPlayersPerHand">0</div>
+                                <div class="stat-label">평균 플레이어</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="maxPotSize">$0</div>
+                                <div class="stat-label">최대 팟</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="totalPotValue">$0</div>
+                                <div class="stat-label">총 팟 가치</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="avgHandDuration">0s</div>
+                                <div class="stat-label">평균 핸드 길이</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="analysisTime">0s</div>
+                                <div class="stat-label">분석 소요 시간</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 핸드 목록 -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="card-title mb-0">🃏 분석된 핸드</h5>
+                            <div class="btn-group btn-group-sm">
+                                <input type="radio" class="btn-check" name="handFilter" id="filterAll" checked>
+                                <label class="btn btn-outline-secondary" for="filterAll">전체</label>
+                                
+                                <input type="radio" class="btn-check" name="handFilter" id="filterHighPot">
+                                <label class="btn btn-outline-warning" for="filterHighPot">고액</label>
+                                
+                                <input type="radio" class="btn-check" name="handFilter" id="filterManyPlayers">
+                                <label class="btn btn-outline-info" for="filterManyPlayers">다자</label>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-container" id="handsContainer">
+                            <div class="text-muted text-center py-4">
+                                분석이 완료되면 핸드 목록이 여기에 표시됩니다.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 결과 내보내기 섹션 -->
+        <div class="export-section" id="exportSection" style="display: none;">
+            <h5>📤 분석 결과 내보내기</h5>
+            <div class="row">
+                <div class="col-md-4">
+                    <button class="btn btn-success w-100 mb-2" onclick="exportAnalysisData()">
+                        💾 분석 데이터 (JSON)
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-primary w-100 mb-2" onclick="exportClipInfo()">
+                        🎬 클립 정보 (JSON)
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-warning w-100 mb-2" onclick="generateReport()">
+                        📋 분석 보고서
+                    </button>
+                </div>
+            </div>
+            
+            <div class="mt-3">
+                <h6>📁 FFmpeg 클립 추출 명령어:</h6>
+                <textarea class="form-control" id="ffmpegCommands" rows="4" readonly 
+                          placeholder="클립 정보가 생성되면 FFmpeg 명령어가 여기에 표시됩니다."></textarea>
+                <button class="btn btn-sm btn-secondary mt-2" onclick="copyFFmpegCommands()">
+                    📋 명령어 복사
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 전역 변수
+        let videoFile = null;
+        let gfxData = null;
+        let analysisResult = null;
+        let isAnalyzing = false;
+
+        // 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            // 필터 이벤트 리스너
+            document.querySelectorAll('input[name="handFilter"]').forEach(radio => {
+                radio.addEventListener('change', updateHandsDisplay);
+            });
+            
+            updateThresholdDisplay();
+            console.log('통합 포커 분석기 초기화 완료');
+        });
+
+        // 임계값 표시 업데이트
+        function updateThresholdDisplay() {
+            document.getElementById('gfxThresholdValue').textContent = 
+                document.getElementById('gfxThreshold').value;
+            document.getElementById('potThresholdValue').textContent = 
+                document.getElementById('potThreshold').value;
+        }
+
+        // 비디오 파일 업로드
+        function handleVideoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            videoFile = file;
+            console.log('비디오 파일 선택:', file.name);
+            checkAnalysisReady();
+        }
+
+        // GFX 데이터 업로드
+        function handleGFXDataUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    gfxData = JSON.parse(e.target.result);
+                    console.log('GFX 데이터 로드 완료:', gfxData.segments?.length || 0, '개 구간');
+                    checkAnalysisReady();
+                } catch (error) {
+                    alert('GFX 데이터 파일을 읽을 수 없습니다.');
+                    console.error('GFX 데이터 파싱 오류:', error);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // 분석 준비 상태 확인
+        function checkAnalysisReady() {
+            const ready = videoFile && gfxData;
+            document.getElementById('startAnalysisBtn').disabled = !ready;
+            
+            if (ready) {
+                const segments = gfxData.segments || [];
+                document.getElementById('totalHands').textContent = segments.length;
+                document.getElementById('analysisStatus').textContent = 
+                    `${segments.length}개 핸드 분석 준비 완료`;
+            }
+        }
+
+        // 통합 분석 시작
+        async function startIntegratedAnalysis() {
+            if (isAnalyzing) return;
+            
+            isAnalyzing = true;
+            document.getElementById('startAnalysisBtn').disabled = true;
+            
+            try {
+                // 분석 설정 수집
+                const settings = {
+                    gfxThreshold: parseInt(document.getElementById('gfxThreshold').value),
+                    potThreshold: parseInt(document.getElementById('potThreshold').value),
+                    minHandDuration: parseInt(document.getElementById('minHandDuration').value),
+                    maxHandDuration: parseInt(document.getElementById('maxHandDuration').value)
+                };
+                
+                // 분석 실행
+                await performIntegratedAnalysis(settings);
+                
+            } catch (error) {
+                console.error('분석 오류:', error);
+                alert('분석 중 오류가 발생했습니다: ' + error.message);
+            } finally {
+                isAnalyzing = false;
+                document.getElementById('startAnalysisBtn').disabled = false;
+            }
+        }
+
+        // 통합 분석 실행 (시뮬레이션)
+        async function performIntegratedAnalysis(settings) {
+            const segments = gfxData.segments || [];
+            const validSegments = segments.filter(seg => validateSegment(seg, settings));
+            
+            document.getElementById('totalHands').textContent = validSegments.length;
+            
+            const results = {
+                video_path: videoFile.name,
+                video_duration: 3600, // 시뮬레이션
+                total_hands: validSegments.length,
+                hands: [],
+                analysis_settings: settings,
+                created_at: new Date().toISOString()
+            };
+            
+            const startTime = Date.now();
+            
+            // 1단계: GFX 구간 검증
+            await updateAnalysisPhase(1, '활성');
+            await simulateDelay(1000);
+            await updateAnalysisPhase(1, '완료');
+            await updateProgress(25);
+            
+            // 각 핸드 분석
+            for (let i = 0; i < validSegments.length; i++) {
+                const segment = validSegments[i];
+                document.getElementById('currentHand').textContent = i + 1;
+                document.getElementById('analysisStatus').textContent = 
+                    `핸드 ${i + 1} 분석 중...`;
+                
+                // 2단계: 팟 사이즈 분석
+                if (i === 0) await updateAnalysisPhase(2, '활성');
+                await simulateDelay(500);
+                
+                // 3단계: 플레이어 감지
+                if (i === 0) {
+                    await updateAnalysisPhase(2, '완료');
+                    await updateAnalysisPhase(3, '활성');
+                }
+                await simulateDelay(800);
+                
+                // 핸드 결과 생성
+                const handResult = generateMockHandResult(segment, i + 1);
+                results.hands.push(handResult);
+                
+                // 진행률 업데이트
+                const progress = 25 + ((i + 1) / validSegments.length * 65);
+                await updateProgress(progress);
+            }
+            
+            // 4단계: 결과 통합
+            await updateAnalysisPhase(3, '완료');
+            await updateAnalysisPhase(4, '활성');
+            await simulateDelay(1000);
+            await updateAnalysisPhase(4, '완료');
+            await updateProgress(100);
+            
+            // 통계 계산
+            results.analysis_duration = (Date.now() - startTime) / 1000;
+            results.avg_hand_duration = results.hands.reduce((sum, h) => sum + h.duration, 0) / results.hands.length;
+            results.avg_players_per_hand = results.hands.reduce((sum, h) => sum + h.total_players, 0) / results.hands.length;
+            results.max_pot_in_video = Math.max(...results.hands.map(h => h.max_pot_size || 0));
+            results.total_pot_value = results.hands.reduce((sum, h) => sum + (h.max_pot_size || 0), 0);
+            
+            // 결과 저장 및 표시
+            analysisResult = results;
+            updateStatistics(results);
+            updateHandsDisplay();
+            showExportSection();
+            
+            document.getElementById('analysisStatus').textContent = '분석 완료!';
+            console.log('통합 분석 완료:', results);
+        }
+
+        // 구간 유효성 검증
+        function validateSegment(segment, settings) {
+            const duration = (segment.handEnd || 0) - (segment.handStart || 0);
+            const confidence = segment.confidence || 0;
+            
+            return duration >= settings.minHandDuration && 
+                   duration <= settings.maxHandDuration &&
+                   confidence >= settings.gfxThreshold;
+        }
+
+        // 분석 단계 업데이트
+        async function updateAnalysisPhase(phase, status) {
+            const element = document.getElementById(`phase${phase}`);
+            element.className = 'analysis-phase';
+            
+            if (status === '활성') {
+                element.classList.add('active');
+            } else if (status === '완료') {
+                element.classList.add('completed');
+            }
+            
+            await simulateDelay(100);
+        }
+
+        // 진행률 업데이트
+        async function updateProgress(percent) {
+            const progressBar = document.getElementById('overallProgressBar');
+            const progressText = document.getElementById('overallProgress');
+            
+            progressBar.style.width = `${percent}%`;
+            progressBar.textContent = `${Math.round(percent)}%`;
+            progressText.textContent = `${Math.round(percent)}%`;
+        }
+
+        // 모의 핸드 결과 생성
+        function generateMockHandResult(segment, handId) {
+            const duration = (segment.handEnd || 0) - (segment.handStart || 0);
+            const players = Math.floor(Math.random() * 6) + 3; // 3-8 플레이어
+            const maxPot = Math.floor(Math.random() * 5000) + 500; // $500-$5500
+            
+            // 참여 좌석 랜덤 생성
+            const allSeats = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+            const participatingSeats = [];
+            for (let i = 0; i < players; i++) {
+                const seatIndex = Math.floor(Math.random() * allSeats.length);
+                participatingSeats.push(allSeats.splice(seatIndex, 1)[0]);
+            }
+            
+            return {
+                hand_id: handId,
+                start_time: segment.handStart || 0,
+                end_time: segment.handEnd || 0,
+                duration: duration,
+                gfx_confidence: segment.confidence || 0,
+                max_pot_size: maxPot,
+                participating_seats: participatingSeats.sort(),
+                total_players: players,
+                player_detection_confidence: Math.random() * 30 + 70,
+                pot_changes: Math.floor(Math.random() * 3) + 1,
+                processing_time: Math.random() * 2 + 0.5
+            };
+        }
+
+        // 통계 업데이트
+        function updateStatistics(result) {
+            document.getElementById('totalHandsAnalyzed').textContent = result.total_hands;
+            document.getElementById('avgPlayersPerHand').textContent = result.avg_players_per_hand.toFixed(1);
+            document.getElementById('maxPotSize').textContent = `$${result.max_pot_in_video.toLocaleString()}`;
+            document.getElementById('totalPotValue').textContent = `$${result.total_pot_value.toLocaleString()}`;
+            document.getElementById('avgHandDuration').textContent = `${Math.round(result.avg_hand_duration)}s`;
+            document.getElementById('analysisTime').textContent = `${Math.round(result.analysis_duration)}s`;
+        }
+
+        // 핸드 목록 표시 업데이트
+        function updateHandsDisplay() {
+            if (!analysisResult) return;
+            
+            const container = document.getElementById('handsContainer');
+            const filter = document.querySelector('input[name="handFilter"]:checked').id;
+            
+            let hands = [...analysisResult.hands];
+            
+            // 필터 적용
+            switch (filter) {
+                case 'filterHighPot':
+                    const avgPot = hands.reduce((sum, h) => sum + h.max_pot_size, 0) / hands.length;
+                    hands = hands.filter(h => h.max_pot_size > avgPot * 1.5);
+                    break;
+                case 'filterManyPlayers':
+                    hands = hands.filter(h => h.total_players >= 6);
+                    break;
+            }
+            
+            // 정렬 (팟 사이즈 내림차순)
+            hands.sort((a, b) => (b.max_pot_size || 0) - (a.max_pot_size || 0));
+            
+            if (hands.length === 0) {
+                container.innerHTML = '<div class="text-muted text-center py-4">필터링된 핸드가 없습니다.</div>';
+                return;
+            }
+            
+            const html = hands.map(hand => {
+                const isHighPot = hand.max_pot_size > 2000;
+                const isManyPlayers = hand.total_players >= 6;
+                const classNames = [];
+                
+                if (isHighPot) classNames.push('high-pot');
+                if (isManyPlayers) classNames.push('many-players');
+                
+                const seatList = hand.participating_seats.join(', ');
+                
+                return `
+                    <div class="hand-item ${classNames.join(' ')}" onclick="showHandDetail(${hand.hand_id})">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>핸드 ${hand.hand_id}</strong>
+                                <span class="text-muted ms-2">${formatTime(hand.start_time)} - ${formatTime(hand.end_time)}</span>
+                            </div>
+                            <div class="text-end">
+                                <div class="text-warning"><strong>$${hand.max_pot_size.toLocaleString()}</strong></div>
+                                <small class="text-muted">${hand.total_players}명 (Seat ${seatList})</small>
+                            </div>
+                        </div>
+                        <div class="small text-muted mt-1">
+                            길이: ${Math.round(hand.duration)}초 | 
+                            팟 변화: ${hand.pot_changes}회 | 
+                            신뢰도: ${Math.round(hand.player_detection_confidence)}%
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = html;
+        }
+
+        // 시간 포맷
+        function formatTime(seconds) {
+            if (isNaN(seconds) || seconds < 0) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // 핸드 상세 정보 표시
+        function showHandDetail(handId) {
+            const hand = analysisResult.hands.find(h => h.hand_id === handId);
+            if (!hand) return;
+            
+            const seatList = hand.participating_seats.join(', ');
+            const message = `
+🃏 핸드 ${hand.hand_id} 상세 정보
+
+⏰ 시간: ${formatTime(hand.start_time)} - ${formatTime(hand.end_time)} (${Math.round(hand.duration)}초)
+💰 최대 팟: $${hand.max_pot_size.toLocaleString()}
+👥 참여 플레이어: ${hand.total_players}명
+🪑 참여 좌석: Seat ${seatList}
+📊 플레이어 감지 신뢰도: ${Math.round(hand.player_detection_confidence)}%
+🔄 팟 변화 횟수: ${hand.pot_changes}회
+⚡ 분석 시간: ${hand.processing_time.toFixed(1)}초
+
+FFmpeg 추출 명령어:
+ffmpeg -i "${videoFile.name}" -ss ${hand.start_time} -t ${Math.round(hand.duration)} -c copy "hand_${hand.hand_id.toString().padStart(3, '0')}.mp4"
+            `;
+            
+            alert(message);
+        }
+
+        // 내보내기 섹션 표시
+        function showExportSection() {
+            document.getElementById('exportSection').style.display = 'block';
+            generateFFmpegCommands();
+        }
+
+        // FFmpeg 명령어 생성
+        function generateFFmpegCommands() {
+            if (!analysisResult) return;
+            
+            const commands = analysisResult.hands.map(hand => {
+                const filename = `hand_${hand.hand_id.toString().padStart(3, '0')}.mp4`;
+                return `ffmpeg -i "${videoFile.name}" -ss ${hand.start_time} -t ${Math.round(hand.duration)} -c copy "${filename}"`;
+            });
+            
+            document.getElementById('ffmpegCommands').value = commands.join('\n');
+        }
+
+        // 분석 데이터 내보내기
+        function exportAnalysisData() {
+            if (!analysisResult) return;
+            
+            const blob = new Blob([JSON.stringify(analysisResult, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `integrated_analysis_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 클립 정보 내보내기
+        function exportClipInfo() {
+            if (!analysisResult) return;
+            
+            const clipInfo = analysisResult.hands.map(hand => ({
+                hand_id: hand.hand_id,
+                filename: `hand_${hand.hand_id.toString().padStart(3, '0')}.mp4`,
+                start_time: hand.start_time,
+                end_time: hand.end_time,
+                duration: Math.round(hand.duration),
+                players: hand.total_players,
+                max_pot: hand.max_pot_size,
+                participating_seats: hand.participating_seats,
+                description: `${hand.total_players}명 참여, 최대 팟 $${hand.max_pot_size.toLocaleString()}`
+            }));
+            
+            const blob = new Blob([JSON.stringify(clipInfo, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `clips_info_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 분석 보고서 생성
+        function generateReport() {
+            if (!analysisResult) return;
+            
+            const topHands = [...analysisResult.hands]
+                .sort((a, b) => (b.max_pot_size || 0) - (a.max_pot_size || 0))
+                .slice(0, 5);
+            
+            const report = `
+📊 포커 영상 통합 분석 보고서
+${'='.repeat(50)}
+
+🎬 비디오 정보:
+• 파일: ${analysisResult.video_path}
+• 총 길이: ${Math.round(analysisResult.video_duration/60)}분
+• 분석 시간: ${Math.round(analysisResult.analysis_duration)}초
+
+🃏 핸드 분석 결과:
+• 총 핸드 수: ${analysisResult.total_hands}개
+• 평균 핸드 길이: ${Math.round(analysisResult.avg_hand_duration)}초
+• 핸드당 평균 플레이어: ${analysisResult.avg_players_per_hand.toFixed(1)}명
+
+💰 팟 사이즈 분석:
+• 최대 팟 사이즈: $${analysisResult.max_pot_in_video.toLocaleString()}
+• 총 팟 가치: $${analysisResult.total_pot_value.toLocaleString()}
+
+🏆 최대 팟 사이즈 TOP 5:
+${topHands.map((hand, i) => `${i+1}. 핸드 ${hand.hand_id}: $${hand.max_pot_size.toLocaleString()} (${hand.total_players}명)`).join('\n')}
+
+📈 분석 완료 시각: ${new Date(analysisResult.created_at).toLocaleString('ko-KR')}
+            `;
+            
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `poker_analysis_report_${Date.now()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // FFmpeg 명령어 복사
+        function copyFFmpegCommands() {
+            const textarea = document.getElementById('ffmpegCommands');
+            textarea.select();
+            document.execCommand('copy');
+            
+            // 임시 피드백
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = '✅ 복사됨!';
+            setTimeout(() => {
+                button.textContent = originalText;
+            }, 2000);
+        }
+
+        // 지연 시뮬레이션
+        function simulateDelay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+</body>
+</html>

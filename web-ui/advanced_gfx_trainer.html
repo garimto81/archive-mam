@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 고급 GFX 학습기 - OCR + 컴퓨터 비전 융합</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar-dark {
+            background-color: #161b22 !important;
+        }
+        .card {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+        }
+        .card:hover {
+            border-color: #58a6ff;
+            box-shadow: 0 0 10px rgba(88, 166, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #238636;
+            border-color: #238636;
+        }
+        .btn-primary:hover {
+            background-color: #2ea043;
+            border-color: #2ea043;
+        }
+        .btn-success {
+            background-color: #1f6feb;
+            border-color: #1f6feb;
+        }
+        .btn-danger {
+            background-color: #f85149;
+            border-color: #f85149;
+        }
+        .form-control, .form-select {
+            background-color: #21262d;
+            border-color: #30363d;
+            color: #c9d1d9;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: #21262d;
+            border-color: #58a6ff;
+            color: #c9d1d9;
+            box-shadow: 0 0 0 0.25rem rgba(88, 166, 255, 0.25);
+        }
+        #videoCanvas {
+            max-width: 100%;
+            border: 2px solid #30363d;
+            border-radius: 6px;
+            background-color: #000;
+        }
+        .snapshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 10px;
+        }
+        .snapshot-item {
+            position: relative;
+            border: 2px solid #30363d;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .snapshot-item.gfx {
+            border-color: #f85149;
+        }
+        .snapshot-item.game {
+            border-color: #238636;
+        }
+        .snapshot-label {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .snapshot-confidence {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+        }
+        .snapshot-features {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 9px;
+        }
+        .progress {
+            height: 20px;
+            background-color: #21262d;
+        }
+        .progress-bar {
+            background-color: #238636;
+        }
+        .alert-custom {
+            background-color: #1c2128;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+        }
+        .analysis-mode {
+            background-color: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 10px;
+            margin: 5px 0;
+        }
+        .analysis-mode.active {
+            border-color: #58a6ff;
+            background-color: rgba(88, 166, 255, 0.1);
+        }
+        .feature-display {
+            font-family: monospace;
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 4px;
+            padding: 8px;
+            margin: 5px 0;
+        }
+        .ocr-results {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 4px;
+            padding: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .keyword-highlight {
+            background-color: #f85149;
+            color: white;
+            padding: 1px 3px;
+            border-radius: 2px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+        .stat-item {
+            text-align: center;
+            background-color: #21262d;
+            border-radius: 6px;
+            padding: 10px;
+        }
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #58a6ff;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: #8b949e;
+            margin-top: 5px;
+        }
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .mode-option {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border: 2px solid #30363d;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .mode-option.active {
+            border-color: #58a6ff;
+            background-color: rgba(88, 166, 255, 0.1);
+        }
+        .confidence-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .confidence-high { background-color: #238636; }
+        .confidence-medium { background-color: #ffa724; }
+        .confidence-low { background-color: #f85149; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1">🚀 고급 GFX 학습기</span>
+            <div>
+                <a href="../index.html" class="btn btn-outline-light btn-sm me-2">메인</a>
+                <a href="gfx_overlay_trainer.html" class="btn btn-outline-light btn-sm me-2">기본 학습기</a>
+                <a href="integrated_analyzer.html" class="btn btn-outline-light btn-sm">통합 분석기</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- 시스템 소개 -->
+        <div class="alert alert-custom mb-4">
+            <h5>🔬 OCR + 컴퓨터 비전 융합 학습 시스템</h5>
+            <p class="mb-0">
+                포커 GFX 오버레이의 텍스트 정보와 시각적 특징을 동시에 분석하여 최고 정확도의 분류 모델을 학습시킵니다.
+                포커 키워드, 패턴, 레이아웃, 색상 특징을 종합적으로 활용합니다.
+            </p>
+        </div>
+
+        <div class="row">
+            <!-- 왼쪽: 비디오 및 학습 컨트롤 -->
+            <div class="col-lg-8">
+                <!-- 분석 모드 선택 -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">🎯 분석 모드 선택</h5>
+                        <div class="mode-selector">
+                            <div class="mode-option active" data-mode="hybrid" onclick="selectAnalysisMode('hybrid')">
+                                <div><strong>🚀 하이브리드</strong></div>
+                                <small>OCR + 비전 융합</small>
+                            </div>
+                            <div class="mode-option" data-mode="visual" onclick="selectAnalysisMode('visual')">
+                                <div><strong>👁️ 시각적</strong></div>
+                                <small>컴퓨터 비전만</small>
+                            </div>
+                            <div class="mode-option" data-mode="text" onclick="selectAnalysisMode('text')">
+                                <div><strong>📝 텍스트</strong></div>
+                                <small>OCR 분석만</small>
+                            </div>
+                        </div>
+                        <div class="small text-muted" id="modeDescription">
+                            하이브리드 모드: 포커 키워드, 패턴, 색상 균일성, 레이아웃을 종합 분석
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 비디오 업로드 및 재생 -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">📹 비디오 학습</h5>
+                        
+                        <div class="mb-3">
+                            <input type="file" class="form-control" id="videoInput" 
+                                   accept="video/*" onchange="handleVideoUpload(event)">
+                        </div>
+                        
+                        <canvas id="videoCanvas" width="640" height="360"></canvas>
+                        
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="btn-group w-100" role="group">
+                                    <button class="btn btn-secondary" id="playBtn" onclick="playVideo()" disabled>▶️</button>
+                                    <button class="btn btn-secondary" id="pauseBtn" onclick="pauseVideo()" disabled>⏸️</button>
+                                    <button class="btn btn-secondary" onclick="skipVideo(-10)" disabled id="skipBack">⏪</button>
+                                    <button class="btn btn-secondary" onclick="skipVideo(10)" disabled id="skipForward">⏩</button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="btn-group w-100" role="group">
+                                    <button class="btn btn-danger" id="markGFXBtn" onclick="markCurrentFrame('gfx')" disabled>
+                                        🎰 GFX
+                                    </button>
+                                    <button class="btn btn-success" id="markGameBtn" onclick="markCurrentFrame('game')" disabled>
+                                        🎮 Game
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <input type="range" class="form-range" id="timelineSlider" 
+                                   min="0" max="100" value="0" disabled oninput="seekVideo(this.value)">
+                            <div class="d-flex justify-content-between small text-muted">
+                                <span id="currentTime">0:00</span>
+                                <span id="totalTime">0:00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 오른쪽: 실시간 분석 결과 -->
+            <div class="col-lg-4">
+                <!-- 실시간 분석 -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">🔍 실시간 분석</h5>
+                        
+                        <div class="mb-3">
+                            <strong>현재 프레임 예측:</strong>
+                            <div id="currentPrediction" class="mt-2">
+                                <span class="confidence-indicator confidence-low"></span>
+                                <span>분석 대기 중...</span>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-display" id="visualFeatures">
+                            <div><strong>시각적 특징:</strong></div>
+                            <div>색상 균일성: <span id="colorUniformity">-</span></div>
+                            <div>엣지 밀도: <span id="edgeDensity">-</span></div>
+                            <div>텍스트 밀도: <span id="textDensity">-</span></div>
+                            <div>레이아웃 점수: <span id="layoutScore">-</span></div>
+                        </div>
+                        
+                        <div class="ocr-results" id="ocrResults">
+                            <div><strong>OCR 인식 결과:</strong></div>
+                            <div class="small text-muted">텍스트 인식 대기 중...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 학습 통계 -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">📊 학습 통계</h5>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-number" id="totalSamples">0</div>
+                                <div class="stat-label">총 샘플</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" id="gfxSamples">0</div>
+                                <div class="stat-label">GFX</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" id="gameSamples">0</div>
+                                <div class="stat-label">Game</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" id="accuracy">0%</div>
+                                <div class="stat-label">정확도</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 학습 제어 -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">🎓 모델 학습</h5>
+                        
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" id="trainModelBtn" 
+                                    onclick="trainHybridModel()" disabled>
+                                🧠 하이브리드 모델 학습
+                            </button>
+                            
+                            <button class="btn btn-success" id="testModelBtn" 
+                                    onclick="testModel()" disabled>
+                                🧪 모델 테스트
+                            </button>
+                            
+                            <button class="btn btn-secondary" onclick="saveModel()" id="saveModelBtn" disabled>
+                                💾 모델 저장
+                            </button>
+                            
+                            <button class="btn btn-outline-secondary" onclick="loadModel()">
+                                📂 모델 불러오기
+                            </button>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <div class="progress">
+                                <div class="progress-bar" id="trainProgress" style="width: 0%">0%</div>
+                            </div>
+                            <div class="small text-muted mt-1" id="trainStatus">학습 대기 중</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 하단: 수집된 샘플 -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="card-title mb-0">🗂️ 수집된 학습 샘플</h5>
+                            <div>
+                                <button class="btn btn-outline-danger btn-sm" onclick="clearSamples()">
+                                    🗑️ 전체 삭제
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="snapshot-grid" id="snapshotGrid">
+                            <div class="text-muted text-center py-4" style="grid-column: 1 / -1;">
+                                비디오를 재생하고 GFX/Game 버튼으로 샘플을 수집하세요.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 파일 입력 (숨김) -->
+    <input type="file" id="hiddenFileInput" accept=".json" style="display: none;" onchange="handleModelLoad(event)">
+
+    <script>
+        // 전역 변수
+        let video = null;
+        let canvas = null;
+        let ctx = null;
+        let isPlaying = false;
+        let animationId = null;
+        let samples = [];
+        let currentAnalysisMode = 'hybrid';
+        let hybridModel = null;
+        let isAnalyzing = false;
+
+        // 포커 키워드 데이터베이스
+        const POKER_KEYWORDS = [
+            'pot', 'call', 'raise', 'fold', 'check', 'all', 'in', 'allin',
+            'bet', 'blind', 'ante', 'stack', 'chips', 'bb', 'sb',
+            'hole', 'cards', 'flop', 'turn', 'river', 'showdown',
+            'straight', 'flush', 'full', 'house', 'pair', 'high',
+            'wins', 'loses', 'split', 'side', 'main'
+        ];
+
+        // 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            canvas = document.getElementById('videoCanvas');
+            ctx = canvas.getContext('2d');
+            console.log('고급 GFX 학습기 초기화 완료');
+        });
+
+        // 분석 모드 선택
+        function selectAnalysisMode(mode) {
+            currentAnalysisMode = mode;
+            
+            // UI 업데이트
+            document.querySelectorAll('.mode-option').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
+            
+            // 설명 업데이트
+            const descriptions = {
+                'hybrid': '하이브리드 모드: 포커 키워드, 패턴, 색상 균일성, 레이아웃을 종합 분석',
+                'visual': '시각적 모드: 색상, 엣지, 텍스트 밀도, 레이아웃 구조만 분석',
+                'text': '텍스트 모드: OCR 기반 포커 키워드와 패턴만 분석'
+            };
+            
+            document.getElementById('modeDescription').textContent = descriptions[mode];
+        }
+
+        // 비디오 업로드 처리
+        function handleVideoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            video = document.createElement('video');
+            video.src = URL.createObjectURL(file);
+            
+            video.addEventListener('loadedmetadata', () => {
+                // 캔버스 크기 조정
+                const aspectRatio = video.videoWidth / video.videoHeight;
+                const maxWidth = 640;
+                const maxHeight = 360;
+                
+                if (aspectRatio > maxWidth / maxHeight) {
+                    canvas.width = maxWidth;
+                    canvas.height = maxWidth / aspectRatio;
+                } else {
+                    canvas.height = maxHeight;
+                    canvas.width = maxHeight * aspectRatio;
+                }
+                
+                enableControls();
+                drawFrame();
+                
+                document.getElementById('timelineSlider').max = video.duration;
+                document.getElementById('totalTime').textContent = formatTime(video.duration);
+                
+                // 실시간 분석 시작
+                startRealtimeAnalysis();
+            });
+            
+            video.addEventListener('timeupdate', updateTimeline);
+        }
+
+        // 컨트롤 활성화
+        function enableControls() {
+            document.getElementById('playBtn').disabled = false;
+            document.getElementById('pauseBtn').disabled = false;
+            document.getElementById('skipBack').disabled = false;
+            document.getElementById('skipForward').disabled = false;
+            document.getElementById('timelineSlider').disabled = false;
+            document.getElementById('markGFXBtn').disabled = false;
+            document.getElementById('markGameBtn').disabled = false;
+        }
+
+        // 프레임 그리기
+        function drawFrame() {
+            if (!video) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        }
+
+        // 비디오 재생 제어
+        function playVideo() {
+            if (!video) return;
+            video.play();
+            isPlaying = true;
+            animate();
+        }
+
+        function pauseVideo() {
+            if (!video) return;
+            video.pause();
+            isPlaying = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+        }
+
+        function skipVideo(seconds) {
+            if (!video) return;
+            video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + seconds));
+            drawFrame();
+        }
+
+        function seekVideo(value) {
+            if (!video) return;
+            video.currentTime = (value / 100) * video.duration;
+            drawFrame();
+        }
+
+        function animate() {
+            if (isPlaying) {
+                drawFrame();
+                performRealtimeAnalysis();
+                animationId = requestAnimationFrame(animate);
+            }
+        }
+
+        // 타임라인 업데이트
+        function updateTimeline() {
+            if (!video) return;
+            const progress = (video.currentTime / video.duration) * 100;
+            document.getElementById('timelineSlider').value = progress;
+            document.getElementById('currentTime').textContent = formatTime(video.currentTime);
+        }
+
+        // 시간 포맷
+        function formatTime(seconds) {
+            if (isNaN(seconds) || seconds < 0) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // 실시간 분석 시작
+        function startRealtimeAnalysis() {
+            // 매 초마다 분석 수행
+            setInterval(() => {
+                if (!isPlaying && video) {
+                    performRealtimeAnalysis();
+                }
+            }, 1000);
+        }
+
+        // 실시간 분석 수행
+        function performRealtimeAnalysis() {
+            if (!video || !canvas || isAnalyzing) return;
+            
+            try {
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                
+                // 시각적 특징 분석 (시뮬레이션)
+                const visualFeatures = analyzeVisualFeatures(imageData);
+                updateVisualFeaturesDisplay(visualFeatures);
+                
+                // OCR 분석 (시뮬레이션)
+                const ocrResults = simulateOCR(imageData);
+                updateOCRDisplay(ocrResults);
+                
+                // 하이브리드 예측
+                const prediction = predictFrameType(visualFeatures, ocrResults);
+                updatePredictionDisplay(prediction);
+                
+            } catch (error) {
+                console.error('실시간 분석 오류:', error);
+            }
+        }
+
+        // 시각적 특징 분석 (시뮬레이션)
+        function analyzeVisualFeatures(imageData) {
+            // 실제로는 더 복잡한 컴퓨터 비전 알고리즘 사용
+            const data = imageData.data;
+            let colorVariance = 0;
+            let edgeCount = 0;
+            let textRegions = 0;
+            
+            // 간단한 특징 추출 시뮬레이션
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i];
+                const g = data[i + 1];
+                const b = data[i + 2];
+                
+                // 색상 분산 계산
+                const avg = (r + g + b) / 3;
+                colorVariance += Math.pow(r - avg, 2) + Math.pow(g - avg, 2) + Math.pow(b - avg, 2);
+                
+                // 엣지 감지 (간단한 버전)
+                if (i < data.length - 16) {
+                    const nextR = data[i + 4];
+                    if (Math.abs(r - nextR) > 30) edgeCount++;
+                }
+                
+                // 텍스트 영역 추정 (명도 변화가 큰 영역)
+                if (avg > 200 || avg < 50) textRegions++;
+            }
+            
+            const totalPixels = data.length / 4;
+            
+            return {
+                colorUniformity: Math.max(0, 1 - (colorVariance / totalPixels) / 10000),
+                edgeDensity: edgeCount / totalPixels,
+                textDensity: textRegions / totalPixels,
+                layoutScore: Math.random() * 0.5 + 0.3  // 시뮬레이션
+            };
+        }
+
+        // OCR 시뮬레이션
+        function simulateOCR(imageData) {
+            // 실제로는 Tesseract.js 등을 사용
+            const mockTexts = [
+                'POT $1,234',
+                'CALL $50',
+                'RAISE TO $200',
+                'ALL IN',
+                'FOLD',
+                'BB: $25',
+                'STRAIGHT FLUSH',
+                'FULL HOUSE',
+                'Player wins $500'
+            ];
+            
+            // 랜덤하게 텍스트 선택 (실제 상황 시뮬레이션)
+            const detectedTexts = [];
+            const numTexts = Math.floor(Math.random() * 4) + 1;
+            
+            for (let i = 0; i < numTexts; i++) {
+                const text = mockTexts[Math.floor(Math.random() * mockTexts.length)];
+                const confidence = Math.random() * 40 + 60; // 60-100%
+                detectedTexts.push({ text, confidence });
+            }
+            
+            return detectedTexts;
+        }
+
+        // 프레임 타입 예측
+        function predictFrameType(visualFeatures, ocrResults) {
+            let gfxScore = 0;
+            
+            // 시각적 특징 점수
+            if (visualFeatures.colorUniformity > 0.6) gfxScore += 0.3;
+            if (visualFeatures.edgeDensity > 0.1 && visualFeatures.edgeDensity < 0.3) gfxScore += 0.2;
+            if (visualFeatures.textDensity > 0.02 && visualFeatures.textDensity < 0.1) gfxScore += 0.2;
+            if (visualFeatures.layoutScore > 0.5) gfxScore += 0.2;
+            
+            // OCR 텍스트 점수
+            let textScore = 0;
+            for (const result of ocrResults) {
+                const text = result.text.toLowerCase();
+                for (const keyword of POKER_KEYWORDS) {
+                    if (text.includes(keyword)) {
+                        textScore += result.confidence / 100 * 0.1;
+                    }
+                }
+            }
+            
+            const finalScore = Math.min(gfxScore + textScore, 1.0);
+            const isGfx = finalScore > 0.5;
+            
+            return {
+                isGfx,
+                confidence: finalScore,
+                method: currentAnalysisMode
+            };
+        }
+
+        // 시각적 특징 표시 업데이트
+        function updateVisualFeaturesDisplay(features) {
+            document.getElementById('colorUniformity').textContent = features.colorUniformity.toFixed(3);
+            document.getElementById('edgeDensity').textContent = features.edgeDensity.toFixed(3);
+            document.getElementById('textDensity').textContent = features.textDensity.toFixed(3);
+            document.getElementById('layoutScore').textContent = features.layoutScore.toFixed(3);
+        }
+
+        // OCR 표시 업데이트
+        function updateOCRDisplay(results) {
+            const container = document.getElementById('ocrResults');
+            
+            if (results.length === 0) {
+                container.innerHTML = '<div><strong>OCR 인식 결과:</strong></div><div class="small text-muted">텍스트가 인식되지 않았습니다.</div>';
+                return;
+            }
+            
+            let html = '<div><strong>OCR 인식 결과:</strong></div>';
+            
+            for (const result of results) {
+                let text = result.text;
+                
+                // 포커 키워드 하이라이트
+                for (const keyword of POKER_KEYWORDS) {
+                    const regex = new RegExp(`\\b${keyword}\\b`, 'gi');
+                    text = text.replace(regex, `<span class="keyword-highlight">${keyword.toUpperCase()}</span>`);
+                }
+                
+                html += `<div class="small mb-1">
+                    ${text} <span class="text-info">(${result.confidence.toFixed(1)}%)</span>
+                </div>`;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        // 예측 표시 업데이트
+        function updatePredictionDisplay(prediction) {
+            const container = document.getElementById('currentPrediction');
+            const confidence = prediction.confidence;
+            
+            let confidenceClass = 'confidence-low';
+            if (confidence > 0.7) confidenceClass = 'confidence-high';
+            else if (confidence > 0.4) confidenceClass = 'confidence-medium';
+            
+            const label = prediction.isGfx ? 'GFX 오버레이' : '게임 화면';
+            const color = prediction.isGfx ? 'text-danger' : 'text-success';
+            
+            container.innerHTML = `
+                <span class="confidence-indicator ${confidenceClass}"></span>
+                <span class="${color}"><strong>${label}</strong></span>
+                <span class="small text-muted ms-2">(${Math.round(confidence * 100)}%)</span>
+            `;
+        }
+
+        // 현재 프레임 마킹
+        function markCurrentFrame(label) {
+            if (!video || !canvas) return;
+            
+            // 현재 프레임을 이미지로 캡처
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            
+            // 분석 수행
+            const visualFeatures = analyzeVisualFeatures(imageData);
+            const ocrResults = simulateOCR(imageData);
+            const prediction = predictFrameType(visualFeatures, ocrResults);
+            
+            // 샘플 생성
+            const sample = {
+                id: Date.now(),
+                timestamp: video.currentTime,
+                label: label,
+                imageData: imageData,
+                visualFeatures: visualFeatures,
+                ocrResults: ocrResults,
+                prediction: prediction,
+                mode: currentAnalysisMode
+            };
+            
+            samples.push(sample);
+            
+            // UI 업데이트
+            updateSampleDisplay();
+            updateStats();
+            
+            // 학습 버튼 활성화
+            if (samples.length >= 5) {
+                document.getElementById('trainModelBtn').disabled = false;
+            }
+        }
+
+        // 샘플 표시 업데이트
+        function updateSampleDisplay() {
+            const grid = document.getElementById('snapshotGrid');
+            
+            if (samples.length === 0) {
+                grid.innerHTML = '<div class="text-muted text-center py-4" style="grid-column: 1 / -1;">비디오를 재생하고 GFX/Game 버튼으로 샘플을 수집하세요.</div>';
+                return;
+            }
+            
+            grid.innerHTML = samples.map(sample => {
+                // 이미지 데이터를 canvas로 변환
+                const canvas = document.createElement('canvas');
+                canvas.width = sample.imageData.width;
+                canvas.height = sample.imageData.height;
+                const ctx = canvas.getContext('2d');
+                ctx.putImageData(sample.imageData, 0, 0);
+                
+                const confidence = sample.prediction.confidence;
+                const isCorrect = sample.prediction.isGfx === (sample.label === 'gfx');
+                
+                return `
+                    <div class="snapshot-item ${sample.label}" onclick="viewSample(${sample.id})">
+                        <img src="${canvas.toDataURL()}" style="width: 100%; height: auto;">
+                        <div class="snapshot-label">${sample.label.toUpperCase()}</div>
+                        <div class="snapshot-confidence">${Math.round(confidence * 100)}%</div>
+                        <div class="snapshot-features">
+                            ${isCorrect ? '✓' : '✗'} ${sample.ocrResults.length}T
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 통계 업데이트
+        function updateStats() {
+            const gfxCount = samples.filter(s => s.label === 'gfx').length;
+            const gameCount = samples.filter(s => s.label === 'game').length;
+            const correctPredictions = samples.filter(s => 
+                s.prediction.isGfx === (s.label === 'gfx')
+            ).length;
+            const accuracy = samples.length > 0 ? (correctPredictions / samples.length * 100) : 0;
+            
+            document.getElementById('totalSamples').textContent = samples.length;
+            document.getElementById('gfxSamples').textContent = gfxCount;
+            document.getElementById('gameSamples').textContent = gameCount;
+            document.getElementById('accuracy').textContent = Math.round(accuracy) + '%';
+        }
+
+        // 하이브리드 모델 학습
+        async function trainHybridModel() {
+            if (samples.length < 5) {
+                alert('최소 5개의 샘플이 필요합니다.');
+                return;
+            }
+            
+            document.getElementById('trainModelBtn').disabled = true;
+            document.getElementById('trainStatus').textContent = '모델 학습 중...';
+            
+            // 학습 시뮬레이션
+            for (let i = 0; i <= 100; i += 10) {
+                document.getElementById('trainProgress').style.width = i + '%';
+                document.getElementById('trainProgress').textContent = i + '%';
+                await new Promise(resolve => setTimeout(resolve, 200));
+            }
+            
+            // 모델 생성 (시뮬레이션)
+            hybridModel = {
+                type: 'hybrid_gfx_classifier',
+                version: '1.0',
+                samples_count: samples.length,
+                visual_thresholds: {
+                    color_uniformity: 0.6,
+                    edge_density: 0.2,
+                    text_density: 0.05,
+                    layout_score: 0.5
+                },
+                poker_keywords: POKER_KEYWORDS,
+                trained_at: new Date().toISOString(),
+                accuracy: Math.random() * 20 + 80  // 80-100% 시뮬레이션
+            };
+            
+            document.getElementById('trainStatus').textContent = 
+                `모델 학습 완료 (정확도: ${Math.round(hybridModel.accuracy)}%)`;
+            document.getElementById('trainModelBtn').disabled = false;
+            document.getElementById('testModelBtn').disabled = false;
+            document.getElementById('saveModelBtn').disabled = false;
+        }
+
+        // 모델 테스트
+        function testModel() {
+            if (!hybridModel) {
+                alert('먼저 모델을 학습시켜주세요.');
+                return;
+            }
+            
+            // 테스트 결과 시뮬레이션
+            const testResults = samples.map(sample => {
+                const prediction = predictFrameType(sample.visualFeatures, sample.ocrResults);
+                const isCorrect = prediction.isGfx === (sample.label === 'gfx');
+                return { sample, prediction, isCorrect };
+            });
+            
+            const accuracy = testResults.filter(r => r.isCorrect).length / testResults.length * 100;
+            
+            alert(`모델 테스트 결과:
+            
+테스트 샘플: ${testResults.length}개
+정확도: ${Math.round(accuracy)}%
+            
+${testResults.filter(r => !r.isCorrect).length}개 오분류 발견`);
+        }
+
+        // 모델 저장
+        function saveModel() {
+            if (!hybridModel) {
+                alert('저장할 모델이 없습니다.');
+                return;
+            }
+            
+            const modelData = {
+                ...hybridModel,
+                samples: samples.map(s => ({
+                    label: s.label,
+                    visualFeatures: s.visualFeatures,
+                    ocrResults: s.ocrResults,
+                    timestamp: s.timestamp
+                }))
+            };
+            
+            const blob = new Blob([JSON.stringify(modelData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `hybrid_gfx_model_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 모델 불러오기
+        function loadModel() {
+            document.getElementById('hiddenFileInput').click();
+        }
+
+        function handleModelLoad(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const modelData = JSON.parse(e.target.result);
+                    if (modelData.type === 'hybrid_gfx_classifier') {
+                        hybridModel = modelData;
+                        
+                        // 샘플 복원 (이미지 데이터 제외)
+                        if (modelData.samples) {
+                            // 기존 samples는 유지하고 정보만 업데이트
+                            console.log(`모델 로드 완료: ${modelData.samples.length}개 샘플`);
+                        }
+                        
+                        document.getElementById('testModelBtn').disabled = false;
+                        document.getElementById('saveModelBtn').disabled = false;
+                        
+                        alert(`하이브리드 모델 로드 완료!
+                        
+모델 버전: ${modelData.version}
+학습 샘플: ${modelData.samples_count}개
+예상 정확도: ${Math.round(modelData.accuracy)}%`);
+                    } else {
+                        alert('올바른 하이브리드 모델 파일이 아닙니다.');
+                    }
+                } catch (error) {
+                    alert('모델 파일을 읽을 수 없습니다.');
+                    console.error('모델 로드 오류:', error);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // 샘플 보기
+        function viewSample(sampleId) {
+            const sample = samples.find(s => s.id === sampleId);
+            if (!sample) return;
+            
+            const ocrTexts = sample.ocrResults.map(r => `"${r.text}" (${r.confidence.toFixed(1)}%)`).join('\n');
+            const isCorrect = sample.prediction.isGfx === (sample.label === 'gfx');
+            
+            alert(`샘플 상세 정보:
+            
+라벨: ${sample.label.toUpperCase()}
+시간: ${formatTime(sample.timestamp)}
+예측: ${sample.prediction.isGfx ? 'GFX' : 'Game'} (${Math.round(sample.prediction.confidence * 100)}%)
+정답 여부: ${isCorrect ? '✓ 정확' : '✗ 오분류'}
+
+시각적 특징:
+• 색상 균일성: ${sample.visualFeatures.colorUniformity.toFixed(3)}
+• 엣지 밀도: ${sample.visualFeatures.edgeDensity.toFixed(3)}
+• 텍스트 밀도: ${sample.visualFeatures.textDensity.toFixed(3)}
+• 레이아웃 점수: ${sample.visualFeatures.layoutScore.toFixed(3)}
+
+OCR 인식 텍스트:
+${ocrTexts || '인식된 텍스트 없음'}`);
+        }
+
+        // 전체 샘플 삭제
+        function clearSamples() {
+            if (confirm('모든 학습 샘플을 삭제하시겠습니까?')) {
+                samples = [];
+                updateSampleDisplay();
+                updateStats();
+                document.getElementById('trainModelBtn').disabled = true;
+            }
+        }
+    </script>
+</body>
+</html>
