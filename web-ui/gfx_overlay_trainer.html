@@ -102,16 +102,16 @@
 <body>
     <nav class="navbar navbar-dark bg-dark">
         <div class="container">
-            <span class="navbar-brand mb-0 h1">🎰 GFX 오버레이 학습기</span>
-            <a href="index.html" class="btn btn-outline-light btn-sm">메인으로</a>
+            <span class="navbar-brand mb-0 h1">🎰 GFX 오버레이 구간 분석기</span>
+            <a href="../index.html" class="btn btn-outline-light btn-sm">메인으로</a>
         </div>
     </nav>
 
     <div class="container mt-4">
         <div class="alert alert-warning">
-            <strong>학습 방법:</strong> 영상을 재생하면서 GFX 오버레이가 나타나면 'GFX' 버튼을, 
-            실제 게임 화면이면 'Game' 버튼을 눌러 학습시키세요. 
-            최소 10개 이상의 GFX 샘플을 수집하면 더 정확한 감지가 가능합니다.
+            <strong>구간 분석 방법:</strong> 영상을 재생하면서 GFX 오버레이가 나타나면 'GFX 오버레이 인식' 버튼을 클릭하여 시작점을 마킹하고, 
+            GFX가 사라지면 다시 클릭하여 종료점을 마킹하세요. 
+            시스템이 자동으로 시작점 -15초, 종료점 +15초로 핸드 구간을 계산합니다.
         </div>
 
         <div class="row">
@@ -163,11 +163,19 @@
                         <!-- 마킹 버튼 -->
                         <div class="d-flex gap-2 mt-3">
                             <button class="btn btn-danger btn-lg flex-fill" id="markGFXBtn" disabled>
-                                📺 GFX 오버레이
+                                📺 GFX 오버레이 인식 (클릭: 시작점 마킹)
                             </button>
-                            <button class="btn btn-success btn-lg flex-fill" id="markGameBtn" disabled>
-                                🎮 게임 화면
-                            </button>
+                        </div>
+                        
+                        <!-- 구간 정보 표시 -->
+                        <div class="mt-3" id="segmentInfo" style="display: none;">
+                            <div class="alert alert-info">
+                                <strong>현재 구간:</strong> 
+                                <span id="segmentStatus">대기 중</span><br>
+                                <strong>시작점:</strong> <span id="segmentStart">-</span><br>
+                                <strong>종료점:</strong> <span id="segmentEnd">-</span><br>
+                                <strong>핸드 구간:</strong> <span id="handSegment">-</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -190,22 +198,22 @@
                     </div>
                 </div>
                 
-                <!-- 학습 통계 -->
+                <!-- 구간 통계 -->
                 <div class="card mb-3">
                     <div class="card-body">
-                        <h5 class="card-title">학습 통계</h5>
+                        <h5 class="card-title">구간 통계</h5>
                         <div class="stats-box">
                             <div class="d-flex justify-content-between mb-2">
-                                <span>GFX 샘플:</span>
+                                <span>GFX 구간 수:</span>
                                 <span id="gfxCount" class="text-danger">0</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
-                                <span>Game 샘플:</span>
-                                <span id="gameCount" class="text-success">0</span>
+                                <span>총 핸드 시간:</span>
+                                <span id="gameCount" class="text-success">0:00</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
-                                <span>총 샘플:</span>
-                                <span id="totalSamples">0</span>
+                                <span>총 구간:</span>
+                                <span id="totalSamples">0 구간</span>
                             </div>
                             <div class="progress mt-3">
                                 <div class="progress-bar bg-danger" id="gfxProgress" style="width: 0%"></div>
@@ -215,22 +223,19 @@
                     </div>
                 </div>
                 
-                <!-- 모델 관리 -->
+                <!-- 구간 관리 -->
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">모델 관리</h5>
+                        <h5 class="card-title">구간 관리</h5>
                         <div class="d-grid gap-2">
-                            <button class="btn btn-primary" id="trainBtn" disabled>
-                                🧠 모델 학습
-                            </button>
                             <button class="btn btn-success" id="saveBtn" disabled>
-                                💾 모델 저장
+                                💾 구간 데이터 내보내기 (JSON)
                             </button>
                             <button class="btn btn-secondary" id="loadBtn">
-                                📂 모델 불러오기
+                                📂 구간 데이터 불러오기
                             </button>
                             <button class="btn btn-outline-danger" id="clearBtn">
-                                🗑️ 샘플 초기화
+                                🗑️ 모든 구간 초기화
                             </button>
                         </div>
                     </div>
@@ -238,24 +243,14 @@
             </div>
         </div>
         
-        <!-- 수집된 샘플 -->
+        <!-- 마킹된 구간 목록 -->
         <div class="row mt-4">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">수집된 샘플</h5>
-                        <div class="btn-group btn-group-toggle mb-3" data-bs-toggle="buttons">
-                            <input type="radio" class="btn-check" name="sampleFilter" id="showAll" autocomplete="off" checked>
-                            <label class="btn btn-outline-secondary" for="showAll">전체</label>
-                            
-                            <input type="radio" class="btn-check" name="sampleFilter" id="showGFX" autocomplete="off">
-                            <label class="btn btn-outline-danger" for="showGFX">GFX만</label>
-                            
-                            <input type="radio" class="btn-check" name="sampleFilter" id="showGame" autocomplete="off">
-                            <label class="btn btn-outline-success" for="showGame">Game만</label>
-                        </div>
+                        <h5 class="card-title">마킹된 구간 목록</h5>
                         <div class="snapshot-grid" id="snapshotGrid">
-                            <!-- 스냅샷이 동적으로 추가됨 -->
+                            <!-- 구간 정보가 동적으로 추가됨 -->
                         </div>
                     </div>
                 </div>
@@ -268,7 +263,9 @@
         let video = null;
         let canvas = null;
         let ctx = null;
-        let samples = [];
+        let segments = [];  // 구간 정보 저장
+        let currentSegment = null;  // 현재 마킹 중인 구간
+        let isMarkingStart = true;  // true: 시작점 마킹, false: 종료점 마킹
         let model = null;
         let isPlaying = false;
         let animationId = null;
@@ -286,18 +283,11 @@
             document.getElementById('skipForwardBtn').addEventListener('click', () => skipVideo(5));
             document.getElementById('timelineSlider').addEventListener('input', handleTimelineChange);
             
-            document.getElementById('markGFXBtn').addEventListener('click', () => markFrame('gfx'));
-            document.getElementById('markGameBtn').addEventListener('click', () => markFrame('game'));
+            document.getElementById('markGFXBtn').addEventListener('click', toggleGFXMarking);
             
-            document.getElementById('trainBtn').addEventListener('click', trainModel);
             document.getElementById('saveBtn').addEventListener('click', saveModel);
             document.getElementById('loadBtn').addEventListener('click', loadModel);
             document.getElementById('clearBtn').addEventListener('click', clearSamples);
-            
-            // 필터 버튼
-            document.querySelectorAll('input[name="sampleFilter"]').forEach(radio => {
-                radio.addEventListener('change', filterSamples);
-            });
             
             // 저장된 샘플 로드
             loadSamplesFromStorage();
@@ -321,7 +311,6 @@
                 document.getElementById('skipForwardBtn').disabled = false;
                 document.getElementById('timelineSlider').disabled = false;
                 document.getElementById('markGFXBtn').disabled = false;
-                document.getElementById('markGameBtn').disabled = false;
                 
                 // 타임라인 설정
                 document.getElementById('timelineSlider').max = video.duration;
@@ -500,137 +489,158 @@
             return edgeCount / (data.length / 4);
         }
         
-        // 프레임 마킹
-        function markFrame(type) {
-            if (!video || !canvas) return;
+        // GFX 마킹 토글
+        function toggleGFXMarking() {
+            if (!video) return;
             
-            // 현재 프레임 캡처
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = 200;
-            tempCanvas.height = 112;
-            const tempCtx = tempCanvas.getContext('2d');
-            tempCtx.drawImage(canvas, 0, 0, 200, 112);
+            const btn = document.getElementById('markGFXBtn');
+            const segmentInfo = document.getElementById('segmentInfo');
             
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const features = extractFeatures(imageData);
-            
-            const sample = {
-                type: type,
-                features: features,
-                image: tempCanvas.toDataURL('image/jpeg', 0.7),
-                timestamp: video.currentTime,
-                id: Date.now()
-            };
-            
-            samples.push(sample);
-            updateSampleDisplay();
-            updateStats();
-            saveSamplesToStorage();
-            
-            // 학습 버튼 활성화
-            if (samples.length >= 10) {
-                document.getElementById('trainBtn').disabled = false;
+            if (isMarkingStart) {
+                // 시작점 마킹
+                currentSegment = {
+                    gfxStart: video.currentTime,
+                    gfxEnd: null,
+                    handStart: null,
+                    handEnd: null,
+                    id: Date.now()
+                };
+                
+                // 버튼 상태 변경
+                btn.textContent = '📺 GFX 오버레이 인식 (클릭: 종료점 마킹)';
+                btn.classList.remove('btn-danger');
+                btn.classList.add('btn-warning');
+                
+                // 구간 정보 표시
+                segmentInfo.style.display = 'block';
+                document.getElementById('segmentStatus').textContent = 'GFX 구간 마킹 중...';
+                document.getElementById('segmentStart').textContent = formatTime(currentSegment.gfxStart);
+                document.getElementById('segmentEnd').textContent = '대기 중...';
+                
+                isMarkingStart = false;
+                
+            } else {
+                // 종료점 마킹
+                if (!currentSegment) return;
+                
+                currentSegment.gfxEnd = video.currentTime;
+                
+                // 15초 규칙 적용하여 핸드 구간 계산
+                currentSegment.handStart = Math.max(0, currentSegment.gfxStart - 15);
+                currentSegment.handEnd = Math.min(video.duration, currentSegment.gfxEnd + 15);
+                
+                // 구간 저장
+                segments.push(currentSegment);
+                
+                // 버튼 상태 초기화
+                btn.textContent = '📺 GFX 오버레이 인식 (클릭: 시작점 마킹)';
+                btn.classList.remove('btn-warning');
+                btn.classList.add('btn-danger');
+                
+                // 구간 정보 업데이트
+                document.getElementById('segmentStatus').textContent = '구간 저장 완료!';
+                document.getElementById('segmentEnd').textContent = formatTime(currentSegment.gfxEnd);
+                document.getElementById('handSegment').textContent = 
+                    `${formatTime(currentSegment.handStart)} ~ ${formatTime(currentSegment.handEnd)}`;
+                
+                // 시각적 피드백
+                btn.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    btn.style.transform = 'scale(1)';
+                    updateSegmentDisplay();
+                    saveSegmentsToStorage();
+                }, 100);
+                
+                currentSegment = null;
+                isMarkingStart = true;
             }
-            
-            // 시각적 피드백
-            const btn = type === 'gfx' ? 
-                document.getElementById('markGFXBtn') : 
-                document.getElementById('markGameBtn');
-            
-            btn.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                btn.style.transform = 'scale(1)';
-            }, 100);
         }
         
-        // 샘플 표시 업데이트
-        function updateSampleDisplay() {
+        // 구간 표시 업데이트
+        function updateSegmentDisplay() {
             const grid = document.getElementById('snapshotGrid');
             grid.innerHTML = '';
             
-            const filter = document.querySelector('input[name="sampleFilter"]:checked').id;
-            let filteredSamples = samples;
-            
-            if (filter === 'showGFX') {
-                filteredSamples = samples.filter(s => s.type === 'gfx');
-            } else if (filter === 'showGame') {
-                filteredSamples = samples.filter(s => s.type === 'game');
-            }
-            
-            filteredSamples.forEach(sample => {
+            segments.forEach((segment, index) => {
                 const item = document.createElement('div');
-                item.className = `snapshot-item ${sample.type}`;
+                item.className = 'card mb-2';
+                item.style.backgroundColor = '#161b22';
                 item.innerHTML = `
-                    <img src="${sample.image}" alt="Sample">
-                    <span class="snapshot-label ${sample.type}">
-                        ${sample.type.toUpperCase()}
-                    </span>
-                    <button class="btn btn-sm btn-danger position-absolute bottom-0 end-0 m-1" 
-                            onclick="removeSample('${sample.id}')">
-                        ×
-                    </button>
+                    <div class="card-body">
+                        <h6 class="card-title text-danger">구간 ${index + 1}</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <small class="text-muted">GFX 오버레이 구간:</small><br>
+                                <span class="text-warning">${formatTime(segment.gfxStart)} ~ ${formatTime(segment.gfxEnd)}</span>
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted">핸드 구간 (±15초):</small><br>
+                                <span class="text-success">${formatTime(segment.handStart)} ~ ${formatTime(segment.handEnd)}</span>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-muted">길이: ${formatTime(segment.handEnd - segment.handStart)}</small>
+                            <button class="btn btn-sm btn-danger float-end" onclick="removeSegment('${segment.id}')">
+                                삭제
+                            </button>
+                            <button class="btn btn-sm btn-info float-end me-2" onclick="jumpToSegment(${segment.gfxStart})">
+                                이동
+                            </button>
+                        </div>
+                    </div>
                 `;
                 grid.appendChild(item);
             });
+            
+            updateStats();
         }
         
-        // 샘플 제거
-        function removeSample(id) {
-            samples = samples.filter(s => s.id != id);
-            updateSampleDisplay();
-            updateStats();
-            saveSamplesToStorage();
+        // 구간 제거
+        function removeSegment(id) {
+            segments = segments.filter(s => s.id != id);
+            updateSegmentDisplay();
+            saveSegmentsToStorage();
+        }
+        
+        // 구간으로 이동
+        function jumpToSegment(time) {
+            if (video) {
+                video.currentTime = time;
+                drawFrame();
+            }
         }
         
         // 통계 업데이트
         function updateStats() {
-            const gfxCount = samples.filter(s => s.type === 'gfx').length;
-            const gameCount = samples.filter(s => s.type === 'game').length;
-            const total = samples.length;
+            const totalSegments = segments.length;
+            let totalGFXTime = 0;
+            let totalHandTime = 0;
             
-            document.getElementById('gfxCount').textContent = gfxCount;
-            document.getElementById('gameCount').textContent = gameCount;
-            document.getElementById('totalSamples').textContent = total;
+            segments.forEach(segment => {
+                totalGFXTime += (segment.gfxEnd - segment.gfxStart);
+                totalHandTime += (segment.handEnd - segment.handStart);
+            });
             
-            if (total > 0) {
-                document.getElementById('gfxProgress').style.width = `${(gfxCount / total) * 100}%`;
-                document.getElementById('gameProgress').style.width = `${(gameCount / total) * 100}%`;
+            document.getElementById('gfxCount').textContent = totalSegments;
+            document.getElementById('gameCount').textContent = formatTime(totalHandTime);
+            document.getElementById('totalSamples').textContent = totalSegments + ' 구간';
+            
+            if (video && video.duration > 0) {
+                const gfxPercent = (totalGFXTime / video.duration) * 100;
+                const handPercent = (totalHandTime / video.duration) * 100;
+                document.getElementById('gfxProgress').style.width = `${Math.min(gfxPercent, 100)}%`;
+                document.getElementById('gameProgress').style.width = `${Math.min(handPercent, 100)}%`;
             } else {
                 document.getElementById('gfxProgress').style.width = '0%';
                 document.getElementById('gameProgress').style.width = '0%';
             }
-        }
-        
-        // 필터 샘플
-        function filterSamples() {
-            updateSampleDisplay();
-        }
-        
-        // 모델 학습
-        function trainModel() {
-            if (samples.length < 10) {
-                alert('최소 10개 이상의 샘플이 필요합니다.');
-                return;
+            
+            // 내보내기 버튼 활성화
+            if (totalSegments > 0) {
+                document.getElementById('saveBtn').disabled = false;
             }
-            
-            // 간단한 통계 기반 모델
-            const gfxSamples = samples.filter(s => s.type === 'gfx');
-            const gameSamples = samples.filter(s => s.type === 'game');
-            
-            // 각 특징의 평균 계산
-            const gfxFeatures = calculateAverageFeatures(gfxSamples);
-            const gameFeatures = calculateAverageFeatures(gameSamples);
-            
-            model = {
-                gfx: gfxFeatures,
-                game: gameFeatures,
-                patterns: gfxSamples.map(s => s.features),
-                threshold: 0.5
-            };
-            
-            document.getElementById('saveBtn').disabled = false;
-            alert('모델 학습이 완료되었습니다!');
         }
+        
         
         // 평균 특징 계산
         function calculateAverageFeatures(samples) {
@@ -679,61 +689,115 @@
             return 1 - Math.min(avgDiff, 1);
         }
         
-        // 모델 저장
+        // 구간 데이터 저장
         function saveModel() {
-            if (!model) return;
+            if (segments.length === 0) {
+                alert('저장할 구간이 없습니다.');
+                return;
+            }
             
-            localStorage.setItem('gfxModel', JSON.stringify(model));
-            alert('모델이 저장되었습니다!');
+            // JSON 형식으로 내보내기
+            const exportData = {
+                version: '2.0',
+                type: 'segment-analysis',
+                segments: segments.map(s => ({
+                    gfxStart: s.gfxStart,
+                    gfxEnd: s.gfxEnd,
+                    handStart: s.handStart,
+                    handEnd: s.handEnd,
+                    duration: s.handEnd - s.handStart
+                })),
+                totalSegments: segments.length,
+                videoInfo: {
+                    duration: video ? video.duration : 0,
+                    filename: document.getElementById('videoInput').files[0]?.name || 'unknown'
+                },
+                createdAt: new Date().toISOString()
+            };
+            
+            // 다운로드 링크 생성
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `gfx_segments_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert(`${segments.length}개 구간이 JSON 파일로 저장되었습니다!`);
         }
         
-        // 모델 불러오기
+        // 구간 데이터 불러오기
         function loadModel() {
-            const savedModel = localStorage.getItem('gfxModel');
-            if (savedModel) {
-                model = JSON.parse(savedModel);
-                alert('모델을 불러왔습니다!');
-            } else {
-                alert('저장된 모델이 없습니다.');
-            }
-        }
-        
-        // 샘플 초기화
-        function clearSamples() {
-            if (confirm('모든 샘플을 삭제하시겠습니까?')) {
-                samples = [];
-                updateSampleDisplay();
-                updateStats();
-                saveSamplesToStorage();
-                document.getElementById('trainBtn').disabled = true;
-                document.getElementById('saveBtn').disabled = true;
-            }
-        }
-        
-        // 로컬 스토리지에 샘플 저장
-        function saveSamplesToStorage() {
-            // 이미지 데이터가 크므로 제한적으로 저장
-            const simplifiedSamples = samples.slice(-50).map(s => ({
-                type: s.type,
-                features: s.features,
-                timestamp: s.timestamp,
-                id: s.id
-            }));
-            
-            localStorage.setItem('gfxSamples', JSON.stringify(simplifiedSamples));
-        }
-        
-        // 로컬 스토리지에서 샘플 로드
-        function loadSamplesFromStorage() {
-            const saved = localStorage.getItem('gfxSamples');
-            if (saved) {
-                const loaded = JSON.parse(saved);
-                // 이미지 없이 로드된 샘플은 특징만 사용
-                samples = loaded;
-                updateStats();
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
                 
-                if (samples.length >= 10) {
-                    document.getElementById('trainBtn').disabled = false;
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        if (data.segments && Array.isArray(data.segments)) {
+                            segments = data.segments.map(s => ({
+                                ...s,
+                                id: Date.now() + Math.random()
+                            }));
+                            updateSegmentDisplay();
+                            saveSegmentsToStorage();
+                            alert(`${segments.length}개 구간을 불러왔습니다!`);
+                        } else {
+                            alert('유효한 구간 데이터가 아닙니다.');
+                        }
+                    } catch (error) {
+                        alert('파일을 읽을 수 없습니다.');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+        
+        // 구간 초기화
+        function clearSamples() {
+            if (confirm('모든 구간을 삭제하시겠습니까?')) {
+                segments = [];
+                updateSegmentDisplay();
+                saveSegmentsToStorage();
+                document.getElementById('saveBtn').disabled = true;
+                
+                // 현재 마킹 중인 구간도 초기화
+                if (currentSegment) {
+                    currentSegment = null;
+                    isMarkingStart = true;
+                    const btn = document.getElementById('markGFXBtn');
+                    btn.textContent = '📺 GFX 오버레이 인식 (클릭: 시작점 마킹)';
+                    btn.classList.remove('btn-warning');
+                    btn.classList.add('btn-danger');
+                    document.getElementById('segmentInfo').style.display = 'none';
+                }
+            }
+        }
+        
+        // 로컬 스토리지에 구간 저장
+        function saveSegmentsToStorage() {
+            localStorage.setItem('gfxSegments', JSON.stringify(segments));
+        }
+        
+        // 로컬 스토리지에서 구간 로드
+        function loadSamplesFromStorage() {
+            const saved = localStorage.getItem('gfxSegments');
+            if (saved) {
+                try {
+                    segments = JSON.parse(saved);
+                    if (segments.length > 0) {
+                        updateSegmentDisplay();
+                        document.getElementById('saveBtn').disabled = false;
+                    }
+                } catch (error) {
+                    segments = [];
                 }
             }
         }
