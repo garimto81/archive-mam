@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>테스트 비디오 생성기</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            background-color: #000;
+        }
+        .controls {
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .success {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+        .primary {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎬 테스트 비디오 생성기</h1>
+    <p>GFX 오버레이 학습기 테스트용 비디오를 생성합니다.</p>
+    
+    <canvas id="canvas" width="640" height="360"></canvas>
+    
+    <div class="controls">
+        <button class="primary" onclick="generateTestVideo()">테스트 비디오 생성</button>
+        <button class="success" onclick="downloadVideo()" id="downloadBtn" disabled>비디오 다운로드</button>
+    </div>
+    
+    <div id="status">준비됨</div>
+    
+    <script>
+        let mediaRecorder;
+        let recordedChunks = [];
+        let canvas = document.getElementById('canvas');
+        let ctx = canvas.getContext('2d');
+        
+        function generateTestVideo() {
+            document.getElementById('status').textContent = '비디오 생성 중...';
+            recordedChunks = [];
+            
+            // Canvas에서 스트림 생성
+            const stream = canvas.captureStream(30); // 30 FPS
+            
+            mediaRecorder = new MediaRecorder(stream, {
+                mimeType: 'video/webm;codecs=vp9'
+            });
+            
+            mediaRecorder.ondataavailable = function(event) {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            };
+            
+            mediaRecorder.onstop = function() {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                
+                // 다운로드 버튼 활성화
+                document.getElementById('downloadBtn').disabled = false;
+                document.getElementById('downloadBtn').onclick = () => downloadBlob(blob, 'test_poker_video.webm');
+                
+                document.getElementById('status').textContent = '비디오 생성 완료! 다운로드 가능합니다.';
+            };
+            
+            // 녹화 시작
+            mediaRecorder.start();
+            
+            // 30초 동안 애니메이션 실행
+            animatePokerGame();
+            
+            // 30초 후 녹화 중지
+            setTimeout(() => {
+                mediaRecorder.stop();
+            }, 30000);
+        }
+        
+        function animatePokerGame() {
+            let frame = 0;
+            const totalFrames = 30 * 30; // 30초 * 30fps
+            
+            function draw() {
+                // 배경 그리기 (포커 테이블)
+                ctx.fillStyle = '#0d4d2d';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // 포커 테이블 타원
+                ctx.beginPath();
+                ctx.ellipse(canvas.width/2, canvas.height/2, 280, 150, 0, 0, 2 * Math.PI);
+                ctx.fillStyle = '#1a5d3a';
+                ctx.fill();
+                ctx.strokeStyle = '#8B4513';
+                ctx.lineWidth = 8;
+                ctx.stroke();
+                
+                // 시간에 따른 단계별 시나리오
+                const timePercent = frame / totalFrames;
+                const currentSecond = Math.floor(timePercent * 30);
+                
+                if (currentSecond >= 5 && currentSecond <= 8) {
+                    // GFX 오버레이 시뮬레이션 (5-8초)
+                    drawGFXOverlay('HAND #1 - PREFLOP', '#ff4444');
+                } else if (currentSecond >= 15 && currentSecond <= 18) {
+                    // 두 번째 GFX 오버레이 (15-18초)
+                    drawGFXOverlay('HAND #2 - ALL IN!', '#ff4444');
+                } else if (currentSecond >= 25 && currentSecond <= 28) {
+                    // 세 번째 GFX 오버레이 (25-28초)
+                    drawGFXOverlay('HAND #3 - SHOWDOWN', '#ff4444');
+                } else {
+                    // 일반 게임 화면
+                    drawGameElements(currentSecond);
+                }
+                
+                // 카드 애니메이션
+                drawCards(currentSecond);
+                
+                // 칩 애니메이션
+                drawChips(currentSecond);
+                
+                // 시간 표시
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '16px Arial';
+                ctx.fillText(`Time: ${currentSecond}s`, 10, 30);
+                
+                frame++;
+                if (frame < totalFrames) {
+                    requestAnimationFrame(draw);
+                }
+            }
+            
+            draw();
+        }
+        
+        function drawGFXOverlay(text, color) {
+            // 반투명 오버레이 배경
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // GFX 텍스트
+            ctx.fillStyle = color;
+            ctx.font = 'bold 32px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(text, canvas.width/2, canvas.height/2);
+            
+            // 장식적 테두리
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 4;
+            ctx.strokeRect(50, canvas.height/2 - 40, canvas.width - 100, 80);
+            
+            ctx.textAlign = 'left'; // 리셋
+        }
+        
+        function drawGameElements(second) {
+            // 플레이어 위치 표시
+            const playerPositions = [
+                {x: canvas.width/2, y: 50, name: 'Player 1'},
+                {x: canvas.width - 80, y: canvas.height/2, name: 'Player 2'},
+                {x: canvas.width/2, y: canvas.height - 50, name: 'Player 3'},
+                {x: 80, y: canvas.height/2, name: 'Player 4'}
+            ];
+            
+            playerPositions.forEach((pos, idx) => {
+                // 플레이어 원
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, 25, 0, 2 * Math.PI);
+                ctx.fillStyle = second % 4 === idx ? '#ffff00' : '#ffffff';
+                ctx.fill();
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // 플레이어 이름
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(pos.name, pos.x, pos.y - 35);
+            });
+        }
+        
+        function drawCards(second) {
+            // 커뮤니티 카드 영역 (플랍, 턴, 리버)
+            const cardY = canvas.height/2 - 20;
+            const startX = canvas.width/2 - 100;
+            
+            for (let i = 0; i < 5; i++) {
+                if (second > 10 + i * 2) { // 10초부터 카드가 하나씩 나타남
+                    // 카드 그리기
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(startX + i * 40, cardY, 30, 42);
+                    ctx.strokeStyle = '#000000';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(startX + i * 40, cardY, 30, 42);
+                    
+                    // 카드 값 (임의)
+                    ctx.fillStyle = i % 2 === 0 ? '#ff0000' : '#000000';
+                    ctx.font = '14px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(['A♠', 'K♥', 'Q♦', 'J♣', '10♠'][i], 
+                               startX + i * 40 + 15, cardY + 25);
+                }
+            }
+        }
+        
+        function drawChips(second) {
+            // 팟 사이즈 표시 (중앙)
+            const potSize = Math.floor(second * 1000 + Math.random() * 5000);
+            ctx.fillStyle = '#ffff00';
+            ctx.font = '20px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`POT: $${potSize.toLocaleString()}`, canvas.width/2, canvas.height/2 + 70);
+            
+            // 칩 스택들
+            for (let i = 0; i < 4; i++) {
+                const chipX = 150 + i * 100;
+                const chipY = canvas.height - 100;
+                
+                // 칩 스택
+                for (let j = 0; j < 5; j++) {
+                    ctx.beginPath();
+                    ctx.arc(chipX, chipY - j * 3, 15, 0, 2 * Math.PI);
+                    ctx.fillStyle = ['#ff0000', '#00ff00', '#0000ff', '#ffff00'][i % 4];
+                    ctx.fill();
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+            }
+        }
+        
+        function downloadBlob(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

@@ -491,7 +491,10 @@
         
         // GFX 마킹 토글
         function toggleGFXMarking() {
-            if (!video) return;
+            if (!video) {
+                alert('비디오를 먼저 업로드해주세요.');
+                return;
+            }
             
             const btn = document.getElementById('markGFXBtn');
             const segmentInfo = document.getElementById('segmentInfo');
@@ -527,10 +530,12 @@
                 
                 // 15초 규칙 적용하여 핸드 구간 계산
                 currentSegment.handStart = Math.max(0, currentSegment.gfxStart - 15);
-                currentSegment.handEnd = Math.min(video.duration, currentSegment.gfxEnd + 15);
+                currentSegment.handEnd = Math.min(video.duration || 3600, currentSegment.gfxEnd + 15);
                 
                 // 구간 저장
                 segments.push(currentSegment);
+                console.log('구간 저장됨:', currentSegment);
+                console.log('전체 구간 수:', segments.length);
                 
                 // 버튼 상태 초기화
                 btn.textContent = '📺 GFX 오버레이 인식 (클릭: 시작점 마킹)';
@@ -558,10 +563,12 @@
         
         // 구간 표시 업데이트
         function updateSegmentDisplay() {
+            console.log('updateSegmentDisplay 호출됨, segments:', segments);
             const grid = document.getElementById('snapshotGrid');
             grid.innerHTML = '';
             
             segments.forEach((segment, index) => {
+                console.log(`구간 ${index}:`, segment);
                 const item = document.createElement('div');
                 item.className = 'card mb-2';
                 item.style.backgroundColor = '#161b22';
@@ -804,6 +811,11 @@
         
         // 시간 포맷
         function formatTime(seconds) {
+            // null, undefined, NaN 처리
+            if (seconds == null || isNaN(seconds) || seconds < 0) {
+                return '0:00';
+            }
+            
             const mins = Math.floor(seconds / 60);
             const secs = Math.floor(seconds % 60);
             return `${mins}:${secs.toString().padStart(2, '0')}`;
