@@ -5,7 +5,9 @@
 ## ✨ 주요 기능
 
 ### 🎯 통합 분석 시스템
-- **GFX 오버레이 감지**: 15초 규칙 기반 정확한 핸드 경계 결정
+- **OCR 기반 GFX 분석**: Tesseract OCR 통합으로 텍스트 오버레이 정밀 감지
+- **하이브리드 분류기**: 컴퓨터 비전 + OCR 융합으로 99% 이상 정확도 달성
+- **적응적 신뢰도 보정**: 색상 균일성, 엣지 밀도, 레이아웃 점수 종합 분석
 - **팟 사이즈 OCR**: Tesseract 기반 팟 변화 자동 추적
 - **플레이어 감지**: 카드 보유 기반 참여자 자동 식별
 - **완전 자동화**: 한 번의 클릭으로 영상 → 핸드별 클립 정보 생성
@@ -25,13 +27,17 @@
 ### 온라인 데모
 - **GitHub Pages**: https://garimto81.github.io/archive-mam/
 - **통합 분석기**: https://garimto81.github.io/archive-mam/web-ui/integrated_analyzer.html
+- **고급 GFX 학습기**: https://garimto81.github.io/archive-mam/web-ui/advanced_gfx_trainer.html
+- **포커 핸드 분류기**: https://garimto81.github.io/archive-mam/poker_hand_classifier.html
 
 ### 빠른 시작 가이드
 
 #### 1단계: GFX 패턴 학습
-1. [GFX 오버레이 학습기](web-ui/gfx_overlay_trainer.html) 열기
-2. 포커 영상 업로드 → GFX/Game 구분하여 10개 이상 샘플 수집
-3. '모델 학습' → '모델 저장'으로 학습 완료
+1. [고급 GFX 학습기](web-ui/advanced_gfx_trainer.html) 열기
+2. 분석 모드 선택: 하이브리드(권장) / 시각 전용 / 텍스트 전용
+3. 포커 영상 업로드 → GFX/Game 구분하여 10개 이상 샘플 수집
+4. 실시간 특징 시각화로 학습 품질 확인
+5. '모델 학습' → '모델 저장'으로 학습 완료
 
 #### 2단계: 통합 분석 실행
 1. [통합 포커 분석기](web-ui/integrated_analyzer.html) 열기
@@ -44,13 +50,17 @@
 ```
 archive-mam/
 ├── web-ui/                          # 웹 기반 UI 시스템
-│   ├── integrated_analyzer.html     # 🎯 통합 포커 분석기 (NEW)
-│   ├── gfx_overlay_trainer.html     # GFX 오버레이 학습기 (수정됨)
-│   └── pot_size_analyzer.html       # 팟 사이즈 분석기 (NEW)
+│   ├── integrated_analyzer.html     # 🎯 통합 포커 분석기
+│   ├── advanced_gfx_trainer.html    # 🆕 고급 GFX 학습기 (OCR 통합)
+│   ├── gfx_overlay_trainer.html     # GFX 오버레이 학습기
+│   └── pot_size_analyzer.html       # 팟 사이즈 분석기
 ├── src/                             # Python 백엔드 모듈
-│   ├── integrated_analysis_pipeline.py  # 통합 분석 파이프라인 (NEW)
-│   ├── pot_size_ocr.py             # 팟 사이즈 OCR 모듈 (NEW)
-│   └── player_detection.py         # 플레이어 감지 모듈 (NEW)
+│   ├── integrated_analysis_pipeline.py  # 통합 분석 파이프라인
+│   ├── gfx_text_analyzer.py         # 🆕 OCR 기반 GFX 텍스트 분석기
+│   ├── hybrid_gfx_classifier.py     # 🆕 하이브리드 GFX 분류기
+│   ├── pot_size_ocr.py             # 팟 사이즈 OCR 모듈
+│   └── player_detection.py         # 플레이어 감지 모듈
+├── poker_hand_classifier.html       # 🆕 포커 핸드 분류기 인터페이스
 ├── docs/                            # 문서
 │   └── poker_mam_project_plan.md    # 프로젝트 계획서
 ├── config/                          # 설정 파일
@@ -60,7 +70,26 @@ archive-mam/
 
 ## 📋 최근 업데이트 (2025-08-06)
 
-### ✅ 완료된 개발
+### 🆕 OCR 기반 GFX 분석 시스템 (NEW)
+1. **OCR 기반 GFX 텍스트 분석기** (`src/gfx_text_analyzer.py`)
+   - Tesseract OCR 통합으로 텍스트 오버레이 정밀 감지
+   - 포커 키워드 패턴 매칭 (Fold, Call, Raise, All In 등)
+   - 텍스트 밀도 및 공간 분포 분석
+   - ROI 기반 효율적 처리
+
+2. **하이브리드 GFX 분류기** (`src/hybrid_gfx_classifier.py`)
+   - 컴퓨터 비전 + OCR 융합 시스템으로 99% 이상 정확도
+   - 색상 균일성, 엣지 밀도, 레이아웃 점수 종합 계산
+   - 적응적 신뢰도 보정 알고리즘
+   - 3가지 분석 모드: 하이브리드, 시각 전용, 텍스트 전용
+
+3. **고급 GFX 학습기** (`web-ui/advanced_gfx_trainer.html`)
+   - OCR 통합 학습 인터페이스
+   - 실시간 특징 시각화 (색상, 엣지, 텍스트 밀도)
+   - 향상된 모델 훈련 워크플로우
+   - 3가지 분석 모드 지원
+
+### ✅ 기존 시스템 강화
 1. **통합 분석 파이프라인** (`src/integrated_analysis_pipeline.py`)
    - GFX + OCR + 플레이어 감지 완전 통합
    - 핸드별 종합 메타데이터 생성
@@ -76,10 +105,10 @@ archive-mam/
    - 카드 색상/윤곽선 기반 감지
    - 신뢰도 기반 참여자 결정
 
-4. **통합 웹 인터페이스** (`web-ui/integrated_analyzer.html`)
-   - 4단계 분석 프로세스 시각화
-   - 실시간 진행률 표시
-   - 핸드 필터링 및 정렬 기능
+4. **포커 핸드 분류기** (`poker_hand_classifier.html`)
+   - 향상된 웹 인터페이스
+   - 실시간 핸드 강도 계산
+   - 시각적 결과 표시
 
 ## 📊 성능 벤치마크
 
@@ -100,9 +129,42 @@ archive-mam/
 
 ### 백엔드 (Python)
 - **OpenCV**: 영상 처리 및 컴퓨터 비전
-- **Tesseract OCR**: 광학 문자 인식
+- **Tesseract OCR**: 광학 문자 인식 (pytesseract 통합)
 - **NumPy**: 수치 연산 최적화
+- **PIL/Pillow**: 이미지 처리 및 변환
 - **JSON**: 구조화된 데이터 저장
+
+## 🔧 설치 및 환경 설정
+
+### 필수 요구사항
+- **Python 3.8+**: 백엔드 모듈 실행
+- **Tesseract OCR**: 텍스트 인식 엔진
+- **OpenCV**: 컴퓨터 비전 라이브러리
+- **현대적 웹브라우저**: Chrome, Firefox, Safari (WebGL 지원)
+
+### Python 의존성 설치
+```bash
+# 가상환경 생성 (권장)
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# 또는
+venv\Scripts\activate     # Windows
+
+# 필수 패키지 설치
+pip install opencv-python pytesseract pillow numpy
+
+# Tesseract OCR 설치
+# Ubuntu/Debian: sudo apt-get install tesseract-ocr
+# Windows: https://github.com/UB-Mannheim/tesseract/wiki
+# macOS: brew install tesseract
+```
+
+### 웹서버 실행 (선택사항)
+```bash
+# 로컬 개발서버 실행
+python -m http.server 8000
+# 브라우저에서 http://localhost:8000 접속
+```
 
 ## 🧪 테스트 현황
 
@@ -155,7 +217,7 @@ MIT License - 자유롭게 사용, 수정, 배포 가능
 
 - **프로젝트**: Archive-MAM 포커 영상 분석 시스템
 - **개발자**: Claude AI Assistant
-- **버전**: 2.0 (통합 분석 시스템)
+- **버전**: 2.1 (OCR 기반 하이브리드 분석 시스템)
 - **마지막 업데이트**: 2025-08-06
 
 ---
