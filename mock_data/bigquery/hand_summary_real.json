@@ -1,0 +1,474 @@
+[
+  {
+    "hand_id": "20251016_201138885",
+    "event_id": "event_2025_2",
+    "tournament_id": "tournament_2",
+    "table_id": "7",
+    "hand_number": 1,
+    "timestamp": "2025-10-16T11:11:33.324Z",
+    "summary_text": "Hand #1: Patrik Antonius, Daniel Negreanu, Erik Seidel. Action started at FLOP. Board: As, Js, 5s, 4s, 7d. Pre-flop pot: 3600 chips. Patrik Antonius raises pre-flop.",
+    "player_names": [
+      "Patrik Antonius",
+      "Daniel Negreanu",
+      "Erik Seidel"
+    ],
+    "pot_size_usd": 36.0,
+    "board_cards": "As, Js, 5s, 4s, 7d",
+    "hole_cards": [
+      "Seat 4: Ah, Jd",
+      "Seat 7: 5h, 5d",
+      "Seat 8: Ks, 7s"
+    ],
+    "start_street": "FLOP",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251016_220353960",
+    "event_id": "event_2025_3",
+    "tournament_id": "tournament_3",
+    "table_id": "30",
+    "hand_number": 2,
+    "timestamp": "2025-10-16T13:03:43.062Z",
+    "summary_text": "Hand #2: Tom Dwan, Antonio Esfandiari. Action started at PREFLOP. Board: 9h, 7s, 4s, Qc, 4c. Pre-flop pot: 25000 chips. Tom Dwan raises pre-flop.",
+    "player_names": [
+      "Tom Dwan",
+      "Antonio Esfandiari"
+    ],
+    "pot_size_usd": 250.0,
+    "board_cards": "9h, 7s, 4s, Qc, 4c",
+    "hole_cards": [
+      "Seat 2: Qs, 6h"
+    ],
+    "start_street": "PREFLOP",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251016_234832268",
+    "event_id": "event_2025_4",
+    "tournament_id": "tournament_1",
+    "table_id": "31",
+    "hand_number": 3,
+    "timestamp": "2025-10-16T14:48:26.650Z",
+    "summary_text": "Hand #3: Patrik Antonius, Tom Dwan. Action started at FLOP. Board: 3s, 4c, 9s, 8c, 9c. Pre-flop pot: 49500 chips. Patrik Antonius raises pre-flop.",
+    "player_names": [
+      "Patrik Antonius",
+      "Tom Dwan"
+    ],
+    "pot_size_usd": 495.0,
+    "board_cards": "3s, 4c, 9s, 8c, 9c",
+    "hole_cards": [
+      "Seat 2: Qh, Qd",
+      "Seat 8: Kc, Jd"
+    ],
+    "start_street": "FLOP",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251017_005429205",
+    "event_id": "event_2025_5",
+    "tournament_id": "tournament_2",
+    "table_id": "30",
+    "hand_number": 4,
+    "timestamp": "2025-10-16T15:54:25.763Z",
+    "summary_text": "Hand #4: Patrik Antonius, Jason Mercier, Chris Moneymaker. Action started at TURN. Pre-flop pot: 29500 chips. Jason Mercier calls.",
+    "player_names": [
+      "Patrik Antonius",
+      "Jason Mercier",
+      "Chris Moneymaker"
+    ],
+    "pot_size_usd": 295.0,
+    "board_cards": "",
+    "hole_cards": [],
+    "start_street": "TURN",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251017_023200765",
+    "event_id": "event_2025_1",
+    "tournament_id": "tournament_3",
+    "table_id": "25",
+    "hand_number": 5,
+    "timestamp": "2025-10-16T17:31:57.511Z",
+    "summary_text": "Hand #5: Tom Dwan, Antonio Esfandiari. Action started at PREFLOP. Board: 4d, 7h, 4s, 2c, 6h. Tom Dwan raises pre-flop.",
+    "player_names": [
+      "Tom Dwan",
+      "Antonio Esfandiari"
+    ],
+    "pot_size_usd": 0.0,
+    "board_cards": "4d, 7h, 4s, 2c, 6h",
+    "hole_cards": [
+      "Seat 1: 8c, 8d",
+      "Seat 6: Ac, Kc"
+    ],
+    "start_street": "PREFLOP",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251017_033136378",
+    "event_id": "event_2025_2",
+    "tournament_id": "tournament_1",
+    "table_id": "20",
+    "hand_number": 6,
+    "timestamp": "2025-10-16T18:31:32.601Z",
+    "summary_text": "Hand #6: Antonio Esfandiari, Daniel Negreanu, Patrik Antonius. Action started at FLOP. Board: Qs, 2s, Qd, Kc, 8c. Pre-flop pot: 22500 chips. Antonio Esfandiari raises pre-flop.",
+    "player_names": [
+      "Antonio Esfandiari",
+      "Daniel Negreanu",
+      "Patrik Antonius"
+    ],
+    "pot_size_usd": 225.0,
+    "board_cards": "Qs, 2s, Qd, Kc, 8c",
+    "hole_cards": [
+      "Seat 3: 2h, 2c"
+    ],
+    "start_street": "FLOP",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251017_161730338",
+    "event_id": "event_2025_3",
+    "tournament_id": "tournament_2",
+    "table_id": "21",
+    "hand_number": 7,
+    "timestamp": "2025-10-17T07:17:23.108Z",
+    "summary_text": "Hand #7: Gus Hansen, Tom Dwan. Action started at FLOP. Board: Kc, 7d, 6d, Jc, 4s. Pre-flop pot: 12345 chips. Tom Dwan calls.",
+    "player_names": [
+      "Gus Hansen",
+      "Tom Dwan"
+    ],
+    "pot_size_usd": 123.45,
+    "board_cards": "Kc, 7d, 6d, Jc, 4s",
+    "hole_cards": [
+      "Seat 2: Ac, 4c",
+      "Seat 8: Qs, Js"
+    ],
+    "start_street": "FLOP",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251017_163341625",
+    "event_id": "event_2025_4",
+    "tournament_id": "tournament_3",
+    "table_id": "9",
+    "hand_number": 8,
+    "timestamp": "2025-10-17T07:33:32.363Z",
+    "summary_text": "Hand #8: Chris Moneymaker, Vanessa Selbst. Action started at RIVER. Board: As, Ah, 7d, 7c, Tc. Pre-flop pot: 55000 chips. Hero call on the river.",
+    "player_names": [
+      "Chris Moneymaker",
+      "Vanessa Selbst"
+    ],
+    "pot_size_usd": 550.0,
+    "board_cards": "As, Ah, 7d, 7c, Tc",
+    "hole_cards": [
+      "Seat 2: Qh, Qd"
+    ],
+    "start_street": "RIVER",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251017_170420650",
+    "event_id": "event_2025_5",
+    "tournament_id": "tournament_1",
+    "table_id": "16",
+    "hand_number": 9,
+    "timestamp": "2025-10-17T08:04:14.873Z",
+    "summary_text": "Hand #9: Patrik Antonius, Doyle Brunson, Chris Moneymaker. Action started at PREFLOP. Board: 4h, 4d, 5c, Kc, Qc. Pre-flop pot: 11111 chips. Doyle Brunson calls.",
+    "player_names": [
+      "Patrik Antonius",
+      "Doyle Brunson",
+      "Chris Moneymaker"
+    ],
+    "pot_size_usd": 111.11,
+    "board_cards": "4h, 4d, 5c, Kc, Qc",
+    "hole_cards": [
+      "Seat 4: As, Ah",
+      "Seat 5: Ks, Kh",
+      "Seat 6: Qs, Qh"
+    ],
+    "start_street": "PREFLOP",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251017_172354327",
+    "event_id": "event_2025_1",
+    "tournament_id": "tournament_2",
+    "table_id": "27",
+    "hand_number": 10,
+    "timestamp": "2025-10-17T08:23:51.203Z",
+    "summary_text": "Hand #10: Gus Hansen, Chris Moneymaker. Action started at PREFLOP. Board: As, Ks, Qs, Js, Ts. Pre-flop pot: 95000 chips. Gus Hansen raises pre-flop.",
+    "player_names": [
+      "Gus Hansen",
+      "Chris Moneymaker"
+    ],
+    "pot_size_usd": 950.0,
+    "board_cards": "As, Ks, Qs, Js, Ts",
+    "hole_cards": [
+      "Seat 1: 2c, 2d",
+      "Seat 6: 3c, 3d"
+    ],
+    "start_street": "PREFLOP",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251017_230558468",
+    "event_id": "event_2025_2",
+    "tournament_id": "tournament_3",
+    "table_id": "16",
+    "hand_number": 11,
+    "timestamp": "2025-10-17T17:05:51.909Z",
+    "summary_text": "Hand #11: Gus Hansen, Tom Dwan. Action started at RIVER. Board: 6s, Qs, Jh, Ts, Js. Pre-flop pot: 23500 chips. All-in on the flop.",
+    "player_names": [
+      "Gus Hansen",
+      "Tom Dwan"
+    ],
+    "pot_size_usd": 235.0,
+    "board_cards": "6s, Qs, Jh, Ts, Js",
+    "hole_cards": [
+      "Seat 5: Jc, "
+    ],
+    "start_street": "RIVER",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251017_233959415",
+    "event_id": "event_2025_3",
+    "tournament_id": "tournament_1",
+    "table_id": "18",
+    "hand_number": 12,
+    "timestamp": "2025-10-17T17:39:53.889Z",
+    "summary_text": "Hand #12: Vanessa Selbst, Antonio Esfandiari. Action started at FLOP. Board: Jc, 4h, 9s, 9h. Pre-flop pot: 13000 chips. All-in on the flop.",
+    "player_names": [
+      "Vanessa Selbst",
+      "Antonio Esfandiari"
+    ],
+    "pot_size_usd": 130.0,
+    "board_cards": "Jc, 4h, 9s, 9h",
+    "hole_cards": [],
+    "start_street": "FLOP",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251018_023143392",
+    "event_id": "event_2025_4",
+    "tournament_id": "tournament_2",
+    "table_id": "16",
+    "hand_number": 13,
+    "timestamp": "2025-10-17T20:31:37.399Z",
+    "summary_text": "Hand #13: Erik Seidel, Phil Ivey. Action started at TURN. Board: Qc, 2d, Kh, Jh, 2h. Pre-flop pot: 38000 chips. All-in on the flop.",
+    "player_names": [
+      "Erik Seidel",
+      "Phil Ivey"
+    ],
+    "pot_size_usd": 380.0,
+    "board_cards": "Qc, 2d, Kh, Jh, 2h",
+    "hole_cards": [
+      "Seat 4: Kc, Jc",
+      "Seat 5: As, Ah"
+    ],
+    "start_street": "TURN",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251018_023607715",
+    "event_id": "event_2025_5",
+    "tournament_id": "tournament_3",
+    "table_id": "14",
+    "hand_number": 14,
+    "timestamp": "2025-10-17T20:36:04.238Z",
+    "summary_text": "Hand #14: Vanessa Selbst, Erik Seidel. Action started at FLOP. Board: Jc, Ah, 9c, 9h, Ks. Pre-flop pot: 18500 chips. Erik Seidel calls.",
+    "player_names": [
+      "Vanessa Selbst",
+      "Erik Seidel"
+    ],
+    "pot_size_usd": 185.0,
+    "board_cards": "Jc, Ah, 9c, 9h, Ks",
+    "hole_cards": [],
+    "start_street": "FLOP",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251018_032842633",
+    "event_id": "event_2025_1",
+    "tournament_id": "tournament_1",
+    "table_id": "16",
+    "hand_number": 15,
+    "timestamp": "2025-10-17T21:28:37.228Z",
+    "summary_text": "Hand #15: Tom Dwan, Erik Seidel. Action started at FLOP. Board: Jc, 2s, 2h, As, 5d. Pre-flop pot: 13500 chips. All-in on the flop.",
+    "player_names": [
+      "Tom Dwan",
+      "Erik Seidel"
+    ],
+    "pot_size_usd": 135.0,
+    "board_cards": "Jc, 2s, 2h, As, 5d",
+    "hole_cards": [
+      "Seat 5: Ac, "
+    ],
+    "start_street": "FLOP",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251018_034031028",
+    "event_id": "event_2025_2",
+    "tournament_id": "tournament_2",
+    "table_id": "20",
+    "hand_number": 16,
+    "timestamp": "2025-10-17T21:40:05.299Z",
+    "summary_text": "Hand #16: Gus Hansen, Patrik Antonius. Action started at RIVER. Board: Kd, Jd, 3s, Ts, 2h. Pre-flop pot: 86000 chips. Gus Hansen raises pre-flop.",
+    "player_names": [
+      "Gus Hansen",
+      "Patrik Antonius"
+    ],
+    "pot_size_usd": 860.0,
+    "board_cards": "Kd, Jd, 3s, Ts, 2h",
+    "hole_cards": [],
+    "start_street": "RIVER",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251018_035114560",
+    "event_id": "event_2025_3",
+    "tournament_id": "tournament_3",
+    "table_id": "20",
+    "hand_number": 17,
+    "timestamp": "2025-10-17T21:51:10.834Z",
+    "summary_text": "Hand #17: Patrik Antonius, Phil Hellmuth. Action started at PREFLOP. Board: 9h, Jd, 2d, Ad, 4c. Pre-flop pot: 23500 chips. Hero call on the river.",
+    "player_names": [
+      "Patrik Antonius",
+      "Phil Hellmuth"
+    ],
+    "pot_size_usd": 235.0,
+    "board_cards": "9h, Jd, 2d, Ad, 4c",
+    "hole_cards": [
+      "Seat 5: Js, Jc",
+      "Seat 7: Jh, 2c"
+    ],
+    "start_street": "PREFLOP",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251018_215533478",
+    "event_id": "event_2025_4",
+    "tournament_id": "tournament_1",
+    "table_id": "1",
+    "hand_number": 18,
+    "timestamp": "2025-10-18T12:55:31.133Z",
+    "summary_text": "Hand #18: Chris Moneymaker, Vanessa Selbst. Action started at PREFLOP. Board: Tc, 9c, 8c, 7c, 6c. Pre-flop pot: 8000 chips. Big bluff on the turn.",
+    "player_names": [
+      "Chris Moneymaker",
+      "Vanessa Selbst"
+    ],
+    "pot_size_usd": 80.0,
+    "board_cards": "Tc, 9c, 8c, 7c, 6c",
+    "hole_cards": [
+      "Seat 1: Ac, Kc",
+      "Seat 2: Qc, Jc"
+    ],
+    "start_street": "PREFLOP",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251018_222227747",
+    "event_id": "event_2025_5",
+    "tournament_id": "tournament_2",
+    "table_id": "24",
+    "hand_number": 19,
+    "timestamp": "2025-10-18T16:22:25.219Z",
+    "summary_text": "Hand #19: Jason Mercier, Vanessa Selbst. Action started at RIVER. Board: 9d, Ts, 4c, As, Ad. Pre-flop pot: 31500 chips. Big bluff on the turn.",
+    "player_names": [
+      "Jason Mercier",
+      "Vanessa Selbst"
+    ],
+    "pot_size_usd": 315.0,
+    "board_cards": "9d, Ts, 4c, As, Ad",
+    "hole_cards": [
+      "Seat 6: Ks, 6c",
+      "Seat 8: 9c, 8s"
+    ],
+    "start_street": "RIVER",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251018_235631620",
+    "event_id": "event_2025_1",
+    "tournament_id": "tournament_3",
+    "table_id": "11",
+    "hand_number": 20,
+    "timestamp": "2025-10-18T14:56:25.010Z",
+    "summary_text": "Hand #20: Phil Hellmuth, Patrik Antonius. Action started at RIVER. Board: Ks, 8h, 2h, Kc, Ac. Pre-flop pot: 60000 chips. Big bluff on the turn.",
+    "player_names": [
+      "Phil Hellmuth",
+      "Patrik Antonius"
+    ],
+    "pot_size_usd": 600.0,
+    "board_cards": "Ks, 8h, 2h, Kc, Ac",
+    "hole_cards": [
+      "Seat 2: Jd, Ts",
+      "Seat 3: Qc, 5c"
+    ],
+    "start_street": "RIVER",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251019_001237519",
+    "event_id": "event_2025_2",
+    "tournament_id": "tournament_1",
+    "table_id": "39",
+    "hand_number": 1,
+    "timestamp": "2025-10-18T15:12:31.711Z",
+    "summary_text": "Hand #1: Jason Mercier, Vanessa Selbst. Action started at PREFLOP. Board: Jh, 9c, Qd, Ks, 8c. Pre-flop pot: 20000 chips. All-in on the flop.",
+    "player_names": [
+      "Jason Mercier",
+      "Vanessa Selbst"
+    ],
+    "pot_size_usd": 200.0,
+    "board_cards": "Jh, 9c, Qd, Ks, 8c",
+    "hole_cards": [
+      "Seat 5: As, Qh",
+      "Seat 7: Ah, 4c"
+    ],
+    "start_street": "PREFLOP",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251019_005820034",
+    "event_id": "event_2025_3",
+    "tournament_id": "tournament_2",
+    "table_id": "30",
+    "hand_number": 21,
+    "timestamp": "2025-10-18T15:58:17.608Z",
+    "summary_text": "Hand #21: Doyle Brunson, Chris Moneymaker. Action started at PREFLOP. Board: 5h, 2h, 6h, 7s, Jd. Pre-flop pot: 13000 chips. Hero call on the river.",
+    "player_names": [
+      "Doyle Brunson",
+      "Chris Moneymaker"
+    ],
+    "pot_size_usd": 130.0,
+    "board_cards": "5h, 2h, 6h, 7s, Jd",
+    "hole_cards": [
+      "Seat 4: Ks, Kh",
+      "Seat 8: Js, Jc"
+    ],
+    "start_street": "PREFLOP",
+    "created_at": "2025-11-17T17:03:15.176858"
+  },
+  {
+    "hand_id": "20251019_010902452",
+    "event_id": "event_2025_4",
+    "tournament_id": "tournament_3",
+    "table_id": "33",
+    "hand_number": 22,
+    "timestamp": "2025-10-18T16:08:58.992Z",
+    "summary_text": "Hand #22: Patrik Antonius, Tom Dwan. Action started at TURN. Board: Ac, 5c, Kh, 3s, 7s. Pre-flop pot: 57000 chips. Big bluff on the turn.",
+    "player_names": [
+      "Patrik Antonius",
+      "Tom Dwan"
+    ],
+    "pot_size_usd": 570.0,
+    "board_cards": "Ac, 5c, Kh, 3s, 7s",
+    "hole_cards": [
+      "Seat 2: As, Jd",
+      "Seat 5: Ad, 7d"
+    ],
+    "start_street": "TURN",
+    "created_at": "2025-11-17T17:03:15.176858"
+  }
+]

@@ -1,0 +1,522 @@
+openapi: 3.0.3
+
+info:
+  title: M5 Clipping Service API
+  description: |
+    **POKER-BRAIN Clipping Service**
+
+    Pub/Sub 기반 비동기 비디오 클리핑 서비스입니다.
+
+    **담당**: DevOps Engineer / Backend Engineer (Eve)
+    **모듈 ID**: M5
+    **배포**: Local Agent (NAS 서버) + Cloud Run (API)
+
+    ## 주요 기능
+    - Pub/Sub 비동기 클리핑 요청 처리
+    - FFmpeg 고속 클리핑 (-c copy, re-encoding 없음)
+    - GCS 업로드 및 Signed URL 생성
+    - High Availability (Primary + Standby)
+    - systemd Daemon 관리
+
+    ## 아키텍처
+    ```
+    User (M6) → POST /v1/clip/request
+        ↓
+    Pub/Sub Topic (clipping-requests)
+        ↓
+    Local Agent (NAS Server, subscribes)
+        ├─ FFmpeg Clipping
+        ├─ GCS Upload
+        └─ Pub/Sub Publish (clipping-complete)
+        ↓
+    M6 (poll or webhook)
+        ↓
+    Signed URL → User Download
+    ```
+
+    ## High Availability
+    - Primary Agent (nas-server-01)
+    - Standby Agent (nas-server-02)
+    - Automatic Failover (<1분)
+
+    ## 의존성
+    - **Input**: Pub/Sub (clipping-requests)
+    - **Output**: GCS (gg-subclips), Pub/Sub (clipping-complete)
+    - **External**: NAS (/nas/poker/)
+
+  version: 1.0.0
+  contact:
+    name: GG Production DevOps Team
+    email: aiden.kim@ggproduction.net
+
+servers:
+  - url: https://clipping-service-{env}.run.app
+    description: Cloud Run deployment (API 전용)
+    variables:
+      env:
+        default: prod
+        enum:
+          - prod
+          - staging
+          - dev
+  - url: http://localhost:8005
+    description: Local development
+
+tags:
+  - name: Clipping
+    description: 클리핑 요청 및 상태 조회
+  - name: Admin
+    description: 관리자 기능 (Agent 관리)
+  - name: Monitoring
+    description: 서비스 상태
+
+paths:
+  /v1/clip/request:
+    post:
+      summary: 클리핑 요청
+      description: |
+        비디오 클리핑을 요청합니다. (비동기 처리)
+
+        **처리 흐름**:
+        1. API가 Pub/Sub에 메시지 발행
+        2. Local Agent가 Pub/Sub 수신
+        3. FFmpeg 클리핑 실행
+        4. GCS 업로드
+        5. 완료 알림 (Pub/Sub)
+
+        **예상 처리 시간**: 2분 핸드 → ~30초
+      operationId: requestClip
+      tags:
+        - Clipping
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClipRequest'
+            example:
+              hand_id: "wsop2024_me_d3_h154"
+              nas_video_path: "/nas/poker/2024/wsop/main_event_day3.mp4"
+              start_seconds: 12255
+              end_seconds: 12405
+              output_quality: "high"
+      responses:
+        '200':
+          description: 클리핑 요청 성공 (큐에 등록됨)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClipResponse'
+              example:
+                request_id: "clip-20241117-001"
+                hand_id: "wsop2024_me_d3_h154"
+                status: "queued"
+                estimated_duration_sec: 45
+                queue_position: 3
+                created_at: "2024-11-17T14:00:00Z"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /v1/clip/{request_id}/status:
+    get:
+      summary: 클리핑 상태 조회
+      description: |
+        클리핑 요청의 상태를 조회합니다.
+
+        **상태 종류**:
+        - `queued`: 큐 대기 중
+        - `processing`: 클리핑 진행 중
+        - `completed`: 완료 (다운로드 가능)
+        - `failed`: 실패
+      operationId: getClipStatus
+      tags:
+        - Clipping
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: request_id
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^clip-\d{8}-\d{3}$'
+          example: "clip-20241117-001"
+      responses:
+        '200':
+          description: 상태 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClipStatus'
+              examples:
+                completed:
+                  summary: 완료된 클립
+                  value:
+                    request_id: "clip-20241117-001"
+                    hand_id: "wsop2024_me_d3_h154"
+                    status: "completed"
+                    output_gcs_path: "gs://gg-subclips/wsop2024_me_d3_h154.mp4"
+                    download_url: "https://storage.googleapis.com/gg-subclips/wsop2024_me_d3_h154.mp4?X-Goog-Signature=..."
+                    file_size_bytes: 52428800
+                    duration_seconds: 150
+                    processing_time_seconds: 45
+                    download_url_expires_at: "2024-11-17T15:00:00Z"
+                    completed_at: "2024-11-17T14:01:00Z"
+                processing:
+                  summary: 처리 중
+                  value:
+                    request_id: "clip-20241117-002"
+                    hand_id: "wsop2024_me_d3_h155"
+                    status: "processing"
+                    progress_percent: 65
+                    started_at: "2024-11-17T14:05:00Z"
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /v1/admin/agents:
+    get:
+      summary: Local Agent 상태 조회
+      description: |
+        Primary 및 Standby Agent의 상태를 조회합니다.
+
+        **관리자 전용**
+      operationId: getAgentStatus
+      tags:
+        - Admin
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Agent 상태
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  agents:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AgentStatus'
+              example:
+                agents:
+                  - agent_id: "nas-server-01"
+                    role: "primary"
+                    status: "active"
+                    last_heartbeat: "2024-11-17T14:00:00Z"
+                    queue_depth: 3
+                    completed_clips_24h: 450
+                  - agent_id: "nas-server-02"
+                    role: "standby"
+                    status: "standby"
+                    last_heartbeat: "2024-11-17T14:00:05Z"
+                    queue_depth: 0
+                    completed_clips_24h: 0
+
+  /v1/admin/agents/{agent_id}/failover:
+    post:
+      summary: 수동 Failover
+      description: |
+        Primary Agent를 수동으로 전환합니다.
+
+        **사용 시점**:
+        - Primary Agent 유지보수
+        - 성능 이슈 발생 시
+      operationId: failover
+      tags:
+        - Admin
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "nas-server-02"
+      responses:
+        '200':
+          description: Failover 완료
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  old_primary:
+                    type: string
+                  new_primary:
+                    type: string
+                  switched_at:
+                    type: string
+                    format: date-time
+
+  /v1/stats:
+    get:
+      summary: 클리핑 통계 조회
+      operationId: getClippingStats
+      tags:
+        - Monitoring
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [24h, 7d, 30d]
+            default: 24h
+      responses:
+        '200':
+          description: 통계 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClippingStats'
+              example:
+                period: "24h"
+                total_requests: 580
+                completed: 565
+                failed: 5
+                queued: 10
+                success_rate: 0.974
+                avg_processing_time_sec: 42.5
+                p95_processing_time_sec: 85
+                total_output_bytes: 52428800000
+
+  /health:
+    get:
+      summary: 헬스 체크
+      operationId: healthCheck
+      tags:
+        - Monitoring
+      responses:
+        '200':
+          description: 서비스 정상
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy, degraded]
+                  api_status:
+                    type: string
+                    enum: [ok]
+                  agents:
+                    type: object
+                    properties:
+                      primary:
+                        type: string
+                        enum: [active, down]
+                      standby:
+                        type: string
+                        enum: [standby, down]
+                  queue_depth:
+                    type: integer
+
+components:
+  schemas:
+    ClipRequest:
+      type: object
+      required:
+        - hand_id
+        - nas_video_path
+        - start_seconds
+        - end_seconds
+      properties:
+        hand_id:
+          type: string
+          description: 핸드 ID
+        nas_video_path:
+          type: string
+          description: NAS 원본 영상 경로
+          example: "/nas/poker/2024/wsop/main_event_day3.mp4"
+        start_seconds:
+          type: number
+          format: float
+          description: 시작 시점 (초)
+          example: 12255
+        end_seconds:
+          type: number
+          format: float
+          description: 종료 시점 (초)
+          example: 12405
+        output_quality:
+          type: string
+          enum: [high, medium]
+          default: "high"
+          description: |
+            - high: 원본 코덱 유지 (-c copy)
+            - medium: H.264 re-encoding (파일 크기 감소)
+
+    ClipResponse:
+      type: object
+      properties:
+        request_id:
+          type: string
+          pattern: '^clip-\d{8}-\d{3}$'
+        hand_id:
+          type: string
+        status:
+          type: string
+          enum: [queued, processing]
+        estimated_duration_sec:
+          type: integer
+        queue_position:
+          type: integer
+          description: 큐 내 위치 (1부터 시작)
+        created_at:
+          type: string
+          format: date-time
+
+    ClipStatus:
+      type: object
+      properties:
+        request_id:
+          type: string
+        hand_id:
+          type: string
+        status:
+          type: string
+          enum: [queued, processing, completed, failed]
+        output_gcs_path:
+          type: string
+          nullable: true
+          description: GCS 경로 (completed 상태)
+        download_url:
+          type: string
+          nullable: true
+          description: Signed URL (7일 유효)
+        file_size_bytes:
+          type: integer
+          format: int64
+          nullable: true
+        duration_seconds:
+          type: number
+          format: float
+          nullable: true
+        processing_time_seconds:
+          type: integer
+          nullable: true
+        progress_percent:
+          type: integer
+          minimum: 0
+          maximum: 100
+          nullable: true
+          description: 진행률 (processing 상태)
+        download_url_expires_at:
+          type: string
+          format: date-time
+          nullable: true
+        error_message:
+          type: string
+          nullable: true
+        started_at:
+          type: string
+          format: date-time
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    AgentStatus:
+      type: object
+      properties:
+        agent_id:
+          type: string
+          description: Agent 고유 ID (예: nas-server-01)
+        role:
+          type: string
+          enum: [primary, standby]
+        status:
+          type: string
+          enum: [active, standby, down]
+        last_heartbeat:
+          type: string
+          format: date-time
+        queue_depth:
+          type: integer
+          description: 현재 처리 중인 작업 수
+        completed_clips_24h:
+          type: integer
+
+    ClippingStats:
+      type: object
+      properties:
+        period:
+          type: string
+          enum: [24h, 7d, 30d]
+        total_requests:
+          type: integer
+        completed:
+          type: integer
+        failed:
+          type: integer
+        queued:
+          type: integer
+        success_rate:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+        avg_processing_time_sec:
+          type: number
+          format: float
+        p95_processing_time_sec:
+          type: integer
+          description: 95 percentile 처리 시간
+        total_output_bytes:
+          type: integer
+          format: int64
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+        request_id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+  responses:
+    BadRequest:
+      description: 잘못된 요청
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Unauthorized:
+      description: 인증 실패
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFound:
+      description: 리소스를 찾을 수 없음
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []

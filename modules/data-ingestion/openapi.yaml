@@ -1,0 +1,538 @@
+openapi: 3.0.3
+
+info:
+  title: M1 Data Ingestion Service API
+  description: |
+    **POKER-BRAIN Data Ingestion Service**
+
+    ATI(NSUS) 로우 데이터를 BigQuery로 ETL 처리하는 서비스입니다.
+
+    **담당**: Data Engineer (Alice)
+    **모듈 ID**: M1
+    **배포**: Cloud Run (us-central1)
+
+    ## 주요 기능
+    - GCS에 업로드된 ATI JSON Lines 파일 처리
+    - 데이터 검증 및 변환
+    - BigQuery `hand_summary` 테이블로 적재
+    - 작업 진행 상태 모니터링
+
+    ## 의존성
+    - **Input**: GCS Bucket (gs://ati-raw-data/)
+    - **Output**: BigQuery Table (prod.hand_summary)
+    - **Notification**: Pub/Sub Topic (data-ingestion-complete)
+
+  version: 1.0.0
+  contact:
+    name: GG Production Data Team
+    email: aiden.kim@ggproduction.net
+
+servers:
+  - url: https://data-ingestion-service-{env}.run.app
+    description: Cloud Run deployment
+    variables:
+      env:
+        default: prod
+        enum:
+          - prod
+          - staging
+          - dev
+  - url: http://localhost:8001
+    description: Local development
+
+tags:
+  - name: Ingestion
+    description: 데이터 수집 작업 관리
+  - name: Monitoring
+    description: 작업 상태 및 통계
+
+paths:
+  /v1/ingest:
+    post:
+      summary: ATI 데이터 수집 작업 시작
+      description: |
+        GCS에 업로드된 ATI JSON Lines 파일을 BigQuery로 적재합니다.
+
+        **처리 과정**:
+        1. GCS 파일 검증 (존재 여부, 포맷)
+        2. Dataflow 파이프라인 시작
+        3. 데이터 변환 및 검증
+        4. BigQuery 적재
+        5. 완료 시 Pub/Sub 알림
+
+        **예상 처리 시간**: 1,500 rows → ~2분
+      operationId: startIngestion
+      tags:
+        - Ingestion
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IngestionRequest'
+            examples:
+              wsop_main_event:
+                summary: WSOP Main Event Day 3
+                value:
+                  gcs_path: "gs://ati-raw-data/2024-11-17/wsop_me_day3.jsonl"
+                  event_id: "wsop2024_me"
+                  tournament_day: 3
+              gg_live:
+                summary: GG Live Cash Game
+                value:
+                  gcs_path: "gs://ati-raw-data/2024-11-17/gg_live_cash_001.jsonl"
+                  event_id: "gg_live_20241117"
+                  tournament_day: null
+      responses:
+        '200':
+          description: 수집 작업이 성공적으로 시작됨
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngestionResponse'
+              example:
+                job_id: "ingest-20241117-001"
+                status: "processing"
+                estimated_rows: 1500
+                estimated_duration_sec: 120
+                dataflow_job_id: "2024-11-17_03_24_15-123456789"
+                created_at: "2024-11-17T10:30:00Z"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/ingest/{job_id}/status:
+    get:
+      summary: 수집 작업 상태 조회
+      description: |
+        진행 중이거나 완료된 수집 작업의 상태를 조회합니다.
+
+        **상태 종류**:
+        - `processing`: 작업 진행 중
+        - `completed`: 작업 완료
+        - `failed`: 작업 실패
+        - `cancelled`: 작업 취소됨
+      operationId: getIngestionStatus
+      tags:
+        - Ingestion
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          description: 작업 ID (예: ingest-20241117-001)
+          schema:
+            type: string
+            pattern: '^ingest-\d{8}-\d{3}$'
+          example: "ingest-20241117-001"
+      responses:
+        '200':
+          description: 작업 상태 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngestionStatus'
+              examples:
+                completed:
+                  summary: 완료된 작업
+                  value:
+                    job_id: "ingest-20241117-001"
+                    status: "completed"
+                    rows_processed: 1482
+                    rows_failed: 18
+                    duration_sec: 95
+                    bigquery_table: "prod.hand_summary"
+                    dataflow_job_id: "2024-11-17_03_24_15-123456789"
+                    started_at: "2024-11-17T10:30:00Z"
+                    completed_at: "2024-11-17T10:31:35Z"
+                    errors:
+                      - row_number: 154
+                        error: "Invalid timestamp format: '2024-99-99'"
+                      - row_number: 782
+                        error: "Missing required field: hand_id"
+                processing:
+                  summary: 진행 중인 작업
+                  value:
+                    job_id: "ingest-20241117-002"
+                    status: "processing"
+                    rows_processed: 850
+                    rows_failed: 5
+                    duration_sec: 65
+                    bigquery_table: "prod.hand_summary"
+                    dataflow_job_id: "2024-11-17_04_15_30-987654321"
+                    started_at: "2024-11-17T11:00:00Z"
+                    completed_at: null
+                    errors: []
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /v1/stats:
+    get:
+      summary: 전체 수집 통계 조회
+      description: |
+        데이터 수집 서비스의 전체 통계를 조회합니다.
+
+        **포함 정보**:
+        - 총 처리 핸드 수
+        - 총 처리된 이벤트 수
+        - 평균 처리 시간
+        - 최근 24시간 수집 통계
+      operationId: getIngestionStats
+      tags:
+        - Monitoring
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: period
+          in: query
+          description: 통계 조회 기간
+          schema:
+            type: string
+            enum: [24h, 7d, 30d, all]
+            default: 24h
+        - name: event_id
+          in: query
+          description: 특정 이벤트로 필터링 (선택)
+          schema:
+            type: string
+          example: "wsop2024_me"
+      responses:
+        '200':
+          description: 통계 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngestionStats'
+              example:
+                period: "24h"
+                total_jobs: 45
+                total_rows_processed: 67500
+                total_rows_failed: 234
+                success_rate: 0.9965
+                avg_processing_time_sec: 125.4
+                total_events: 8
+                last_updated: "2024-11-17T12:00:00Z"
+                top_events:
+                  - event_id: "wsop2024_me"
+                    rows_processed: 35000
+                  - event_id: "gg_live_cash"
+                    rows_processed: 18500
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /health:
+    get:
+      summary: 헬스 체크
+      description: 서비스 상태 확인 (로드 밸런서용)
+      operationId: healthCheck
+      tags:
+        - Monitoring
+      responses:
+        '200':
+          description: 서비스 정상
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy, degraded]
+                  version:
+                    type: string
+                  uptime_seconds:
+                    type: integer
+                  dependencies:
+                    type: object
+                    properties:
+                      bigquery:
+                        type: string
+                        enum: [ok, error]
+                      gcs:
+                        type: string
+                        enum: [ok, error]
+                      pubsub:
+                        type: string
+                        enum: [ok, error]
+              example:
+                status: "healthy"
+                version: "1.0.0"
+                uptime_seconds: 86400
+                dependencies:
+                  bigquery: "ok"
+                  gcs: "ok"
+                  pubsub: "ok"
+
+components:
+  schemas:
+    IngestionRequest:
+      type: object
+      required:
+        - gcs_path
+        - event_id
+      properties:
+        gcs_path:
+          type: string
+          description: GCS 버킷의 JSON Lines 파일 경로
+          pattern: '^gs://[a-z0-9-]+/.*\.jsonl$'
+          example: "gs://ati-raw-data/2024-11-17/wsop_me_day3.jsonl"
+        event_id:
+          type: string
+          description: 이벤트 고유 식별자
+          pattern: '^[a-z0-9_]+$'
+          example: "wsop2024_me"
+        tournament_day:
+          type: integer
+          description: 토너먼트 일차 (캐시 게임은 null)
+          nullable: true
+          minimum: 1
+          maximum: 100
+          example: 3
+
+    IngestionResponse:
+      type: object
+      properties:
+        job_id:
+          type: string
+          description: 수집 작업 고유 ID
+          pattern: '^ingest-\d{8}-\d{3}$'
+          example: "ingest-20241117-001"
+        status:
+          type: string
+          enum: [processing, queued]
+          description: 작업 상태
+        estimated_rows:
+          type: integer
+          description: 예상 처리 row 수
+          example: 1500
+        estimated_duration_sec:
+          type: integer
+          description: 예상 처리 시간 (초)
+          example: 120
+        dataflow_job_id:
+          type: string
+          description: Dataflow 작업 ID (GCP Console 링크용)
+          example: "2024-11-17_03_24_15-123456789"
+        created_at:
+          type: string
+          format: date-time
+          description: 작업 생성 시간 (ISO 8601)
+
+    IngestionStatus:
+      type: object
+      properties:
+        job_id:
+          type: string
+          example: "ingest-20241117-001"
+        status:
+          type: string
+          enum: [processing, completed, failed, cancelled]
+          description: 작업 상태
+        rows_processed:
+          type: integer
+          description: 처리된 row 수
+          example: 1482
+        rows_failed:
+          type: integer
+          description: 실패한 row 수
+          example: 18
+        duration_sec:
+          type: integer
+          description: 처리 소요 시간 (초)
+          example: 95
+        bigquery_table:
+          type: string
+          description: 적재된 BigQuery 테이블
+          example: "prod.hand_summary"
+        dataflow_job_id:
+          type: string
+          description: Dataflow 작업 ID
+        started_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+        errors:
+          type: array
+          description: 실패한 row 목록 (최대 100개)
+          items:
+            type: object
+            properties:
+              row_number:
+                type: integer
+              error:
+                type: string
+          example:
+            - row_number: 154
+              error: "Invalid timestamp format"
+
+    IngestionStats:
+      type: object
+      properties:
+        period:
+          type: string
+          enum: [24h, 7d, 30d, all]
+        total_jobs:
+          type: integer
+          description: 총 수집 작업 수
+        total_rows_processed:
+          type: integer
+          description: 총 처리된 row 수
+        total_rows_failed:
+          type: integer
+          description: 총 실패한 row 수
+        success_rate:
+          type: number
+          format: float
+          description: 성공률 (0.0 ~ 1.0)
+          minimum: 0
+          maximum: 1
+        avg_processing_time_sec:
+          type: number
+          format: float
+          description: 평균 처리 시간 (초)
+        total_events:
+          type: integer
+          description: 총 이벤트 수
+        last_updated:
+          type: string
+          format: date-time
+        top_events:
+          type: array
+          description: 처리량 상위 이벤트 (Top 10)
+          items:
+            type: object
+            properties:
+              event_id:
+                type: string
+              rows_processed:
+                type: integer
+
+    Error:
+      type: object
+      required:
+        - error
+        - request_id
+        - timestamp
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              enum:
+                - INVALID_REQUEST
+                - UNAUTHORIZED
+                - FORBIDDEN
+                - NOT_FOUND
+                - INTERNAL_ERROR
+                - SERVICE_UNAVAILABLE
+            message:
+              type: string
+              description: 에러 상세 메시지
+            details:
+              type: object
+              description: 추가 에러 정보
+              properties:
+                field:
+                  type: string
+                reason:
+                  type: string
+        request_id:
+          type: string
+          description: 요청 추적용 ID
+          example: "req-20241117-001"
+        timestamp:
+          type: string
+          format: date-time
+
+  responses:
+    BadRequest:
+      description: 잘못된 요청
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: "INVALID_REQUEST"
+              message: "gcs_path must start with 'gs://'"
+              details:
+                field: "gcs_path"
+                reason: "invalid_format"
+            request_id: "req-20241117-001"
+            timestamp: "2024-11-17T10:30:00Z"
+
+    Unauthorized:
+      description: 인증 실패
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: "UNAUTHORIZED"
+              message: "Invalid or missing Bearer token"
+              details: {}
+            request_id: "req-20241117-002"
+            timestamp: "2024-11-17T10:30:00Z"
+
+    NotFound:
+      description: 리소스를 찾을 수 없음
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: "NOT_FOUND"
+              message: "Ingestion job not found"
+              details:
+                job_id: "ingest-20241117-999"
+            request_id: "req-20241117-003"
+            timestamp: "2024-11-17T10:30:00Z"
+
+    InternalError:
+      description: 내부 서버 오류
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: "INTERNAL_ERROR"
+              message: "Failed to start Dataflow job"
+              details:
+                dataflow_error: "quota_exceeded"
+            request_id: "req-20241117-004"
+            timestamp: "2024-11-17T10:30:00Z"
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Google IAP (Identity-Aware Proxy) JWT Token
+
+        **로컬 개발**:
+        ```bash
+        export TOKEN=$(gcloud auth print-identity-token)
+        curl -H "Authorization: Bearer $TOKEN" https://api.example.com/v1/ingest
+        ```
+
+        **Production**:
+        IAP가 자동으로 JWT 토큰을 검증합니다.
+
+security:
+  - BearerAuth: []

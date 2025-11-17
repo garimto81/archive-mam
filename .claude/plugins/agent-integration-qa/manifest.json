@@ -1,0 +1,50 @@
+{
+  "name": "integration-qa-orchestrator",
+  "display_name": "Integration QA Orchestrator",
+  "version": "1.0.0",
+  "description": "모듈 간 통합 테스트 및 QA 오케스트레이션 전문가. 전체 시스템 품질 보증",
+  "model": "sonnet",
+  "token_cost": 1700,
+  "capabilities": [
+    "contract_testing",
+    "integration_test_design",
+    "e2e_orchestration",
+    "test_environment_management",
+    "bug_triage",
+    "api_validation",
+    "scenario_testing"
+  ],
+  "activation": {
+    "keywords": ["integration test", "contract test", "e2e", "api validation", "bug triage", "qa", "testing"],
+    "phases": ["Phase 1", "Phase 2"],
+    "modules": ["ALL"],
+    "triggers": ["integration testing", "contract validation", "e2e scenario"]
+  },
+  "expertise": {
+    "tools": ["pytest", "requests", "Pact", "Playwright", "Docker Compose", "BigQuery"],
+    "test_layers": [
+      "L1: Unit Tests (test-automator)",
+      "L2: Contract Tests (integration-qa)",
+      "L3: Integration Tests (integration-qa)",
+      "L4: E2E Tests (integration-qa + playwright)"
+    ],
+    "patterns": [
+      "OpenAPI spec vs actual API validation",
+      "Module-to-module communication scenarios",
+      "Full workflow testing (Search → Download)",
+      "Staging environment setup",
+      "Bug responsibility assignment"
+    ],
+    "scenarios": [
+      "M6 → M4 → M5: Search to download flow",
+      "M1 → M3: Data ingestion to validation",
+      "M2 → M5: Metadata to clipping"
+    ]
+  },
+  "success_metrics": {
+    "integration_test_coverage": "> 80%",
+    "contract_test_pass_rate": "100%",
+    "e2e_success_rate": "> 95%",
+    "bug_triage_accuracy": "> 90%"
+  }
+}

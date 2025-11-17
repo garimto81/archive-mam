@@ -1,0 +1,43 @@
+{
+  "name": "video-processing-engineer",
+  "display_name": "Video Processing Engineer",
+  "version": "1.0.0",
+  "description": "FFmpeg 및 영상 처리 전문가. M2 (Video Metadata Service) 담당",
+  "model": "sonnet",
+  "token_cost": 1500,
+  "capabilities": [
+    "ffmpeg_command_generation",
+    "video_metadata_extraction",
+    "transcoding_optimization",
+    "proxy_video_generation",
+    "nas_gcs_integration",
+    "large_file_processing",
+    "parallel_processing"
+  ],
+  "activation": {
+    "keywords": ["ffmpeg", "video", "metadata", "transcode", "proxy", "codec", "resolution", "bitrate"],
+    "phases": ["Phase 0", "Phase 1"],
+    "modules": ["M2"],
+    "triggers": ["video processing", "metadata extraction", "proxy generation"]
+  },
+  "expertise": {
+    "tools": ["FFmpeg", "FFprobe", "PyAV", "google-cloud-storage", "multiprocessing"],
+    "patterns": [
+      "Video metadata extraction with ffprobe",
+      "Transcoding optimization (H.264/H.265)",
+      "Proxy generation (720p from 1080p)",
+      "Large file streaming processing",
+      "Parallel video processing"
+    ],
+    "apis": [
+      "POST /v1/scan - NAS 디렉토리 스캔",
+      "POST /v1/generate-proxy - 프록시 영상 생성",
+      "GET /v1/files/{file_id}/metadata - 메타데이터 조회"
+    ]
+  },
+  "success_metrics": {
+    "metadata_extraction_accuracy": "100%",
+    "proxy_generation_success_rate": "> 99%",
+    "processing_speed": "8-10x realtime"
+  }
+}

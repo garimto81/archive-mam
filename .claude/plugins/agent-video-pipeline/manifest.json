@@ -1,0 +1,44 @@
+{
+  "name": "video-pipeline-engineer",
+  "display_name": "Video Pipeline Engineer",
+  "version": "1.0.0",
+  "description": "비동기 비디오 파이프라인 전문가. M5 (Clipping Service) 담당",
+  "model": "sonnet",
+  "token_cost": 1500,
+  "capabilities": [
+    "async_video_processing",
+    "pubsub_integration",
+    "ffmpeg_clipping",
+    "local_agent_deployment",
+    "high_availability_design",
+    "systemd_daemon",
+    "failover_management"
+  ],
+  "activation": {
+    "keywords": ["clipping", "subclip", "pub/sub", "async", "queue", "daemon", "agent", "ha", "failover"],
+    "phases": ["Phase 1"],
+    "modules": ["M5"],
+    "triggers": ["video clipping", "subclip generation", "async processing"]
+  },
+  "expertise": {
+    "tools": ["Pub/Sub", "FFmpeg", "systemd", "Redis", "google-cloud-storage"],
+    "patterns": [
+      "Pub/Sub subscriber pattern",
+      "Async queue processing (Celery/RQ)",
+      "FFmpeg fast clipping (-c copy)",
+      "Local agent deployment on NAS",
+      "Primary + Standby HA architecture",
+      "Dead Letter Queue handling"
+    ],
+    "pipeline": "User Request → Pub/Sub → Local Agent → FFmpeg → GCS → Signed URL",
+    "apis": [
+      "Pub/Sub Topic: clipping-requests",
+      "Pub/Sub Topic: clipping-complete"
+    ]
+  },
+  "success_metrics": {
+    "clipping_success_rate": "> 99%",
+    "p95_processing_time": "< 5 minutes",
+    "ha_failover_time": "< 1 minute"
+  }
+}

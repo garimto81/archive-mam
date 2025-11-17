@@ -1,0 +1,102 @@
+[
+  {
+    "video_id": "VIDEO_0001",
+    "file_path": "/nas/wsop/2024/table_39/video_0001.mp4",
+    "duration_seconds": 652,
+    "file_size_bytes": 4131218176,
+    "codec": "h264",
+    "resolution": "1920x1080",
+    "fps": 30,
+    "created_at": "2025-03-26T14:19:14.545483"
+  },
+  {
+    "video_id": "VIDEO_0002",
+    "file_path": "/nas/wsop/2024/table_80/video_0002.mp4",
+    "duration_seconds": 1009,
+    "file_size_bytes": 1819659784,
+    "codec": "h264",
+    "resolution": "1920x1080",
+    "fps": 30,
+    "created_at": "2024-11-22T14:19:14.545483"
+  },
+  {
+    "video_id": "VIDEO_0003",
+    "file_path": "/nas/wsop/2024/table_48/video_0003.mp4",
+    "duration_seconds": 1805,
+    "file_size_bytes": 4089081024,
+    "codec": "h264",
+    "resolution": "1920x1080",
+    "fps": 30,
+    "created_at": "2025-04-18T14:19:14.545483"
+  },
+  {
+    "video_id": "VIDEO_0004",
+    "file_path": "/nas/wsop/2024/table_54/video_0004.mp4",
+    "duration_seconds": 1236,
+    "file_size_bytes": 2004695813,
+    "codec": "h264",
+    "resolution": "1920x1080",
+    "fps": 30,
+    "created_at": "2025-11-14T14:19:14.545483"
+  },
+  {
+    "video_id": "VIDEO_0005",
+    "file_path": "/nas/wsop/2024/table_17/video_0005.mp4",
+    "duration_seconds": 1693,
+    "file_size_bytes": 1982687240,
+    "codec": "h264",
+    "resolution": "1920x1080",
+    "fps": 30,
+    "created_at": "2025-09-01T14:19:14.545483"
+  },
+  {
+    "video_id": "VIDEO_0006",
+    "file_path": "/nas/wsop/2024/table_71/video_0006.mp4",
+    "duration_seconds": 566,
+    "file_size_bytes": 1403149521,
+    "codec": "h264",
+    "resolution": "1920x1080",
+    "fps": 30,
+    "created_at": "2025-06-07T14:19:14.545483"
+  },
+  {
+    "video_id": "VIDEO_0007",
+    "file_path": "/nas/wsop/2024/table_47/video_0007.mp4",
+    "duration_seconds": 708,
+    "file_size_bytes": 3115070026,
+    "codec": "h264",
+    "resolution": "1920x1080",
+    "fps": 30,
+    "created_at": "2025-04-06T14:19:14.545483"
+  },
+  {
+    "video_id": "VIDEO_0008",
+    "file_path": "/nas/wsop/2024/table_52/video_0008.mp4",
+    "duration_seconds": 1459,
+    "file_size_bytes": 4099386463,
+    "codec": "h264",
+    "resolution": "1920x1080",
+    "fps": 30,
+    "created_at": "2025-05-06T14:19:14.545483"
+  },
+  {
+    "video_id": "VIDEO_0009",
+    "file_path": "/nas/wsop/2024/table_77/video_0009.mp4",
+    "duration_seconds": 5832,
+    "file_size_bytes": 745969749,
+    "codec": "h264",
+    "resolution": "1920x1080",
+    "fps": 30,
+    "created_at": "2025-02-03T14:19:14.545483"
+  },
+  {
+    "video_id": "VIDEO_0010",
+    "file_path": "/nas/wsop/2024/table_1/video_0010.mp4",
+    "duration_seconds": 6288,
+    "file_size_bytes": 3403257139,
+    "codec": "h264",
+    "resolution": "1920x1080",
+    "fps": 30,
+    "created_at": "2025-02-19T14:19:14.545483"
+  }
+]

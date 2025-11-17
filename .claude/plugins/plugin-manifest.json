@@ -1,0 +1,281 @@
+{
+  "version": "3.0.0",
+  "name": "POKER-BRAIN Full Automation System",
+  "description": "WSOP 아카이브 시스템 완전 자동화: 6개 개발 에이전트 + 5개 설계 에이전트 + 6개 검증 에이전트 (Week 1-9 자동 실행)",
+  "author": "aiden.kim@ggproduction.net",
+  "created": "2025-11-17",
+  "updated": "2025-11-17",
+  "agents": [
+    {
+      "id": "workflow-orchestrator",
+      "name": "Workflow Orchestrator",
+      "path": "agent-workflow-orchestrator",
+      "enabled": true,
+      "priority": "critical",
+      "module": "ALL",
+      "phase": ["Phase 0", "Phase 1", "Phase 2"],
+      "description": "Week 1-9 전체 워크플로우 자동 실행 및 관리, 주차별 검증 에이전트 자동 호출"
+    },
+    {
+      "id": "week-1-2-validator",
+      "name": "Week 1-2 Validator",
+      "path": "agent-week-1-2-validator",
+      "enabled": true,
+      "priority": "critical",
+      "module": "ALL",
+      "phase": ["Phase 0"],
+      "description": "Week 1 (API 설계) 및 Week 2 (Mock 환경) 완료 검증"
+    },
+    {
+      "id": "week-4-validator",
+      "name": "Week 4 Validator",
+      "path": "agent-week-4-validator",
+      "enabled": true,
+      "priority": "critical",
+      "module": "M1",
+      "phase": ["Phase 1"],
+      "description": "M1 Data Ingestion 모듈 완료 검증 및 자동 재시도"
+    },
+    {
+      "id": "week-5-validator",
+      "name": "Week 5 Validator",
+      "path": "agent-week-5-validator",
+      "enabled": true,
+      "priority": "critical",
+      "module": "M2, M3, M4, M5, M6",
+      "phase": ["Phase 1"],
+      "description": "M2 완료 및 Mock → Real 데이터 전환 검증"
+    },
+    {
+      "id": "week-7-8-validator",
+      "name": "Week 7-8 Validator",
+      "path": "agent-week-7-8-validator",
+      "enabled": true,
+      "priority": "critical",
+      "module": "ALL",
+      "phase": ["Phase 2"],
+      "description": "E2E 테스트 (Week 7: 80% 통과, Week 8: 100% 통과) 및 버그 수정 검증"
+    },
+    {
+      "id": "week-9-validator",
+      "name": "Week 9 Validator",
+      "path": "agent-week-9-validator",
+      "enabled": true,
+      "priority": "critical",
+      "module": "ALL",
+      "phase": ["Phase 2"],
+      "description": "Production 배포 최종 검증 및 프로젝트 완료 선언"
+    },
+    {
+      "id": "m1-data-ingestion-developer",
+      "name": "Alice (M1 Developer)",
+      "path": "agent-m1-data-ingestion",
+      "enabled": true,
+      "priority": "critical",
+      "module": "M1",
+      "phase": ["Phase 1", "Phase 2"],
+      "team_member": "Alice",
+      "start_week": "Week 3",
+      "mock_strategy": "N/A (독립 모듈)",
+      "description": "M1 Data Ingestion Service 전담 개발 (Dataflow, BigQuery ETL)"
+    },
+    {
+      "id": "m2-video-metadata-developer",
+      "name": "Bob (M2 Developer)",
+      "path": "agent-m2-video-metadata",
+      "enabled": true,
+      "priority": "critical",
+      "module": "M2",
+      "phase": ["Phase 1", "Phase 2"],
+      "team_member": "Bob",
+      "start_week": "Week 3",
+      "mock_strategy": "N/A (독립 모듈)",
+      "description": "M2 Video Metadata Service 전담 개발 (FFmpeg, NAS 스캔, 프록시 생성)"
+    },
+    {
+      "id": "m3-timecode-validation-developer",
+      "name": "Charlie (M3 Developer)",
+      "path": "agent-m3-timecode-validation",
+      "enabled": true,
+      "priority": "critical",
+      "module": "M3",
+      "phase": ["Phase 1", "Phase 2"],
+      "team_member": "Charlie",
+      "start_week": "Week 3",
+      "mock_strategy": "Mock BigQuery (dev.hand_summary_mock, dev.video_files_mock)",
+      "description": "M3 Timecode Validation Service 전담 개발 (Vision API, sync_score)"
+    },
+    {
+      "id": "m4-rag-search-developer",
+      "name": "David (M4 Developer)",
+      "path": "agent-m4-rag-search",
+      "enabled": true,
+      "priority": "critical",
+      "module": "M4",
+      "phase": ["Phase 1", "Phase 2"],
+      "team_member": "David",
+      "start_week": "Week 3",
+      "mock_strategy": "Mock BigQuery + Mock Embeddings (dev.hand_embeddings_mock)",
+      "description": "M4 RAG Search Service 전담 개발 (Vertex AI, Vector Search, Gemini)"
+    },
+    {
+      "id": "m5-clipping-developer",
+      "name": "Eve (M5 Developer)",
+      "path": "agent-m5-clipping",
+      "enabled": true,
+      "priority": "critical",
+      "module": "M5",
+      "phase": ["Phase 1", "Phase 2"],
+      "team_member": "Eve",
+      "start_week": "Week 3",
+      "mock_strategy": "Pub/Sub Emulator (localhost:8085)",
+      "description": "M5 Clipping Service 전담 개발 (Pub/Sub, Local Agent, FFmpeg, HA)"
+    },
+    {
+      "id": "m6-web-ui-developer",
+      "name": "Frank (M6 Developer)",
+      "path": "agent-m6-web-ui",
+      "enabled": true,
+      "priority": "critical",
+      "module": "M6",
+      "phase": ["Phase 1", "Phase 2"],
+      "team_member": "Frank",
+      "start_week": "Week 3",
+      "mock_strategy": "Prism Mock Servers (M3, M4, M5 localhost:8003/8004/8005)",
+      "description": "M6 Web UI Service 전담 개발 (Next.js 14, BFF, React)"
+    },
+    {
+      "id": "video-processing-engineer",
+      "path": "agent-video-processing",
+      "enabled": true,
+      "priority": "high",
+      "module": "M2",
+      "phase": ["Phase 0", "Phase 1"]
+    },
+    {
+      "id": "validation-engineer",
+      "path": "agent-validation",
+      "enabled": true,
+      "priority": "critical",
+      "module": "M3",
+      "phase": ["Phase 0"]
+    },
+    {
+      "id": "video-pipeline-engineer",
+      "path": "agent-video-pipeline",
+      "enabled": true,
+      "priority": "high",
+      "module": "M5",
+      "phase": ["Phase 1"]
+    },
+    {
+      "id": "microservices-pm",
+      "path": "agent-microservices-pm",
+      "enabled": true,
+      "priority": "critical",
+      "module": "ALL",
+      "phase": ["Phase 0", "Phase 1", "Phase 2"]
+    },
+    {
+      "id": "integration-qa-orchestrator",
+      "path": "agent-integration-qa",
+      "enabled": true,
+      "priority": "high",
+      "module": "ALL",
+      "phase": ["Phase 1", "Phase 2"]
+    }
+  ],
+  "usage_guide": {
+    "workflow-orchestrator": "Week 1-9 전체 자동화 워크플로우 실행. 주차별 검증 에이전트 자동 호출, 재시도 관리, PM 에스컬레이션",
+    "week-1-2-validator": "Week 1-2 검증. OpenAPI 스펙 완성, Mock 환경 구축 확인",
+    "week-4-validator": "Week 4 검증. M1 완료, BigQuery 데이터 삽입, M3/M4 의존성 해제 확인",
+    "week-5-validator": "Week 5 검증. M2 완료, Mock → Real 전환 (M3/M4/M5/M6) 확인",
+    "week-7-8-validator": "Week 7-8 검증. E2E 테스트 80% → 100% 통과, 버그 수정 확인",
+    "week-9-validator": "Week 9 검증. Production 배포 최종 검증, 프로젝트 완료 선언",
+    "m1-data-ingestion-developer": "Alice 역할. M1 Data Ingestion 전담 개발. Dataflow 파이프라인, BigQuery ETL 구현",
+    "m2-video-metadata-developer": "Bob 역할. M2 Video Metadata 전담 개발. NAS 스캔, FFmpeg, 프록시 생성",
+    "m3-timecode-validation-developer": "Charlie 역할. M3 Timecode Validation 전담 개발. Vision API, sync_score, Mock BigQuery 사용",
+    "m4-rag-search-developer": "David 역할. M4 RAG Search 전담 개발. Vertex AI, Vector Search, Mock Embeddings 사용",
+    "m5-clipping-developer": "Eve 역할. M5 Clipping 전담 개발. Pub/Sub Emulator, Local Agent, FFmpeg 클리핑",
+    "m6-web-ui-developer": "Frank 역할. M6 Web UI 전담 개발. Next.js 14, Prism Mock Servers 사용",
+    "video-processing-engineer": "M2 설계 검토 시 사용. FFmpeg, 프록시 생성 아키텍처",
+    "validation-engineer": "M3 설계 검토 시 사용. Vision API, 동기화 검증 알고리즘",
+    "video-pipeline-engineer": "M5 설계 검토 시 사용. Pub/Sub, Local Agent, HA 아키텍처",
+    "microservices-pm": "API 계약 설계, 의존성 관리, 통합 일정 조율",
+    "integration-qa-orchestrator": "통합 테스트, Contract Testing, E2E 시나리오 작성"
+  },
+  "activation_examples": [
+    {
+      "scenario": "Week 3: Alice가 M1 개발 시작",
+      "command": "m1-data-ingestion-developer 에이전트 활성화. Dataflow 파이프라인 구현 시작",
+      "expected_output": "app/dataflow_pipeline.py, ParseATIJson DoFn, BigQuery 스키마"
+    },
+    {
+      "scenario": "Week 3: Charlie가 M3 개발 시작 (Mock BigQuery)",
+      "command": "m3-timecode-validation-developer 에이전트 활성화. Mock BigQuery 연동 및 sync_score 구현",
+      "expected_output": "app/bigquery_client.py (Mock 전환), sync_scorer.py, vision_detector.py"
+    },
+    {
+      "scenario": "Week 3: Frank이 M6 개발 시작 (Prism Mock)",
+      "command": "m6-web-ui-developer 에이전트 활성화. Prism Mock Servers 연동 및 검색 UI 개발",
+      "expected_output": "lib/api-client.ts (Mock 엔드포인트), app/search/page.tsx"
+    },
+    {
+      "scenario": "Week 5: Charlie가 Mock → Real 전환",
+      "command": "m3-timecode-validation-developer 에이전트로 환경 변수 변경 (POKER_ENV=production)",
+      "expected_output": "BigQuery 테이블 전환 (dev.hand_summary_mock → prod.hand_summary)"
+    },
+    {
+      "scenario": "API 설계 검토",
+      "command": "microservices-pm을 사용하여 6개 모듈 OpenAPI 스펙 검토",
+      "expected_output": "Mermaid 다이어그램, Breaking Change 감지"
+    }
+  ],
+  "dependencies": {
+    "개발 에이전트 대체": [
+      "m1-data-ingestion-developer → data-engineer (기존)",
+      "m4-rag-search-developer → ai-engineer (기존)",
+      "m6-web-ui-developer → frontend-developer (기존)"
+    ],
+    "설계 에이전트": [
+      "video-processing-engineer: M2 설계 검토",
+      "validation-engineer: M3 설계 검토",
+      "video-pipeline-engineer: M5 설계 검토",
+      "microservices-pm: API 계약 관리",
+      "integration-qa-orchestrator: 통합 테스트 관리"
+    ],
+    "공통 에이전트": [
+      "test-automator: 유닛 테스트",
+      "playwright-engineer: E2E 테스트",
+      "code-reviewer: 코드 리뷰",
+      "security-auditor: 보안 검증"
+    ]
+  },
+  "total_token_cost": {
+    "development_agents": 12000,
+    "design_agents": 7700,
+    "validation_agents": 8500,
+    "total": 28200,
+    "description": "6개 개발 에이전트 + 5개 설계 에이전트 + 5개 검증 에이전트 토큰 합계",
+    "breakdown": {
+      "m1-data-ingestion-developer": 3000,
+      "m2-video-metadata-developer": 2500,
+      "m3-timecode-validation-developer": 2200,
+      "m4-rag-search-developer": 1300,
+      "m5-clipping-developer": 1500,
+      "m6-web-ui-developer": 1500,
+      "video-processing-engineer": 1500,
+      "validation-engineer": 1400,
+      "video-pipeline-engineer": 1500,
+      "microservices-pm": 1600,
+      "integration-qa-orchestrator": 1700,
+      "workflow-orchestrator": 1500,
+      "week-1-2-validator": 2000,
+      "week-4-validator": 1000,
+      "week-5-validator": 1500,
+      "week-7-8-validator": 1500,
+      "week-9-validator": 1000
+    },
+    "usage_note": "개발 에이전트: Week 3-6 집중 사용 | 설계 에이전트: Week 1-2 집중 사용 | 검증 에이전트: Week 1-9 전체 자동 실행"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "name": "validation-engineer",
+  "display_name": "Validation Engineer",
+  "version": "1.0.0",
+  "description": "타임코드 동기화 검증 전문가. M3 (Timecode Validation Service) 담당",
+  "model": "sonnet",
+  "token_cost": 1400,
+  "capabilities": [
+    "timecode_validation",
+    "vision_api_integration",
+    "offset_calculation",
+    "statistical_analysis",
+    "confidence_scoring",
+    "exception_handling"
+  ],
+  "activation": {
+    "keywords": ["timecode", "validation", "sync", "offset", "vision api", "confidence", "poker scene"],
+    "phases": ["Phase 0"],
+    "modules": ["M3"],
+    "triggers": ["timecode sync", "validation", "offset calculation"]
+  },
+  "expertise": {
+    "tools": ["Google Cloud Vision API", "FFmpeg", "NumPy", "Pandas", "BigQuery"],
+    "patterns": [
+      "ATI timestamp vs video timecode comparison",
+      "Vision API object detection for poker scenes",
+      "Offset auto-calculation (±30 seconds)",
+      "Sync score calculation (0-100)",
+      "Auto vs manual matching decision"
+    ],
+    "algorithm": "sync_score = vision_confidence(50%) + duration_match(30%) + player_count(20%)",
+    "apis": [
+      "POST /v1/validate - 단일 핸드 검증",
+      "POST /v1/validate/batch - 배치 검증",
+      "GET /v1/validate/{id}/result - 검증 결과 조회"
+    ]
+  },
+  "success_metrics": {
+    "auto_matching_success_rate": "> 95%",
+    "vision_api_accuracy": "> 90%",
+    "offset_calculation_success": "> 70%"
+  }
+}

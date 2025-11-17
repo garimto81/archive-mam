@@ -1,0 +1,4887 @@
+[
+  {
+    "hand_id": "HAND_000001",
+    "tournament_id": "WSOP_2024_032",
+    "table_number": 68,
+    "hand_number": 1,
+    "dealer_position": 5,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 14819
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 43091
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 47324
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 29176
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 21527
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 35886
+      }
+    ],
+    "pot_size": 45685,
+    "winner": "Player_9",
+    "timestamp": "2025-09-24T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000002",
+    "tournament_id": "WSOP_2024_010",
+    "table_number": 27,
+    "hand_number": 2,
+    "dealer_position": 7,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 12085
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 40102
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 31445
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 5327
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 28319
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 6568
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 22400
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 20419
+      }
+    ],
+    "pot_size": 13212,
+    "winner": "Player_1",
+    "timestamp": "2025-10-04T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000003",
+    "tournament_id": "WSOP_2024_035",
+    "table_number": 92,
+    "hand_number": 3,
+    "dealer_position": 4,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 28974
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 12446
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 6366
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 41121
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 12746
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 28274
+      }
+    ],
+    "pot_size": 28318,
+    "winner": "Player_9",
+    "timestamp": "2025-08-08T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000004",
+    "tournament_id": "WSOP_2024_016",
+    "table_number": 68,
+    "hand_number": 4,
+    "dealer_position": 0,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 29255
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 14213
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 32344
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 37046
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 45868
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 14852
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 22920
+      }
+    ],
+    "pot_size": 38812,
+    "winner": "Player_9",
+    "timestamp": "2025-09-16T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000005",
+    "tournament_id": "WSOP_2024_003",
+    "table_number": 63,
+    "hand_number": 5,
+    "dealer_position": 6,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 27632
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 43935
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 48791
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 40709
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 37056
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 30694
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 46084
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 22386
+      }
+    ],
+    "pot_size": 10258,
+    "winner": "Player_8",
+    "timestamp": "2025-05-18T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000006",
+    "tournament_id": "WSOP_2024_046",
+    "table_number": 47,
+    "hand_number": 6,
+    "dealer_position": 3,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 47587
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 35409
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 30942
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 27606
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 44950
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 25650
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 15221
+      }
+    ],
+    "pot_size": 19049,
+    "winner": "Player_3",
+    "timestamp": "2025-07-28T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000007",
+    "tournament_id": "WSOP_2024_039",
+    "table_number": 76,
+    "hand_number": 7,
+    "dealer_position": 8,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 47042
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 26802
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 48406
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 32839
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 45548
+      }
+    ],
+    "pot_size": 28695,
+    "winner": "Player_7",
+    "timestamp": "2024-12-20T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000008",
+    "tournament_id": "WSOP_2024_013",
+    "table_number": 69,
+    "hand_number": 8,
+    "dealer_position": 7,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 11322
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 24072
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 34897
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 18515
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 6209
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 39294
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 34331
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 39805
+      },
+      {
+        "name": "Player_9",
+        "position": 9,
+        "stack": 14135
+      }
+    ],
+    "pot_size": 16453,
+    "winner": "Player_3",
+    "timestamp": "2025-06-04T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000009",
+    "tournament_id": "WSOP_2024_030",
+    "table_number": 97,
+    "hand_number": 9,
+    "dealer_position": 4,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 48978
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 21615
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 18306
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 10884
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 19826
+      }
+    ],
+    "pot_size": 28832,
+    "winner": "Player_2",
+    "timestamp": "2025-09-15T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000010",
+    "tournament_id": "WSOP_2024_035",
+    "table_number": 82,
+    "hand_number": 10,
+    "dealer_position": 3,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 11024
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 34093
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 5760
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 26521
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 20891
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 26533
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 7763
+      }
+    ],
+    "pot_size": 22133,
+    "winner": "Player_8",
+    "timestamp": "2025-04-29T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000011",
+    "tournament_id": "WSOP_2024_039",
+    "table_number": 3,
+    "hand_number": 11,
+    "dealer_position": 3,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 6598
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 46996
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 18884
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 49816
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 10996
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 37703
+      }
+    ],
+    "pot_size": 47477,
+    "winner": "Player_9",
+    "timestamp": "2025-06-23T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000012",
+    "tournament_id": "WSOP_2024_019",
+    "table_number": 84,
+    "hand_number": 12,
+    "dealer_position": 5,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 27711
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 31848
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 46592
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 6775
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 13574
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 17970
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 37245
+      }
+    ],
+    "pot_size": 20119,
+    "winner": "Player_9",
+    "timestamp": "2025-11-17T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000013",
+    "tournament_id": "WSOP_2024_016",
+    "table_number": 17,
+    "hand_number": 13,
+    "dealer_position": 2,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 40433
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 7036
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 5025
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 46329
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 16482
+      }
+    ],
+    "pot_size": 40737,
+    "winner": "Player_1",
+    "timestamp": "2025-04-28T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000014",
+    "tournament_id": "WSOP_2024_007",
+    "table_number": 29,
+    "hand_number": 14,
+    "dealer_position": 5,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 38854
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 9907
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 28923
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 41460
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 34188
+      }
+    ],
+    "pot_size": 40658,
+    "winner": "Player_3",
+    "timestamp": "2025-05-05T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000015",
+    "tournament_id": "WSOP_2024_035",
+    "table_number": 3,
+    "hand_number": 15,
+    "dealer_position": 8,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 22165
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 18932
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 48567
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 20398
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 15778
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 22888
+      }
+    ],
+    "pot_size": 35639,
+    "winner": "Player_7",
+    "timestamp": "2024-12-24T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000016",
+    "tournament_id": "WSOP_2024_006",
+    "table_number": 11,
+    "hand_number": 16,
+    "dealer_position": 4,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 18170
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 31119
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 26994
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 9775
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 35527
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 46596
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 13505
+      }
+    ],
+    "pot_size": 38664,
+    "winner": "Player_1",
+    "timestamp": "2025-09-21T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000017",
+    "tournament_id": "WSOP_2024_026",
+    "table_number": 84,
+    "hand_number": 17,
+    "dealer_position": 3,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 17682
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 14718
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 13066
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 10042
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 24691
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 21737
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 10283
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 49500
+      }
+    ],
+    "pot_size": 41243,
+    "winner": "Player_8",
+    "timestamp": "2025-03-22T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000018",
+    "tournament_id": "WSOP_2024_005",
+    "table_number": 88,
+    "hand_number": 18,
+    "dealer_position": 4,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 10465
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 36953
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 5230
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 17043
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 48687
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 5702
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 47940
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 38357
+      }
+    ],
+    "pot_size": 28509,
+    "winner": "Player_1",
+    "timestamp": "2025-08-27T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000019",
+    "tournament_id": "WSOP_2024_018",
+    "table_number": 91,
+    "hand_number": 19,
+    "dealer_position": 0,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 19237
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 7231
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 47504
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 35396
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 46515
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 48318
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 48810
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 42654
+      }
+    ],
+    "pot_size": 37496,
+    "winner": "Player_6",
+    "timestamp": "2025-07-13T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000020",
+    "tournament_id": "WSOP_2024_022",
+    "table_number": 27,
+    "hand_number": 20,
+    "dealer_position": 6,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 6691
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 20140
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 39651
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 12371
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 34500
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 9705
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 13834
+      }
+    ],
+    "pot_size": 20261,
+    "winner": "Player_5",
+    "timestamp": "2025-06-28T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000021",
+    "tournament_id": "WSOP_2024_038",
+    "table_number": 70,
+    "hand_number": 21,
+    "dealer_position": 1,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 32701
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 37025
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 35179
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 30120
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 10236
+      }
+    ],
+    "pot_size": 596,
+    "winner": "Player_8",
+    "timestamp": "2025-03-05T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000022",
+    "tournament_id": "WSOP_2024_029",
+    "table_number": 86,
+    "hand_number": 22,
+    "dealer_position": 2,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 48810
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 41419
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 17116
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 38173
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 14856
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 23480
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 13456
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 6950
+      },
+      {
+        "name": "Player_9",
+        "position": 9,
+        "stack": 44667
+      }
+    ],
+    "pot_size": 13815,
+    "winner": "Player_2",
+    "timestamp": "2025-01-05T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000023",
+    "tournament_id": "WSOP_2024_038",
+    "table_number": 38,
+    "hand_number": 23,
+    "dealer_position": 0,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 9928
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 38403
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 13730
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 41536
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 8734
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 10983
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 13557
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 17856
+      },
+      {
+        "name": "Player_9",
+        "position": 9,
+        "stack": 7945
+      }
+    ],
+    "pot_size": 14680,
+    "winner": "Player_2",
+    "timestamp": "2025-07-02T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000024",
+    "tournament_id": "WSOP_2024_007",
+    "table_number": 92,
+    "hand_number": 24,
+    "dealer_position": 4,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 19014
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 40891
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 14686
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 14146
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 16999
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 37183
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 42448
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 37297
+      },
+      {
+        "name": "Player_9",
+        "position": 9,
+        "stack": 34631
+      }
+    ],
+    "pot_size": 11812,
+    "winner": "Player_1",
+    "timestamp": "2025-06-21T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000025",
+    "tournament_id": "WSOP_2024_001",
+    "table_number": 56,
+    "hand_number": 25,
+    "dealer_position": 2,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 5238
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 45766
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 28698
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 36134
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 46028
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 43648
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 20750
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 42389
+      },
+      {
+        "name": "Player_9",
+        "position": 9,
+        "stack": 35143
+      }
+    ],
+    "pot_size": 41566,
+    "winner": "Player_8",
+    "timestamp": "2025-03-16T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000026",
+    "tournament_id": "WSOP_2024_001",
+    "table_number": 73,
+    "hand_number": 26,
+    "dealer_position": 7,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 8022
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 9595
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 13495
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 12377
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 10223
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 40170
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 41014
+      }
+    ],
+    "pot_size": 42976,
+    "winner": "Player_5",
+    "timestamp": "2025-06-11T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000027",
+    "tournament_id": "WSOP_2024_015",
+    "table_number": 62,
+    "hand_number": 27,
+    "dealer_position": 6,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 17515
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 49906
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 10861
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 42833
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 43682
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 35263
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 46112
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 14400
+      },
+      {
+        "name": "Player_9",
+        "position": 9,
+        "stack": 38391
+      }
+    ],
+    "pot_size": 32351,
+    "winner": "Player_5",
+    "timestamp": "2024-12-07T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000028",
+    "tournament_id": "WSOP_2024_006",
+    "table_number": 56,
+    "hand_number": 28,
+    "dealer_position": 6,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 35407
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 6958
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 14519
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 25325
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 20447
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 23790
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 27368
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 42502
+      }
+    ],
+    "pot_size": 1127,
+    "winner": "Player_5",
+    "timestamp": "2025-06-24T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000029",
+    "tournament_id": "WSOP_2024_027",
+    "table_number": 16,
+    "hand_number": 29,
+    "dealer_position": 0,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 16862
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 39546
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 30250
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 39382
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 14240
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 23469
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 23513
+      }
+    ],
+    "pot_size": 38409,
+    "winner": "Player_3",
+    "timestamp": "2024-12-05T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000030",
+    "tournament_id": "WSOP_2024_031",
+    "table_number": 86,
+    "hand_number": 30,
+    "dealer_position": 0,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 43360
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 8355
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 7484
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 43493
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 8040
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 40077
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 30583
+      }
+    ],
+    "pot_size": 29460,
+    "winner": "Player_2",
+    "timestamp": "2025-01-24T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000031",
+    "tournament_id": "WSOP_2024_030",
+    "table_number": 8,
+    "hand_number": 31,
+    "dealer_position": 8,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 45279
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 41388
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 45717
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 30205
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 17141
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 26333
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 37834
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 39824
+      },
+      {
+        "name": "Player_9",
+        "position": 9,
+        "stack": 18386
+      }
+    ],
+    "pot_size": 49339,
+    "winner": "Player_4",
+    "timestamp": "2025-02-26T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000032",
+    "tournament_id": "WSOP_2024_019",
+    "table_number": 26,
+    "hand_number": 32,
+    "dealer_position": 8,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 38480
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 18856
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 40188
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 18308
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 23203
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 44635
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 31976
+      }
+    ],
+    "pot_size": 18685,
+    "winner": "Player_7",
+    "timestamp": "2025-03-15T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000033",
+    "tournament_id": "WSOP_2024_032",
+    "table_number": 38,
+    "hand_number": 33,
+    "dealer_position": 6,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 35249
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 14660
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 27793
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 43539
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 21526
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 27487
+      }
+    ],
+    "pot_size": 10002,
+    "winner": "Player_7",
+    "timestamp": "2024-12-12T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000034",
+    "tournament_id": "WSOP_2024_039",
+    "table_number": 87,
+    "hand_number": 34,
+    "dealer_position": 5,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 12845
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 8793
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 22957
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 33419
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 27441
+      }
+    ],
+    "pot_size": 7898,
+    "winner": "Player_2",
+    "timestamp": "2025-07-31T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000035",
+    "tournament_id": "WSOP_2024_027",
+    "table_number": 6,
+    "hand_number": 35,
+    "dealer_position": 5,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 36348
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 35531
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 31811
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 31593
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 6151
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 35691
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 40893
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 30195
+      }
+    ],
+    "pot_size": 40682,
+    "winner": "Player_4",
+    "timestamp": "2025-11-15T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000036",
+    "tournament_id": "WSOP_2024_042",
+    "table_number": 42,
+    "hand_number": 36,
+    "dealer_position": 5,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 31621
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 47244
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 49225
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 26507
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 8574
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 11250
+      }
+    ],
+    "pot_size": 36266,
+    "winner": "Player_2",
+    "timestamp": "2025-07-07T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000037",
+    "tournament_id": "WSOP_2024_021",
+    "table_number": 27,
+    "hand_number": 37,
+    "dealer_position": 1,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 20611
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 31948
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 44887
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 48377
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 5684
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 5947
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 5137
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 9506
+      },
+      {
+        "name": "Player_9",
+        "position": 9,
+        "stack": 44339
+      }
+    ],
+    "pot_size": 20240,
+    "winner": "Player_6",
+    "timestamp": "2025-03-12T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000038",
+    "tournament_id": "WSOP_2024_020",
+    "table_number": 68,
+    "hand_number": 38,
+    "dealer_position": 0,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 32858
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 37524
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 38174
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 41248
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 36842
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 37906
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 14580
+      }
+    ],
+    "pot_size": 8992,
+    "winner": "Player_7",
+    "timestamp": "2024-11-23T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000039",
+    "tournament_id": "WSOP_2024_025",
+    "table_number": 42,
+    "hand_number": 39,
+    "dealer_position": 6,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 17791
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 5996
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 43780
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 12278
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 27475
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 34865
+      }
+    ],
+    "pot_size": 27030,
+    "winner": "Player_5",
+    "timestamp": "2025-03-20T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000040",
+    "tournament_id": "WSOP_2024_005",
+    "table_number": 41,
+    "hand_number": 40,
+    "dealer_position": 3,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 19887
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 12187
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 13910
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 9659
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 18603
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 26397
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 33369
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 19702
+      }
+    ],
+    "pot_size": 28989,
+    "winner": "Player_2",
+    "timestamp": "2025-05-14T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000041",
+    "tournament_id": "WSOP_2024_012",
+    "table_number": 28,
+    "hand_number": 41,
+    "dealer_position": 3,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 31452
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 16996
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 30952
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 36885
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 42479
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 41015
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 32054
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 36724
+      },
+      {
+        "name": "Player_9",
+        "position": 9,
+        "stack": 48316
+      }
+    ],
+    "pot_size": 10198,
+    "winner": "Player_7",
+    "timestamp": "2024-11-30T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000042",
+    "tournament_id": "WSOP_2024_025",
+    "table_number": 15,
+    "hand_number": 42,
+    "dealer_position": 5,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 7151
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 43950
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 35719
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 35961
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 5532
+      }
+    ],
+    "pot_size": 21154,
+    "winner": "Player_5",
+    "timestamp": "2025-07-15T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000043",
+    "tournament_id": "WSOP_2024_003",
+    "table_number": 38,
+    "hand_number": 43,
+    "dealer_position": 5,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 42881
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 15227
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 37950
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 21144
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 36125
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 11275
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 40461
+      }
+    ],
+    "pot_size": 12399,
+    "winner": "Player_1",
+    "timestamp": "2025-04-10T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000044",
+    "tournament_id": "WSOP_2024_046",
+    "table_number": 80,
+    "hand_number": 44,
+    "dealer_position": 4,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 35992
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 29863
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 25575
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 40559
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 37233
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 14837
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 28786
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 10700
+      }
+    ],
+    "pot_size": 19318,
+    "winner": "Player_1",
+    "timestamp": "2025-09-03T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000045",
+    "tournament_id": "WSOP_2024_027",
+    "table_number": 98,
+    "hand_number": 45,
+    "dealer_position": 1,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 20277
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 22243
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 20307
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 6266
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 32252
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 25973
+      }
+    ],
+    "pot_size": 27829,
+    "winner": "Player_3",
+    "timestamp": "2025-09-14T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000046",
+    "tournament_id": "WSOP_2024_033",
+    "table_number": 59,
+    "hand_number": 46,
+    "dealer_position": 7,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 19880
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 30705
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 24288
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 34210
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 46054
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 10000
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 30489
+      }
+    ],
+    "pot_size": 43825,
+    "winner": "Player_8",
+    "timestamp": "2025-10-16T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000047",
+    "tournament_id": "WSOP_2024_050",
+    "table_number": 55,
+    "hand_number": 47,
+    "dealer_position": 0,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 15344
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 33391
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 10599
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 45465
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 36023
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 24003
+      }
+    ],
+    "pot_size": 23174,
+    "winner": "Player_6",
+    "timestamp": "2025-06-19T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000048",
+    "tournament_id": "WSOP_2024_005",
+    "table_number": 72,
+    "hand_number": 48,
+    "dealer_position": 2,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 43521
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 19403
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 11393
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 12732
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 23254
+      }
+    ],
+    "pot_size": 31949,
+    "winner": "Player_9",
+    "timestamp": "2025-04-26T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000049",
+    "tournament_id": "WSOP_2024_025",
+    "table_number": 19,
+    "hand_number": 49,
+    "dealer_position": 0,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 35343
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 30049
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 5403
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 12316
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 20148
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 35222
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 20064
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 36188
+      }
+    ],
+    "pot_size": 18241,
+    "winner": "Player_2",
+    "timestamp": "2025-09-28T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000050",
+    "tournament_id": "WSOP_2024_012",
+    "table_number": 17,
+    "hand_number": 50,
+    "dealer_position": 2,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 13135
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 49605
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 48162
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 17580
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 37642
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 39700
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 33945
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 15644
+      }
+    ],
+    "pot_size": 40360,
+    "winner": "Player_3",
+    "timestamp": "2025-02-04T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000051",
+    "tournament_id": "WSOP_2024_043",
+    "table_number": 68,
+    "hand_number": 51,
+    "dealer_position": 1,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 46952
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 26701
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 21011
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 19655
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 15604
+      }
+    ],
+    "pot_size": 36894,
+    "winner": "Player_4",
+    "timestamp": "2025-01-16T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000052",
+    "tournament_id": "WSOP_2024_028",
+    "table_number": 63,
+    "hand_number": 52,
+    "dealer_position": 7,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 10660
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 6253
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 13279
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 45954
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 37618
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 19168
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 35785
+      }
+    ],
+    "pot_size": 22216,
+    "winner": "Player_7",
+    "timestamp": "2025-10-02T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000053",
+    "tournament_id": "WSOP_2024_001",
+    "table_number": 2,
+    "hand_number": 53,
+    "dealer_position": 2,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 49709
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 38433
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 21026
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 30197
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 41109
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 17642
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 5655
+      }
+    ],
+    "pot_size": 2959,
+    "winner": "Player_8",
+    "timestamp": "2025-03-11T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000054",
+    "tournament_id": "WSOP_2024_029",
+    "table_number": 37,
+    "hand_number": 54,
+    "dealer_position": 2,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 8335
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 48174
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 49995
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 5803
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 32817
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 18778
+      }
+    ],
+    "pot_size": 7236,
+    "winner": "Player_9",
+    "timestamp": "2025-01-08T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000055",
+    "tournament_id": "WSOP_2024_009",
+    "table_number": 85,
+    "hand_number": 55,
+    "dealer_position": 3,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 48592
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 9733
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 42304
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 14242
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 6770
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 28293
+      }
+    ],
+    "pot_size": 15254,
+    "winner": "Player_7",
+    "timestamp": "2025-01-19T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000056",
+    "tournament_id": "WSOP_2024_001",
+    "table_number": 76,
+    "hand_number": 56,
+    "dealer_position": 7,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 31411
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 41616
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 34918
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 38508
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 46291
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 8221
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 18925
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 12516
+      }
+    ],
+    "pot_size": 47823,
+    "winner": "Player_9",
+    "timestamp": "2025-09-06T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000057",
+    "tournament_id": "WSOP_2024_005",
+    "table_number": 67,
+    "hand_number": 57,
+    "dealer_position": 1,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 49031
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 21943
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 28691
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 42315
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 40906
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 14335
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 11878
+      }
+    ],
+    "pot_size": 44369,
+    "winner": "Player_6",
+    "timestamp": "2025-02-03T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000058",
+    "tournament_id": "WSOP_2024_038",
+    "table_number": 14,
+    "hand_number": 58,
+    "dealer_position": 1,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 30076
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 39621
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 49787
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 12218
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 18008
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 36140
+      }
+    ],
+    "pot_size": 1095,
+    "winner": "Player_9",
+    "timestamp": "2025-01-02T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000059",
+    "tournament_id": "WSOP_2024_017",
+    "table_number": 85,
+    "hand_number": 59,
+    "dealer_position": 6,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 35167
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 37117
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 40674
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 23327
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 39948
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 15633
+      }
+    ],
+    "pot_size": 11267,
+    "winner": "Player_4",
+    "timestamp": "2024-12-10T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000060",
+    "tournament_id": "WSOP_2024_013",
+    "table_number": 34,
+    "hand_number": 60,
+    "dealer_position": 2,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 47582
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 9424
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 30896
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 11041
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 6912
+      }
+    ],
+    "pot_size": 23882,
+    "winner": "Player_2",
+    "timestamp": "2025-03-15T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000061",
+    "tournament_id": "WSOP_2024_029",
+    "table_number": 83,
+    "hand_number": 61,
+    "dealer_position": 4,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 5488
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 48397
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 13155
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 5061
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 35313
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 48371
+      }
+    ],
+    "pot_size": 16693,
+    "winner": "Player_5",
+    "timestamp": "2025-04-08T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000062",
+    "tournament_id": "WSOP_2024_017",
+    "table_number": 18,
+    "hand_number": 62,
+    "dealer_position": 4,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 18240
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 40445
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 49697
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 12995
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 47199
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 44188
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 21775
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 7961
+      }
+    ],
+    "pot_size": 19992,
+    "winner": "Player_5",
+    "timestamp": "2025-05-06T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000063",
+    "tournament_id": "WSOP_2024_041",
+    "table_number": 49,
+    "hand_number": 63,
+    "dealer_position": 5,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 46820
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 42579
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 20624
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 49137
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 49346
+      }
+    ],
+    "pot_size": 41562,
+    "winner": "Player_6",
+    "timestamp": "2025-10-09T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000064",
+    "tournament_id": "WSOP_2024_050",
+    "table_number": 62,
+    "hand_number": 64,
+    "dealer_position": 7,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 11296
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 26229
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 13270
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 12033
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 13595
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 12714
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 17139
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 33157
+      }
+    ],
+    "pot_size": 1041,
+    "winner": "Player_4",
+    "timestamp": "2025-01-25T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000065",
+    "tournament_id": "WSOP_2024_004",
+    "table_number": 48,
+    "hand_number": 65,
+    "dealer_position": 0,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 42393
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 46239
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 7093
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 17747
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 21166
+      }
+    ],
+    "pot_size": 5900,
+    "winner": "Player_4",
+    "timestamp": "2025-08-09T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000066",
+    "tournament_id": "WSOP_2024_019",
+    "table_number": 49,
+    "hand_number": 66,
+    "dealer_position": 4,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 26014
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 19588
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 32804
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 7398
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 11615
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 18573
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 48717
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 39470
+      }
+    ],
+    "pot_size": 36046,
+    "winner": "Player_1",
+    "timestamp": "2025-06-16T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000067",
+    "tournament_id": "WSOP_2024_014",
+    "table_number": 54,
+    "hand_number": 67,
+    "dealer_position": 2,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 16518
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 33654
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 22409
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 35113
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 40295
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 43058
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 33001
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 11958
+      }
+    ],
+    "pot_size": 11767,
+    "winner": "Player_4",
+    "timestamp": "2024-12-22T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000068",
+    "tournament_id": "WSOP_2024_030",
+    "table_number": 29,
+    "hand_number": 68,
+    "dealer_position": 1,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 39002
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 19619
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 17825
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 23852
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 31812
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 18283
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 49253
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 49142
+      }
+    ],
+    "pot_size": 19625,
+    "winner": "Player_9",
+    "timestamp": "2025-04-01T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000069",
+    "tournament_id": "WSOP_2024_036",
+    "table_number": 75,
+    "hand_number": 69,
+    "dealer_position": 4,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 9353
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 39017
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 17985
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 7144
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 32839
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 36382
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 15880
+      }
+    ],
+    "pot_size": 1320,
+    "winner": "Player_3",
+    "timestamp": "2025-04-29T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000070",
+    "tournament_id": "WSOP_2024_022",
+    "table_number": 24,
+    "hand_number": 70,
+    "dealer_position": 5,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 41439
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 46017
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 33342
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 48958
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 24205
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 36654
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 8948
+      }
+    ],
+    "pot_size": 21709,
+    "winner": "Player_6",
+    "timestamp": "2025-10-14T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000071",
+    "tournament_id": "WSOP_2024_023",
+    "table_number": 13,
+    "hand_number": 71,
+    "dealer_position": 2,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 41646
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 34572
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 19720
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 11671
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 32502
+      }
+    ],
+    "pot_size": 1089,
+    "winner": "Player_8",
+    "timestamp": "2025-02-20T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000072",
+    "tournament_id": "WSOP_2024_009",
+    "table_number": 47,
+    "hand_number": 72,
+    "dealer_position": 6,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 49137
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 11048
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 24735
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 28148
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 37987
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 8517
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 9157
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 19643
+      },
+      {
+        "name": "Player_9",
+        "position": 9,
+        "stack": 33252
+      }
+    ],
+    "pot_size": 24812,
+    "winner": "Player_8",
+    "timestamp": "2025-09-18T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000073",
+    "tournament_id": "WSOP_2024_028",
+    "table_number": 68,
+    "hand_number": 73,
+    "dealer_position": 2,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 27675
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 24587
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 30244
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 34513
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 28536
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 37377
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 15543
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 33112
+      },
+      {
+        "name": "Player_9",
+        "position": 9,
+        "stack": 40131
+      }
+    ],
+    "pot_size": 6660,
+    "winner": "Player_2",
+    "timestamp": "2025-09-16T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000074",
+    "tournament_id": "WSOP_2024_010",
+    "table_number": 27,
+    "hand_number": 74,
+    "dealer_position": 3,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 29747
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 36051
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 18496
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 17624
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 5043
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 49566
+      }
+    ],
+    "pot_size": 18366,
+    "winner": "Player_1",
+    "timestamp": "2024-12-14T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000075",
+    "tournament_id": "WSOP_2024_006",
+    "table_number": 39,
+    "hand_number": 75,
+    "dealer_position": 8,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 33842
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 21993
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 11161
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 39931
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 13749
+      }
+    ],
+    "pot_size": 37805,
+    "winner": "Player_1",
+    "timestamp": "2025-03-15T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000076",
+    "tournament_id": "WSOP_2024_041",
+    "table_number": 84,
+    "hand_number": 76,
+    "dealer_position": 8,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 16433
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 22557
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 19941
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 21846
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 17198
+      }
+    ],
+    "pot_size": 29791,
+    "winner": "Player_7",
+    "timestamp": "2025-01-20T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000077",
+    "tournament_id": "WSOP_2024_043",
+    "table_number": 89,
+    "hand_number": 77,
+    "dealer_position": 8,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 18689
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 46739
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 22997
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 18931
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 14977
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 30799
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 33358
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 45870
+      },
+      {
+        "name": "Player_9",
+        "position": 9,
+        "stack": 19466
+      }
+    ],
+    "pot_size": 11999,
+    "winner": "Player_9",
+    "timestamp": "2025-04-10T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000078",
+    "tournament_id": "WSOP_2024_022",
+    "table_number": 54,
+    "hand_number": 78,
+    "dealer_position": 7,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 37118
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 18586
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 34961
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 24383
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 39097
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 41161
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 49588
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 18958
+      },
+      {
+        "name": "Player_9",
+        "position": 9,
+        "stack": 14339
+      }
+    ],
+    "pot_size": 9738,
+    "winner": "Player_1",
+    "timestamp": "2025-02-01T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000079",
+    "tournament_id": "WSOP_2024_033",
+    "table_number": 83,
+    "hand_number": 79,
+    "dealer_position": 8,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 25514
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 22517
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 49140
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 18137
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 48533
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 25323
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 26338
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 21159
+      }
+    ],
+    "pot_size": 7408,
+    "winner": "Player_1",
+    "timestamp": "2024-12-10T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000080",
+    "tournament_id": "WSOP_2024_014",
+    "table_number": 98,
+    "hand_number": 80,
+    "dealer_position": 0,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 22283
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 25555
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 43615
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 19979
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 42866
+      }
+    ],
+    "pot_size": 28475,
+    "winner": "Player_4",
+    "timestamp": "2025-11-13T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000081",
+    "tournament_id": "WSOP_2024_030",
+    "table_number": 42,
+    "hand_number": 81,
+    "dealer_position": 0,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 7830
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 20681
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 36232
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 21620
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 43212
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 40829
+      }
+    ],
+    "pot_size": 34799,
+    "winner": "Player_5",
+    "timestamp": "2025-04-22T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000082",
+    "tournament_id": "WSOP_2024_046",
+    "table_number": 75,
+    "hand_number": 82,
+    "dealer_position": 0,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 17502
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 31837
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 33875
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 18090
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 29686
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 12583
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 45506
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 35044
+      },
+      {
+        "name": "Player_9",
+        "position": 9,
+        "stack": 43079
+      }
+    ],
+    "pot_size": 38358,
+    "winner": "Player_9",
+    "timestamp": "2025-02-19T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000083",
+    "tournament_id": "WSOP_2024_004",
+    "table_number": 72,
+    "hand_number": 83,
+    "dealer_position": 4,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 40962
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 30268
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 15413
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 39432
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 27694
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 6826
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 21036
+      }
+    ],
+    "pot_size": 44671,
+    "winner": "Player_1",
+    "timestamp": "2025-02-21T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000084",
+    "tournament_id": "WSOP_2024_017",
+    "table_number": 46,
+    "hand_number": 84,
+    "dealer_position": 0,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 49472
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 22698
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 37557
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 43920
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 12243
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 14771
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 45750
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 27245
+      },
+      {
+        "name": "Player_9",
+        "position": 9,
+        "stack": 10292
+      }
+    ],
+    "pot_size": 26782,
+    "winner": "Player_1",
+    "timestamp": "2025-06-09T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000085",
+    "tournament_id": "WSOP_2024_045",
+    "table_number": 35,
+    "hand_number": 85,
+    "dealer_position": 2,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 44787
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 19164
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 39226
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 16359
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 27257
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 24183
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 46924
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 16042
+      }
+    ],
+    "pot_size": 35924,
+    "winner": "Player_2",
+    "timestamp": "2025-11-05T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000086",
+    "tournament_id": "WSOP_2024_022",
+    "table_number": 30,
+    "hand_number": 86,
+    "dealer_position": 1,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 27418
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 44994
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 12108
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 48043
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 7431
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 35030
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 30186
+      }
+    ],
+    "pot_size": 26060,
+    "winner": "Player_4",
+    "timestamp": "2025-05-17T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000087",
+    "tournament_id": "WSOP_2024_050",
+    "table_number": 10,
+    "hand_number": 87,
+    "dealer_position": 1,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 13569
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 24605
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 9586
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 49938
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 8460
+      }
+    ],
+    "pot_size": 12914,
+    "winner": "Player_6",
+    "timestamp": "2024-12-10T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000088",
+    "tournament_id": "WSOP_2024_022",
+    "table_number": 33,
+    "hand_number": 88,
+    "dealer_position": 8,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 14946
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 22866
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 40293
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 44868
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 7398
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 25405
+      }
+    ],
+    "pot_size": 42310,
+    "winner": "Player_2",
+    "timestamp": "2025-04-08T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000089",
+    "tournament_id": "WSOP_2024_038",
+    "table_number": 53,
+    "hand_number": 89,
+    "dealer_position": 5,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 5654
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 8957
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 18556
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 30852
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 21557
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 47261
+      }
+    ],
+    "pot_size": 7897,
+    "winner": "Player_8",
+    "timestamp": "2025-03-26T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000090",
+    "tournament_id": "WSOP_2024_011",
+    "table_number": 35,
+    "hand_number": 90,
+    "dealer_position": 4,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 45716
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 23718
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 37146
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 8592
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 41661
+      }
+    ],
+    "pot_size": 44674,
+    "winner": "Player_2",
+    "timestamp": "2024-11-21T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000091",
+    "tournament_id": "WSOP_2024_046",
+    "table_number": 76,
+    "hand_number": 91,
+    "dealer_position": 4,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 43696
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 27813
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 32423
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 25962
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 28387
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 27517
+      }
+    ],
+    "pot_size": 23702,
+    "winner": "Player_3",
+    "timestamp": "2025-11-12T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000092",
+    "tournament_id": "WSOP_2024_029",
+    "table_number": 2,
+    "hand_number": 92,
+    "dealer_position": 0,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 22017
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 43375
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 28936
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 16324
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 21103
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 16374
+      }
+    ],
+    "pot_size": 527,
+    "winner": "Player_8",
+    "timestamp": "2025-09-18T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000093",
+    "tournament_id": "WSOP_2024_015",
+    "table_number": 12,
+    "hand_number": 93,
+    "dealer_position": 2,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 30250
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 45774
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 42359
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 19567
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 5425
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 5587
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 12982
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 47812
+      },
+      {
+        "name": "Player_9",
+        "position": 9,
+        "stack": 44221
+      }
+    ],
+    "pot_size": 48414,
+    "winner": "Player_8",
+    "timestamp": "2025-10-25T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000094",
+    "tournament_id": "WSOP_2024_036",
+    "table_number": 76,
+    "hand_number": 94,
+    "dealer_position": 4,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 11395
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 8881
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 39787
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 10926
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 16069
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 29836
+      }
+    ],
+    "pot_size": 47413,
+    "winner": "Player_8",
+    "timestamp": "2025-03-19T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000095",
+    "tournament_id": "WSOP_2024_019",
+    "table_number": 55,
+    "hand_number": 95,
+    "dealer_position": 1,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 18712
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 41598
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 6403
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 10010
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 20195
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 15465
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 17911
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 49128
+      },
+      {
+        "name": "Player_9",
+        "position": 9,
+        "stack": 12958
+      }
+    ],
+    "pot_size": 21661,
+    "winner": "Player_4",
+    "timestamp": "2025-07-30T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000096",
+    "tournament_id": "WSOP_2024_009",
+    "table_number": 31,
+    "hand_number": 96,
+    "dealer_position": 2,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 15141
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 39180
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 26819
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 23891
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 6400
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 5896
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 15123
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 45371
+      },
+      {
+        "name": "Player_9",
+        "position": 9,
+        "stack": 43468
+      }
+    ],
+    "pot_size": 31384,
+    "winner": "Player_7",
+    "timestamp": "2025-05-30T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000097",
+    "tournament_id": "WSOP_2024_032",
+    "table_number": 63,
+    "hand_number": 97,
+    "dealer_position": 7,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 28503
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 37514
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 48285
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 49772
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 44693
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 5372
+      }
+    ],
+    "pot_size": 35886,
+    "winner": "Player_6",
+    "timestamp": "2025-09-10T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000098",
+    "tournament_id": "WSOP_2024_039",
+    "table_number": 67,
+    "hand_number": 98,
+    "dealer_position": 8,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 17020
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 36802
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 33051
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 15378
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 23070
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 5202
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 14155
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 27669
+      }
+    ],
+    "pot_size": 10218,
+    "winner": "Player_3",
+    "timestamp": "2024-12-20T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000099",
+    "tournament_id": "WSOP_2024_046",
+    "table_number": 83,
+    "hand_number": 99,
+    "dealer_position": 2,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 15006
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 33977
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 18052
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 17756
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 11926
+      },
+      {
+        "name": "Player_6",
+        "position": 6,
+        "stack": 22058
+      },
+      {
+        "name": "Player_7",
+        "position": 7,
+        "stack": 37166
+      },
+      {
+        "name": "Player_8",
+        "position": 8,
+        "stack": 41474
+      }
+    ],
+    "pot_size": 38933,
+    "winner": "Player_6",
+    "timestamp": "2025-05-12T14:19:14.545483"
+  },
+  {
+    "hand_id": "HAND_000100",
+    "tournament_id": "WSOP_2024_034",
+    "table_number": 44,
+    "hand_number": 100,
+    "dealer_position": 5,
+    "small_blind": 50,
+    "big_blind": 100,
+    "players": [
+      {
+        "name": "Player_1",
+        "position": 1,
+        "stack": 6593
+      },
+      {
+        "name": "Player_2",
+        "position": 2,
+        "stack": 6708
+      },
+      {
+        "name": "Player_3",
+        "position": 3,
+        "stack": 38459
+      },
+      {
+        "name": "Player_4",
+        "position": 4,
+        "stack": 32182
+      },
+      {
+        "name": "Player_5",
+        "position": 5,
+        "stack": 39901
+      }
+    ],
+    "pot_size": 39906,
+    "winner": "Player_7",
+    "timestamp": "2025-05-05T14:19:14.545483"
+  }
+]

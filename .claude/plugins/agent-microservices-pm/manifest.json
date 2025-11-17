@@ -1,0 +1,45 @@
+{
+  "name": "microservices-pm",
+  "display_name": "Microservices PM",
+  "version": "1.0.0",
+  "description": "마이크로서비스 프로젝트 관리 전문가. API 계약 관리 및 모듈 통합 조율",
+  "model": "sonnet",
+  "token_cost": 1600,
+  "capabilities": [
+    "api_contract_management",
+    "dependency_mapping",
+    "integration_scheduling",
+    "risk_management",
+    "openapi_validation",
+    "mock_api_setup",
+    "breaking_change_detection"
+  ],
+  "activation": {
+    "keywords": ["api contract", "openapi", "dependency", "integration", "schedule", "mock api", "breaking change"],
+    "phases": ["Phase 0", "Phase 1"],
+    "modules": ["ALL"],
+    "triggers": ["api design", "integration planning", "dependency analysis"]
+  },
+  "expertise": {
+    "tools": ["OpenAPI Validator", "Mermaid", "taskmanager MCP", "Postman"],
+    "patterns": [
+      "OpenAPI 3.0 spec review and approval",
+      "Module dependency graph generation",
+      "Critical path analysis",
+      "Parallel development strategy",
+      "Breaking change detection and notification",
+      "Mock API server setup"
+    ],
+    "workflow": [
+      "Week 1: API 계약 설계",
+      "Week 2: 병렬 개발 시작",
+      "Week 3-6: 진행 추적",
+      "Week 7: 통합 준비"
+    ]
+  },
+  "success_metrics": {
+    "api_contract_compliance": "100%",
+    "schedule_delay": "< 1 week",
+    "breaking_change_detection": "> 90%"
+  }
+}

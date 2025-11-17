@@ -1,0 +1,761 @@
+openapi: 3.0.3
+
+info:
+  title: M3 Timecode Validation Service API
+  description: |
+    **POKER-BRAIN Timecode Validation Service (Phase 0)**
+
+    ATI 타임스탬프와 NAS 영상 타임코드의 동기화를 검증하는 서비스입니다.
+
+    **담당**: Backend Engineer (Charlie)
+    **모듈 ID**: M3
+    **배포**: Cloud Run (us-central1)
+    **Phase**: Phase 0 (필수 사전 작업)
+
+    ## 주요 기능
+    - ATI 타임스탬프 ↔ NAS 영상 타임코드 매칭
+    - Google Cloud Vision API 기반 포커 장면 감지
+    - sync_score 자동 계산 (0-100점)
+    - Offset 자동 계산 및 보정
+    - 수동 매칭 인터페이스 (API)
+
+    ## 검증 알고리즘
+    ```
+    sync_score = (
+        vision_confidence * 50 +
+        duration_match * 30 +
+        player_count * 20
+    )
+
+    - 90-100: 완벽 동기화
+    - 80-90: 양호 (사용 가능)
+    - 60-80: Offset 계산 필요
+    - < 60: 수동 매칭 필요
+    ```
+
+    ## 의존성
+    - **Input**: M1 (hand_summary), M2 (video_files)
+    - **Output**: BigQuery (prod.timecode_validation)
+    - **External**: Google Cloud Vision API
+
+  version: 1.0.0
+  contact:
+    name: GG Production Data Team
+    email: aiden.kim@ggproduction.net
+
+servers:
+  - url: https://timecode-validation-service-{env}.run.app
+    description: Cloud Run deployment
+    variables:
+      env:
+        default: prod
+        enum:
+          - prod
+          - staging
+          - dev
+  - url: http://localhost:8003
+    description: Local development
+
+tags:
+  - name: Validation
+    description: 타임코드 검증
+  - name: Manual
+    description: 수동 매칭
+  - name: Monitoring
+    description: 검증 통계
+
+paths:
+  /v1/validate:
+    post:
+      summary: 단일 핸드 타임코드 검증
+      description: |
+        ATI 핸드의 타임스탬프와 NAS 영상 타임코드의 동기화를 검증합니다.
+
+        **처리 과정**:
+        1. hand_id로 예상 타임스탬프 조회 (BigQuery)
+        2. 해당 시점의 영상 프레임 추출 (FFmpeg)
+        3. Vision API로 포커 장면 감지
+        4. sync_score 계산 (0-100)
+        5. score < 80 → Offset 자동 계산
+        6. BigQuery에 결과 저장
+
+        **예상 처리 시간**: 1 hand → ~10초 (Vision API 3-5초)
+      operationId: validateTimecode
+      tags:
+        - Validation
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidationRequest'
+            examples:
+              with_vision:
+                summary: Vision API 사용
+                value:
+                  hand_id: "wsop2024_me_d3_h154"
+                  timestamp_start_utc: "2024-07-15T15:24:15Z"
+                  timestamp_end_utc: "2024-07-15T15:26:45Z"
+                  nas_video_path: "/nas/poker/2024/wsop/main_event_day3.mp4"
+                  use_vision_api: true
+              without_vision:
+                summary: Vision API 미사용 (빠른 검증)
+                value:
+                  hand_id: "wsop2024_me_d3_h154"
+                  timestamp_start_utc: "2024-07-15T15:24:15Z"
+                  timestamp_end_utc: "2024-07-15T15:26:45Z"
+                  nas_video_path: "/nas/poker/2024/wsop/main_event_day3.mp4"
+                  use_vision_api: false
+      responses:
+        '200':
+          description: 검증 작업이 시작됨
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationResponse'
+              example:
+                validation_id: "val-20241117-001"
+                hand_id: "wsop2024_me_d3_h154"
+                status: "processing"
+                estimated_duration_sec: 10
+                created_at: "2024-11-17T10:30:00Z"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/validate/{validation_id}/result:
+    get:
+      summary: 검증 결과 조회
+      description: |
+        완료된 검증 작업의 상세 결과를 조회합니다.
+
+        **결과 포함 정보**:
+        - sync_score (0-100)
+        - Vision API confidence
+        - 감지된 객체 (포커 테이블, 카드, 칩 등)
+        - 계산된 Offset (필요 시)
+        - 프레임 샘플 이미지 (GCS)
+      operationId: getValidationResult
+      tags:
+        - Validation
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: validation_id
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^val-\d{8}-\d{3}$'
+          example: "val-20241117-001"
+      responses:
+        '200':
+          description: 검증 결과 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationResult'
+              examples:
+                perfect_sync:
+                  summary: 완벽 동기화 (score 94.5)
+                  value:
+                    validation_id: "val-20241117-001"
+                    hand_id: "wsop2024_me_d3_h154"
+                    status: "completed"
+                    sync_score: 94.5
+                    is_synced: true
+                    validation_method: "vision_api"
+                    vision_confidence: 0.95
+                    detected_objects: ["poker_table", "playing_cards", "poker_chips", "person"]
+                    calculated_offset_seconds: 0
+                    frame_sample_gcs: "gs://validation-frames/val-001.jpg"
+                    completed_at: "2024-11-17T10:30:08Z"
+                offset_needed:
+                  summary: Offset 계산됨 (score 75.2)
+                  value:
+                    validation_id: "val-20241117-002"
+                    hand_id: "wsop2024_me_d3_h155"
+                    status: "completed"
+                    sync_score: 75.2
+                    is_synced: false
+                    validation_method: "vision_api"
+                    vision_confidence: 0.82
+                    detected_objects: ["poker_table", "person"]
+                    calculated_offset_seconds: -45.3
+                    offset_reason: "Vision detected poker scene 45s earlier"
+                    frame_sample_gcs: "gs://validation-frames/val-002.jpg"
+                    completed_at: "2024-11-17T10:30:12Z"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /v1/validate/batch:
+    post:
+      summary: 배치 검증
+      description: |
+        여러 핸드를 한 번에 검증합니다.
+
+        **사용 사례**:
+        - 신규 이벤트 전체 검증
+        - 재검증 (알고리즘 개선 후)
+        - Phase 0 대량 검증
+
+        **처리 방식**: 비동기 큐 (Cloud Tasks)
+        **예상 처리 시간**: 100 hands → ~20분 (병렬 처리)
+      operationId: validateBatch
+      tags:
+        - Validation
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchValidationRequest'
+            example:
+              hand_ids:
+                - "wsop2024_me_d3_h001"
+                - "wsop2024_me_d3_h002"
+                - "wsop2024_me_d3_h003"
+              use_vision_api: true
+              auto_apply_offset: false
+      responses:
+        '200':
+          description: 배치 검증 작업 시작됨
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchValidationResponse'
+              example:
+                batch_id: "batch-20241117-001"
+                total_hands: 100
+                status: "queued"
+                estimated_duration_sec: 1200
+                created_at: "2024-11-17T10:30:00Z"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /v1/validate/batch/{batch_id}/status:
+    get:
+      summary: 배치 검증 상태 조회
+      operationId: getBatchStatus
+      tags:
+        - Validation
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: batch_id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "batch-20241117-001"
+      responses:
+        '200':
+          description: 배치 상태 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchValidationStatus'
+              example:
+                batch_id: "batch-20241117-001"
+                status: "processing"
+                total_hands: 100
+                completed_hands: 67
+                failed_hands: 2
+                avg_sync_score: 87.3
+                synced_count: 58
+                offset_needed_count: 9
+                manual_needed_count: 0
+                started_at: "2024-11-17T10:30:00Z"
+                estimated_completion: "2024-11-17T10:45:00Z"
+
+  /v1/manual/match:
+    post:
+      summary: 수동 매칭 (UI에서 호출)
+      description: |
+        사용자가 수동으로 타임코드를 매칭할 때 사용합니다.
+
+        **사용 시점**:
+        - sync_score < 60 (자동 매칭 실패)
+        - 사용자가 직접 영상을 확인하고 매칭
+
+        **UI 플로우**:
+        1. 사용자가 프록시 영상 재생
+        2. 핸드 시작 지점 찾기 (플레이어 카드 공개 순간)
+        3. 타임코드 입력 (MM:SS 형식)
+        4. POST /v1/manual/match 호출
+        5. Offset 계산 및 적용
+      operationId: manualMatch
+      tags:
+        - Manual
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManualMatchRequest'
+            example:
+              hand_id: "wsop2024_me_d3_h154"
+              matched_video_timecode: "03:24:15"
+              matched_by_user: "charlie@ggproduction.net"
+              confidence: "high"
+      responses:
+        '200':
+          description: 수동 매칭 완료
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManualMatchResponse'
+              example:
+                hand_id: "wsop2024_me_d3_h154"
+                calculated_offset_seconds: -120
+                sync_score: 100
+                validation_method: "manual"
+                matched_at: "2024-11-17T11:00:00Z"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /v1/offset/apply:
+    post:
+      summary: Offset 일괄 적용
+      description: |
+        계산된 Offset을 여러 핸드에 일괄 적용합니다.
+
+        **사용 사례**:
+        - 같은 영상 파일의 모든 핸드에 동일 Offset 적용
+        - 예: video_file_id = "vid_wsop2024_me_d3", offset = -45초
+
+        **효과**: sync_score < 80 → 100으로 개선
+      operationId: applyOffset
+      tags:
+        - Manual
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplyOffsetRequest'
+            example:
+              video_file_id: "vid_wsop2024_me_d3"
+              offset_seconds: -45
+              apply_to_all_hands: true
+      responses:
+        '200':
+          description: Offset 적용 완료
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  affected_hands:
+                    type: integer
+                    example: 125
+                  avg_sync_score_before:
+                    type: number
+                    example: 75.2
+                  avg_sync_score_after:
+                    type: number
+                    example: 95.8
+                  applied_at:
+                    type: string
+                    format: date-time
+
+  /v1/stats:
+    get:
+      summary: 검증 통계 조회
+      operationId: getValidationStats
+      tags:
+        - Monitoring
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: event_id
+          in: query
+          description: 특정 이벤트로 필터링
+          schema:
+            type: string
+          example: "wsop2024_me"
+      responses:
+        '200':
+          description: 통계 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationStats'
+              example:
+                total_hands: 125000
+                validated_hands: 98500
+                validation_rate: 0.788
+                avg_sync_score: 89.3
+                perfect_sync_count: 75000
+                offset_needed_count: 18500
+                manual_needed_count: 5000
+                score_distribution:
+                  "90-100": 75000
+                  "80-90": 18500
+                  "60-80": 4500
+                  "<60": 500
+                last_updated: "2024-11-17T12:00:00Z"
+
+  /health:
+    get:
+      summary: 헬스 체크
+      operationId: healthCheck
+      tags:
+        - Monitoring
+      responses:
+        '200':
+          description: 서비스 정상
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy, degraded]
+                  dependencies:
+                    type: object
+                    properties:
+                      vision_api:
+                        type: string
+                        enum: [ok, error]
+                      bigquery:
+                        type: string
+                        enum: [ok, error]
+                      nas:
+                        type: string
+                        enum: [ok, error]
+
+components:
+  schemas:
+    ValidationRequest:
+      type: object
+      required:
+        - hand_id
+        - timestamp_start_utc
+        - timestamp_end_utc
+        - nas_video_path
+      properties:
+        hand_id:
+          type: string
+          example: "wsop2024_me_d3_h154"
+        timestamp_start_utc:
+          type: string
+          format: date-time
+          description: ATI 핸드 시작 타임스탬프
+        timestamp_end_utc:
+          type: string
+          format: date-time
+          description: ATI 핸드 종료 타임스탬프
+        nas_video_path:
+          type: string
+          description: NAS 영상 파일 경로
+          example: "/nas/poker/2024/wsop/main_event_day3.mp4"
+        use_vision_api:
+          type: boolean
+          description: Vision API 사용 여부
+          default: true
+
+    ValidationResponse:
+      type: object
+      properties:
+        validation_id:
+          type: string
+          pattern: '^val-\d{8}-\d{3}$'
+        hand_id:
+          type: string
+        status:
+          type: string
+          enum: [processing, queued]
+        estimated_duration_sec:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+
+    ValidationResult:
+      type: object
+      properties:
+        validation_id:
+          type: string
+        hand_id:
+          type: string
+        status:
+          type: string
+          enum: [completed, failed]
+        sync_score:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          description: |
+            동기화 점수 (0-100)
+            - 90-100: 완벽 동기화
+            - 80-90: 양호
+            - 60-80: Offset 필요
+            - <60: 수동 매칭 필요
+        is_synced:
+          type: boolean
+          description: sync_score >= 80
+        validation_method:
+          type: string
+          enum: [vision_api, manual, duration_only]
+        vision_confidence:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          nullable: true
+        detected_objects:
+          type: array
+          items:
+            type: string
+          example: ["poker_table", "playing_cards", "poker_chips"]
+        calculated_offset_seconds:
+          type: number
+          format: float
+          description: 계산된 Offset (음수 = 영상이 ATI보다 빠름)
+        offset_reason:
+          type: string
+          nullable: true
+        frame_sample_gcs:
+          type: string
+          description: 추출한 프레임 이미지 GCS 경로
+        error_message:
+          type: string
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+
+    BatchValidationRequest:
+      type: object
+      required:
+        - hand_ids
+      properties:
+        hand_ids:
+          type: array
+          items:
+            type: string
+          maxItems: 1000
+          description: 검증할 hand_id 목록 (최대 1000개)
+        use_vision_api:
+          type: boolean
+          default: true
+        auto_apply_offset:
+          type: boolean
+          default: false
+          description: Offset 자동 적용 여부
+
+    BatchValidationResponse:
+      type: object
+      properties:
+        batch_id:
+          type: string
+        total_hands:
+          type: integer
+        status:
+          type: string
+          enum: [queued, processing]
+        estimated_duration_sec:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+
+    BatchValidationStatus:
+      type: object
+      properties:
+        batch_id:
+          type: string
+        status:
+          type: string
+          enum: [queued, processing, completed, failed]
+        total_hands:
+          type: integer
+        completed_hands:
+          type: integer
+        failed_hands:
+          type: integer
+        avg_sync_score:
+          type: number
+          format: float
+        synced_count:
+          type: integer
+          description: sync_score >= 80
+        offset_needed_count:
+          type: integer
+          description: 60 <= score < 80
+        manual_needed_count:
+          type: integer
+          description: score < 60
+        started_at:
+          type: string
+          format: date-time
+        estimated_completion:
+          type: string
+          format: date-time
+          nullable: true
+
+    ManualMatchRequest:
+      type: object
+      required:
+        - hand_id
+        - matched_video_timecode
+        - matched_by_user
+      properties:
+        hand_id:
+          type: string
+        matched_video_timecode:
+          type: string
+          pattern: '^\d{2}:\d{2}:\d{2}$'
+          example: "03:24:15"
+          description: 영상 타임코드 (HH:MM:SS)
+        matched_by_user:
+          type: string
+          format: email
+        confidence:
+          type: string
+          enum: [high, medium, low]
+          default: "high"
+
+    ManualMatchResponse:
+      type: object
+      properties:
+        hand_id:
+          type: string
+        calculated_offset_seconds:
+          type: number
+          format: float
+        sync_score:
+          type: number
+          default: 100
+        validation_method:
+          type: string
+          default: "manual"
+        matched_at:
+          type: string
+          format: date-time
+
+    ApplyOffsetRequest:
+      type: object
+      required:
+        - video_file_id
+        - offset_seconds
+      properties:
+        video_file_id:
+          type: string
+          description: 영상 파일 ID (M2)
+        offset_seconds:
+          type: number
+          format: float
+          description: 적용할 Offset (초)
+        apply_to_all_hands:
+          type: boolean
+          default: true
+
+    ValidationStats:
+      type: object
+      properties:
+        total_hands:
+          type: integer
+        validated_hands:
+          type: integer
+        validation_rate:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+        avg_sync_score:
+          type: number
+          format: float
+        perfect_sync_count:
+          type: integer
+          description: score >= 90
+        offset_needed_count:
+          type: integer
+          description: 60 <= score < 80
+        manual_needed_count:
+          type: integer
+          description: score < 60
+        score_distribution:
+          type: object
+          additionalProperties:
+            type: integer
+        last_updated:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      required:
+        - error
+        - request_id
+        - timestamp
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+        request_id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+  responses:
+    BadRequest:
+      description: 잘못된 요청
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Unauthorized:
+      description: 인증 실패
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFound:
+      description: 리소스를 찾을 수 없음
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    InternalError:
+      description: 내부 서버 오류
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Google IAP JWT Token
+
+security:
+  - BearerAuth: []

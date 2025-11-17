@@ -1,0 +1,162 @@
+[
+  {
+    "file_id": "video_table_7",
+    "video_path": "/nas/poker/2025/table_7.mp4",
+    "proxy_path": "gs://gg-poker-proxies/table_7_720p.mp4",
+    "duration_seconds": 180.0,
+    "resolution": "1920x1080",
+    "codec": "h264",
+    "file_size_bytes": 104857600,
+    "created_at": "2025-11-17T17:03:15.177985"
+  },
+  {
+    "file_id": "video_table_30",
+    "video_path": "/nas/poker/2025/table_30.mp4",
+    "proxy_path": "gs://gg-poker-proxies/table_30_720p.mp4",
+    "duration_seconds": 540.0,
+    "resolution": "1920x1080",
+    "codec": "h264",
+    "file_size_bytes": 314572800,
+    "created_at": "2025-11-17T17:03:15.177985"
+  },
+  {
+    "file_id": "video_table_31",
+    "video_path": "/nas/poker/2025/table_31.mp4",
+    "proxy_path": "gs://gg-poker-proxies/table_31_720p.mp4",
+    "duration_seconds": 180.0,
+    "resolution": "1920x1080",
+    "codec": "h264",
+    "file_size_bytes": 104857600,
+    "created_at": "2025-11-17T17:03:15.177985"
+  },
+  {
+    "file_id": "video_table_25",
+    "video_path": "/nas/poker/2025/table_25.mp4",
+    "proxy_path": "gs://gg-poker-proxies/table_25_720p.mp4",
+    "duration_seconds": 180.0,
+    "resolution": "1920x1080",
+    "codec": "h264",
+    "file_size_bytes": 104857600,
+    "created_at": "2025-11-17T17:03:15.177985"
+  },
+  {
+    "file_id": "video_table_20",
+    "video_path": "/nas/poker/2025/table_20.mp4",
+    "proxy_path": "gs://gg-poker-proxies/table_20_720p.mp4",
+    "duration_seconds": 540.0,
+    "resolution": "1920x1080",
+    "codec": "h264",
+    "file_size_bytes": 314572800,
+    "created_at": "2025-11-17T17:03:15.177985"
+  },
+  {
+    "file_id": "video_table_21",
+    "video_path": "/nas/poker/2025/table_21.mp4",
+    "proxy_path": "gs://gg-poker-proxies/table_21_720p.mp4",
+    "duration_seconds": 180.0,
+    "resolution": "1920x1080",
+    "codec": "h264",
+    "file_size_bytes": 104857600,
+    "created_at": "2025-11-17T17:03:15.177985"
+  },
+  {
+    "file_id": "video_table_9",
+    "video_path": "/nas/poker/2025/table_9.mp4",
+    "proxy_path": "gs://gg-poker-proxies/table_9_720p.mp4",
+    "duration_seconds": 180.0,
+    "resolution": "1920x1080",
+    "codec": "h264",
+    "file_size_bytes": 104857600,
+    "created_at": "2025-11-17T17:03:15.177985"
+  },
+  {
+    "file_id": "video_table_16",
+    "video_path": "/nas/poker/2025/table_16.mp4",
+    "proxy_path": "gs://gg-poker-proxies/table_16_720p.mp4",
+    "duration_seconds": 720.0,
+    "resolution": "1920x1080",
+    "codec": "h264",
+    "file_size_bytes": 419430400,
+    "created_at": "2025-11-17T17:03:15.177985"
+  },
+  {
+    "file_id": "video_table_27",
+    "video_path": "/nas/poker/2025/table_27.mp4",
+    "proxy_path": "gs://gg-poker-proxies/table_27_720p.mp4",
+    "duration_seconds": 180.0,
+    "resolution": "1920x1080",
+    "codec": "h264",
+    "file_size_bytes": 104857600,
+    "created_at": "2025-11-17T17:03:15.177985"
+  },
+  {
+    "file_id": "video_table_18",
+    "video_path": "/nas/poker/2025/table_18.mp4",
+    "proxy_path": "gs://gg-poker-proxies/table_18_720p.mp4",
+    "duration_seconds": 180.0,
+    "resolution": "1920x1080",
+    "codec": "h264",
+    "file_size_bytes": 104857600,
+    "created_at": "2025-11-17T17:03:15.177985"
+  },
+  {
+    "file_id": "video_table_14",
+    "video_path": "/nas/poker/2025/table_14.mp4",
+    "proxy_path": "gs://gg-poker-proxies/table_14_720p.mp4",
+    "duration_seconds": 180.0,
+    "resolution": "1920x1080",
+    "codec": "h264",
+    "file_size_bytes": 104857600,
+    "created_at": "2025-11-17T17:03:15.177985"
+  },
+  {
+    "file_id": "video_table_1",
+    "video_path": "/nas/poker/2025/table_1.mp4",
+    "proxy_path": "gs://gg-poker-proxies/table_1_720p.mp4",
+    "duration_seconds": 180.0,
+    "resolution": "1920x1080",
+    "codec": "h264",
+    "file_size_bytes": 104857600,
+    "created_at": "2025-11-17T17:03:15.177985"
+  },
+  {
+    "file_id": "video_table_24",
+    "video_path": "/nas/poker/2025/table_24.mp4",
+    "proxy_path": "gs://gg-poker-proxies/table_24_720p.mp4",
+    "duration_seconds": 180.0,
+    "resolution": "1920x1080",
+    "codec": "h264",
+    "file_size_bytes": 104857600,
+    "created_at": "2025-11-17T17:03:15.177985"
+  },
+  {
+    "file_id": "video_table_11",
+    "video_path": "/nas/poker/2025/table_11.mp4",
+    "proxy_path": "gs://gg-poker-proxies/table_11_720p.mp4",
+    "duration_seconds": 180.0,
+    "resolution": "1920x1080",
+    "codec": "h264",
+    "file_size_bytes": 104857600,
+    "created_at": "2025-11-17T17:03:15.177985"
+  },
+  {
+    "file_id": "video_table_39",
+    "video_path": "/nas/poker/2025/table_39.mp4",
+    "proxy_path": "gs://gg-poker-proxies/table_39_720p.mp4",
+    "duration_seconds": 180.0,
+    "resolution": "1920x1080",
+    "codec": "h264",
+    "file_size_bytes": 104857600,
+    "created_at": "2025-11-17T17:03:15.177985"
+  },
+  {
+    "file_id": "video_table_33",
+    "video_path": "/nas/poker/2025/table_33.mp4",
+    "proxy_path": "gs://gg-poker-proxies/table_33_720p.mp4",
+    "duration_seconds": 180.0,
+    "resolution": "1920x1080",
+    "codec": "h264",
+    "file_size_bytes": 104857600,
+    "created_at": "2025-11-17T17:03:15.177985"
+  }
+]

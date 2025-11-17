@@ -1,0 +1,46 @@
+[Unit]
+Description=M5 Clipping Service Local Agent
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=poker
+Group=poker
+WorkingDirectory=/opt/poker-brain/m5-clipping
+
+# Environment
+Environment="POKER_ENV=production"
+Environment="AGENT_ID=nas-server-01"
+Environment="AGENT_ROLE=primary"
+Environment="GCP_PROJECT_ID=gg-poker-prod"
+Environment="GCS_BUCKET=gg-subclips"
+Environment="TEMP_CLIPS_DIR=/var/poker/clips/temp"
+
+# Python environment
+Environment="PYTHONUNBUFFERED=1"
+ExecStart=/opt/poker-brain/venv/bin/python -m local_agent.subscriber
+
+# Restart policy
+Restart=always
+RestartSec=10
+StartLimitInterval=0
+
+# Resource limits
+MemoryLimit=4G
+CPUQuota=200%
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=clipping-agent
+
+# Security
+PrivateTmp=true
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/poker/clips
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,12 @@
+{
+  "emulator": "python-mock",
+  "topics": [
+    {
+      "name": "clipping-requests",
+      "subscriptions": [
+        "clipping-worker-sub"
+      ]
+    }
+  ],
+  "messages": []
+}

@@ -1,0 +1,602 @@
+openapi: 3.0.3
+
+info:
+  title: M4 RAG Search Service API
+  description: |
+    **POKER-BRAIN RAG Search Service**
+
+    Vertex AI 기반 자연어 검색 엔진입니다.
+
+    **담당**: ML Engineer / Backend Engineer (David)
+    **모듈 ID**: M4
+    **배포**: Cloud Run (us-central1)
+
+    ## 주요 기능
+    - 자연어 쿼리 → Semantic Search
+    - Vertex AI TextEmbedding-004 임베딩
+    - Vector Search (Matching Engine)
+    - BigQuery 메타데이터 조인
+    - 사용자 피드백 기반 Re-ranking
+
+    ## 검색 파이프라인
+    ```
+    User Query ("Tom Dwan 블러프")
+        ↓
+    Embedding (textembedding-004)
+        ↓
+    Vector Search (100 neighbors)
+        ↓
+    BigQuery Filter (players, year, pot_size)
+        ↓
+    Re-ranking (user feedback)
+        ↓
+    Top 20 Results
+    ```
+
+    ## 의존성
+    - **Input**: M1 (hand_summary with embeddings)
+    - **Output**: BigQuery (search_logs, search_feedback)
+    - **External**: Vertex AI (Embedding, Vector Search)
+
+  version: 1.0.0
+  contact:
+    name: GG Production ML Team
+    email: aiden.kim@ggproduction.net
+
+servers:
+  - url: https://rag-search-service-{env}.run.app
+    description: Cloud Run deployment
+    variables:
+      env:
+        default: prod
+        enum:
+          - prod
+          - staging
+          - dev
+  - url: http://localhost:8004
+    description: Local development
+
+tags:
+  - name: Search
+    description: 검색 엔진
+  - name: Feedback
+    description: 사용자 피드백
+  - name: Admin
+    description: 관리자 기능
+  - name: Monitoring
+    description: 검색 통계
+
+paths:
+  /v1/search:
+    post:
+      summary: 자연어 검색
+      description: |
+        자연어 쿼리로 포커 핸드를 검색합니다.
+
+        **검색 예시**:
+        - "Tom Dwan 2008 블러프"
+        - "Phil Hellmuth 올인 실패"
+        - "2024 WSOP 메인 이벤트 100만 달러 팟"
+
+        **처리 시간**: ~200-500ms
+      operationId: search
+      tags:
+        - Search
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchRequest'
+            examples:
+              simple_query:
+                summary: 간단한 쿼리
+                value:
+                  query: "Tom Dwan 블러프"
+                  limit: 20
+              filtered_query:
+                summary: 필터 포함
+                value:
+                  query: "올인 승부"
+                  limit: 20
+                  filters:
+                    players: ["Tom Dwan"]
+                    event_name_contains: "WSOP"
+                    year_range: [2008, 2024]
+                    pot_size_min: 100000
+                  include_proxy: true
+      responses:
+        '200':
+          description: 검색 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+              example:
+                query_id: "search-20241117-001"
+                total_results: 156
+                processing_time_ms: 245
+                results:
+                  - hand_id: "wsop2008_me_d3_h154"
+                    relevance_score: 0.94
+                    summary: "Tom Dwan, J4o, river all-in bluff vs Phil Hellmuth, won $450K pot"
+                    event_name: "2008 WSOP Main Event"
+                    timestamp_start: "2008-07-15T15:24:15Z"
+                    nas_path: "/nas/poker/2008/wsop/main_event_day3.mp4"
+                    timecode_offset: "03:24:15"
+                    proxy_url: "https://storage.googleapis.com/gg-proxy/wsop2008_me_d3_720p.mp4"
+                    players: ["Tom Dwan", "Phil Hellmuth"]
+                    pot_size_usd: 450000
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/search/autocomplete:
+    get:
+      summary: 자동 완성
+      description: |
+        검색어 자동 완성 제안을 제공합니다.
+
+        **제안 기준**:
+        - 인기 검색어
+        - 플레이어 이름
+        - 이벤트 이름
+        - 최근 검색 기록 (사용자별)
+      operationId: autocomplete
+      tags:
+        - Search
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: 검색어 (최소 2자)
+          schema:
+            type: string
+            minLength: 2
+          example: "Tom D"
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 10
+      responses:
+        '200':
+          description: 자동 완성 제안
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  query:
+                    type: string
+                  suggestions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        text:
+                          type: string
+                        type:
+                          type: string
+                          enum: [player, event, recent, popular]
+                        count:
+                          type: integer
+                          description: 검색 결과 수 (예상)
+              example:
+                query: "Tom D"
+                suggestions:
+                  - text: "Tom Dwan"
+                    type: "player"
+                    count: 1250
+                  - text: "Tom Dwan 블러프"
+                    type: "popular"
+                    count: 342
+                  - text: "Tom Dwan WSOP 2008"
+                    type: "recent"
+                    count: 78
+
+  /v1/search/feedback:
+    post:
+      summary: 검색 결과 피드백
+      description: |
+        사용자 피드백을 수집하여 검색 품질을 개선합니다.
+
+        **피드백 종류**:
+        - `relevant`: 관련 있는 결과
+        - `not_relevant`: 관련 없는 결과
+        - `favorite`: 즐겨찾기 (별표)
+
+        **활용**:
+        - Re-ranking 알고리즘 학습
+        - 검색 품질 지표 (Precision, Recall)
+      operationId: submitFeedback
+      tags:
+        - Feedback
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeedbackRequest'
+            example:
+              query_id: "search-20241117-001"
+              hand_id: "wsop2008_me_d3_h154"
+              feedback: "relevant"
+      responses:
+        '200':
+          description: 피드백 저장 완료
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+                  message:
+                    type: string
+                    example: "Feedback recorded"
+
+  /v1/favorites:
+    get:
+      summary: 즐겨찾기 목록 조회
+      description: 사용자가 별표한 핸드 목록을 조회합니다.
+      operationId: getFavorites
+      tags:
+        - Feedback
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: 즐겨찾기 목록
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                  favorites:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SearchResult'
+
+  /v1/admin/reindex:
+    post:
+      summary: 전체 재인덱싱 (관리자)
+      description: |
+        BigQuery 데이터를 Vertex AI Vector Search에 재인덱싱합니다.
+
+        **사용 시점**:
+        - 임베딩 모델 업그레이드 (textembedding-004 → 005)
+        - 데이터 대량 추가 후
+        - 인덱스 손상 시
+
+        **예상 시간**: 100K hands → ~2시간
+      operationId: reindex
+      tags:
+        - Admin
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event_id:
+                  type: string
+                  description: 특정 이벤트만 재인덱싱 (선택)
+                  nullable: true
+                force:
+                  type: boolean
+                  default: false
+            example:
+              event_id: null
+              force: true
+      responses:
+        '200':
+          description: 재인덱싱 작업 시작됨
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reindex_job_id:
+                    type: string
+                  status:
+                    type: string
+                  estimated_duration_sec:
+                    type: integer
+
+  /v1/stats:
+    get:
+      summary: 검색 통계 조회
+      operationId: getSearchStats
+      tags:
+        - Monitoring
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [24h, 7d, 30d]
+            default: 24h
+      responses:
+        '200':
+          description: 검색 통계
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchStats'
+              example:
+                period: "24h"
+                total_searches: 1250
+                unique_users: 45
+                avg_processing_time_ms: 280
+                avg_results_count: 67
+                top_queries:
+                  - query: "Tom Dwan"
+                    count: 125
+                  - query: "Phil Ivey"
+                    count: 98
+                zero_result_queries: 12
+                feedback_rate: 0.23
+
+  /health:
+    get:
+      summary: 헬스 체크
+      operationId: healthCheck
+      tags:
+        - Monitoring
+      responses:
+        '200':
+          description: 서비스 정상
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  dependencies:
+                    type: object
+                    properties:
+                      vertex_ai:
+                        type: string
+                      bigquery:
+                        type: string
+                      vector_search:
+                        type: string
+
+components:
+  schemas:
+    SearchRequest:
+      type: object
+      required:
+        - query
+      properties:
+        query:
+          type: string
+          description: 자연어 검색어
+          minLength: 2
+          example: "Tom Dwan 블러프"
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+          description: 반환할 결과 수
+        filters:
+          type: object
+          description: 검색 필터
+          properties:
+            players:
+              type: array
+              items:
+                type: string
+              description: 플레이어 이름 (OR 조건)
+              example: ["Tom Dwan", "Phil Ivey"]
+            event_name_contains:
+              type: string
+              description: 이벤트 이름 포함 검색
+              example: "WSOP"
+            year_range:
+              type: array
+              items:
+                type: integer
+              minItems: 2
+              maxItems: 2
+              description: 연도 범위 [시작, 끝]
+              example: [2008, 2024]
+            pot_size_min:
+              type: number
+              description: 최소 팟 크기 (USD)
+              example: 100000
+            pot_size_max:
+              type: number
+              description: 최대 팟 크기 (USD)
+        include_proxy:
+          type: boolean
+          default: true
+          description: 프록시 URL 포함 여부
+
+    SearchResponse:
+      type: object
+      properties:
+        query_id:
+          type: string
+          pattern: '^search-\d{8}-\d{3}$'
+          description: 쿼리 추적용 ID
+        total_results:
+          type: integer
+          description: 전체 결과 수
+        processing_time_ms:
+          type: integer
+          description: 처리 시간 (밀리초)
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchResult'
+
+    SearchResult:
+      type: object
+      properties:
+        hand_id:
+          type: string
+        relevance_score:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          description: 관련도 점수 (0-1)
+        summary:
+          type: string
+          description: 핸드 요약 (Gemini 생성)
+          example: "Tom Dwan, J4o, river all-in bluff vs Phil Hellmuth, won $450K pot"
+        event_name:
+          type: string
+        timestamp_start:
+          type: string
+          format: date-time
+        timestamp_end:
+          type: string
+          format: date-time
+        nas_path:
+          type: string
+          description: NAS 원본 경로
+        timecode_offset:
+          type: string
+          description: 영상 타임코드 (HH:MM:SS)
+          example: "03:24:15"
+        proxy_url:
+          type: string
+          nullable: true
+          description: GCS 프록시 URL (include_proxy=true)
+        players:
+          type: array
+          items:
+            type: string
+        pot_size_usd:
+          type: number
+
+    FeedbackRequest:
+      type: object
+      required:
+        - query_id
+        - hand_id
+        - feedback
+      properties:
+        query_id:
+          type: string
+          description: 검색 쿼리 ID
+        hand_id:
+          type: string
+          description: 피드백 대상 핸드 ID
+        feedback:
+          type: string
+          enum: [relevant, not_relevant, favorite]
+
+    SearchStats:
+      type: object
+      properties:
+        period:
+          type: string
+          enum: [24h, 7d, 30d]
+        total_searches:
+          type: integer
+        unique_users:
+          type: integer
+        avg_processing_time_ms:
+          type: integer
+        avg_results_count:
+          type: number
+          format: float
+        top_queries:
+          type: array
+          items:
+            type: object
+            properties:
+              query:
+                type: string
+              count:
+                type: integer
+        zero_result_queries:
+          type: integer
+          description: 결과 0개인 검색 수
+        feedback_rate:
+          type: number
+          format: float
+          description: 피드백 비율 (0-1)
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+        request_id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+  responses:
+    BadRequest:
+      description: 잘못된 요청
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Unauthorized:
+      description: 인증 실패
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    InternalError:
+      description: 내부 서버 오류
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []

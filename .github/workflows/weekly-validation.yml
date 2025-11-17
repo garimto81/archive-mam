@@ -1,0 +1,419 @@
+name: POKER-BRAIN Weekly Validation
+
+on:
+  # Manual trigger
+  workflow_dispatch:
+    inputs:
+      week:
+        description: 'Week number to validate (1-9)'
+        required: true
+        type: choice
+        options:
+          - '1'
+          - '2'
+          - '3'
+          - '4'
+          - '5'
+          - '6'
+          - '7'
+          - '8'
+          - '9'
+          - 'all'
+
+  # Scheduled weekly validation (every Monday 9 AM KST)
+  schedule:
+    - cron: '0 0 * * 1'  # 00:00 UTC = 09:00 KST every Monday
+
+  # Trigger on specific branch pushes
+  push:
+    branches:
+      - main
+      - 'week-*'
+    paths:
+      - 'modules/**'
+      - 'm*/**'
+      - '.validation/**'
+
+env:
+  PYTHON_VERSION: '3.11'
+  GCLOUD_PROJECT_ID: 'gg-poker'
+  GCLOUD_REGION: 'us-central1'
+
+jobs:
+  determine-week:
+    name: Determine Current Week
+    runs-on: ubuntu-latest
+    outputs:
+      current_week: ${{ steps.detect.outputs.week }}
+      should_run: ${{ steps.detect.outputs.should_run }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Detect current week
+        id: detect
+        run: |
+          # Manual trigger
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "week=${{ inputs.week }}" >> $GITHUB_OUTPUT
+            echo "should_run=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Auto-detect from .validation/current-week.txt
+          if [ -f ".validation/current-week.txt" ]; then
+            WEEK=$(cat .validation/current-week.txt)
+            echo "week=$WEEK" >> $GITHUB_OUTPUT
+            echo "should_run=true" >> $GITHUB_OUTPUT
+          else
+            echo "week=1" >> $GITHUB_OUTPUT
+            echo "should_run=false" >> $GITHUB_OUTPUT
+          fi
+
+  validate-week-1-2:
+    name: Validate Week 1-2 (API + Mock)
+    runs-on: ubuntu-latest
+    needs: determine-week
+    if: needs.determine-week.outputs.should_run == 'true' && (needs.determine-week.outputs.current_week == '1' || needs.determine-week.outputs.current_week == '2' || needs.determine-week.outputs.current_week == 'all')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          pip install pyyaml google-cloud-bigquery google-cloud-pubsub requests
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Run Week 1-2 validation
+        id: validate
+        run: |
+          python scripts/run_weekly_validator.py --week 1-2 --max-attempts 3
+        continue-on-error: true
+
+      - name: Upload validation results
+        uses: actions/upload-artifact@v3
+        with:
+          name: week-1-2-validation-results
+          path: .validation/week-1-2-result.json
+
+      - name: Notify on failure
+        if: steps.validate.outcome == 'failure'
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "🚨 Week 1-2 Validation Failed",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Week 1-2 검증 실패*\n\nOpenAPI 스펙 또는 Mock 환경 설정에 문제가 있습니다.\n\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|GitHub Actions 로그 보기>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  validate-week-4:
+    name: Validate Week 4 (M1 Complete)
+    runs-on: ubuntu-latest
+    needs: determine-week
+    if: needs.determine-week.outputs.should_run == 'true' && (needs.determine-week.outputs.current_week == '4' || needs.determine-week.outputs.current_week == 'all')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          pip install google-cloud-bigquery google-cloud-run requests apache-beam[gcp]
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Run Week 4 validation
+        id: validate
+        run: |
+          python scripts/run_weekly_validator.py --week 4 --max-attempts 3
+        continue-on-error: true
+
+      - name: Upload validation results
+        uses: actions/upload-artifact@v3
+        with:
+          name: week-4-validation-results
+          path: .validation/week-4-result.json
+
+      - name: Notify on failure
+        if: steps.validate.outcome == 'failure'
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "🚨 Week 4 Validation Failed - M1 Incomplete",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Week 4 (M1 완료) 검증 실패*\n\nDataflow, BigQuery 또는 API 배포에 문제가 있습니다.\n\n@Alice 즉시 확인 필요\n\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|GitHub Actions 로그 보기>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  validate-week-5:
+    name: Validate Week 5 (Mock → Real)
+    runs-on: ubuntu-latest
+    needs: determine-week
+    if: needs.determine-week.outputs.should_run == 'true' && (needs.determine-week.outputs.current_week == '5' || needs.determine-week.outputs.current_week == 'all')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          pip install google-cloud-bigquery google-cloud-pubsub requests
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Run Week 5 validation
+        id: validate
+        run: |
+          python scripts/run_weekly_validator.py --week 5 --max-attempts 3
+        continue-on-error: true
+
+      - name: Upload validation results
+        uses: actions/upload-artifact@v3
+        with:
+          name: week-5-validation-results
+          path: .validation/week-5-result.json
+
+      - name: Notify on failure
+        if: steps.validate.outcome == 'failure'
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "🚨 Week 5 Validation Failed - Mock → Real Transition Failed",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Week 5 (Mock → Real 전환) 검증 실패*\n\nM3, M4, M5, M6 중 일부가 Real 환경 전환에 실패했습니다.\n\n@team 환경 변수 및 API 연결 확인 필요\n\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|GitHub Actions 로그 보기>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  validate-week-7-8:
+    name: Validate Week 7-8 (E2E Tests)
+    runs-on: ubuntu-latest
+    needs: determine-week
+    if: needs.determine-week.outputs.should_run == 'true' && (needs.determine-week.outputs.current_week == '7' || needs.determine-week.outputs.current_week == '8' || needs.determine-week.outputs.current_week == 'all')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Playwright
+        run: |
+          cd m6-web-ui
+          npm ci
+          npx playwright install --with-deps
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Run Week 7-8 validation
+        id: validate
+        run: |
+          python scripts/run_weekly_validator.py --week 7-8 --max-attempts 3
+        continue-on-error: true
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: m6-web-ui/playwright-report/
+
+      - name: Upload validation results
+        uses: actions/upload-artifact@v3
+        with:
+          name: week-7-8-validation-results
+          path: .validation/week-7-8-result.json
+
+      - name: Notify on failure
+        if: steps.validate.outcome == 'failure'
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "🚨 Week 7-8 E2E Tests Failed",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Week 7-8 (E2E 테스트) 검증 실패*\n\nE2E 테스트 통과율이 목표에 미달했습니다.\n\n• Week 7 목표: 80% 통과\n• Week 8 목표: 100% 통과\n\n@team 버그 수정 필요\n\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|GitHub Actions 로그 보기>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  validate-week-9:
+    name: Validate Week 9 (Production Deploy)
+    runs-on: ubuntu-latest
+    needs: determine-week
+    if: needs.determine-week.outputs.should_run == 'true' && (needs.determine-week.outputs.current_week == '9' || needs.determine-week.outputs.current_week == 'all')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          pip install google-cloud-bigquery google-cloud-run requests
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Run Week 9 validation
+        id: validate
+        run: |
+          python scripts/run_weekly_validator.py --week 9 --max-attempts 3
+        continue-on-error: true
+
+      - name: Upload validation results
+        uses: actions/upload-artifact@v3
+        with:
+          name: week-9-validation-results
+          path: .validation/week-9-result.json
+
+      - name: Upload final report
+        uses: actions/upload-artifact@v3
+        if: steps.validate.outcome == 'success'
+        with:
+          name: final-report
+          path: .validation/final-report.json
+
+      - name: Notify on success
+        if: steps.validate.outcome == 'success'
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "🎉 POKER-BRAIN Production Deployment Complete!",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*🎉 POKER-BRAIN 프로젝트 완료!*\n\n✅ Production 배포 완료\n✅ E2E 테스트 100% 통과\n✅ 모니터링 시스템 동작\n\n🚀 Production URL: https://poker-brain.ggproduction.net\n\n🍾 런치 파티: 금요일 18:00\n\n@aiden.kim @team 축하합니다!"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Notify on failure
+        if: steps.validate.outcome == 'failure'
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "🚨 Week 9 Production Deployment Failed",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Week 9 (Production 배포) 검증 실패*\n\n⚠️ 자동 롤백 실행됨\n\n@aiden.kim 즉시 개입 필요\n\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|GitHub Actions 로그 보기>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  summary:
+    name: Validation Summary
+    runs-on: ubuntu-latest
+    needs: [validate-week-1-2, validate-week-4, validate-week-5, validate-week-7-8, validate-week-9]
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+
+      - name: Generate summary report
+        run: |
+          python scripts/generate_validation_summary.py
+
+      - name: Upload summary
+        uses: actions/upload-artifact@v3
+        with:
+          name: validation-summary
+          path: .validation/summary.md
+
+      - name: Post summary to PR
+        if: github.event_name == 'push'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('.validation/summary.md', 'utf8');
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });

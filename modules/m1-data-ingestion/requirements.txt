@@ -1,0 +1,28 @@
+# M1 Data Ingestion Service - Python Dependencies
+# Python 3.11
+
+# Apache Beam and GCP
+apache-beam[gcp]==2.50.0
+google-cloud-bigquery==3.11.0
+google-cloud-storage==2.10.0
+google-cloud-dataflow-client==0.8.4
+google-cloud-logging==3.8.0
+
+# Flask API
+flask==2.3.3
+gunicorn==21.2.0
+werkzeug==2.3.7
+
+# Testing
+pytest==7.4.3
+pytest-cov==4.1.0
+pytest-mock==3.12.0
+
+# Utilities
+python-dateutil==2.8.2
+pytz==2023.3
+
+# Development
+black==23.11.0
+flake8==6.1.0
+mypy==1.7.0
