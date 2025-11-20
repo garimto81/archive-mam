@@ -1,0 +1,37 @@
+{
+  "hand_id": "wsop_2023_hand_0071",
+  "tournament_id": "wsop_2023",
+  "hand_number": 71,
+  "timestamp": "2024-02-28T00:00:00Z",
+  "duration_seconds": 482,
+  "description": "Junglemann makes an insane turn call with full house against Patrik Antonius's value bet. After Patrik Antonius bets 441.7bb into a 331.0bb pot on the turn, Junglemann tanks for 299s and makes the hero call with full house. Patrik Antonius shows trips and Junglemann wins a massive 772.7bb pot.",
+  "hero_name": "Junglemann",
+  "villain_name": "Patrik Antonius",
+  "hero_position": "BB",
+  "villain_position": "CO",
+  "hero_stack_bb": 325.2,
+  "villain_stack_bb": 59.0,
+  "street": "TURN",
+  "pot_bb": 772.7,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "all-in",
+  "result": "WIN",
+  "tags": [
+    "SICK_FOLD",
+    "RIVER_DECISION",
+    "HERO_FOLD",
+    "TILT",
+    "CHECK_RAISE"
+  ],
+  "hand_type": "HERO_FOLD",
+  "video_url": "gs://poker-videos-prod/wsop_2023/day2_table17.mp4",
+  "video_start_time": 598.9,
+  "video_end_time": 10694.2,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/wsop_2023_hand_0071.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.89
+}

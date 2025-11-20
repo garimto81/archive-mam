@@ -1,0 +1,37 @@
+{
+  "hand_id": "hustler_casino_live_2024_hand_0047",
+  "tournament_id": "hustler_casino_live_2024",
+  "hand_number": 47,
+  "timestamp": "2024-07-20T00:00:00Z",
+  "duration_seconds": 363,
+  "description": "Massive all-in pot! David Peters shoves 17.2bb with middle pair against Andrew Robl's flush on the river. Andrew Robl calls and Villain wins. Final pot: 55.5bb.",
+  "hero_name": "David Peters",
+  "villain_name": "Andrew Robl",
+  "hero_position": "BB",
+  "villain_position": "CO",
+  "hero_stack_bb": 70.1,
+  "villain_stack_bb": 270.7,
+  "street": "RIVER",
+  "pot_bb": 55.5,
+  "action_sequence": [
+    "raise 3bb",
+    "3bet 9bb",
+    "4bet 24bb",
+    "all-in",
+    "call"
+  ],
+  "hero_action": "raise",
+  "result": "LOSE",
+  "tags": [
+    "HIGH_STAKES",
+    "3BET",
+    "ALL_IN"
+  ],
+  "hand_type": "ALL_IN",
+  "video_url": "gs://poker-videos-prod/hustler_casino_live_2024/day10_table9.mp4",
+  "video_start_time": 8520.2,
+  "video_end_time": 10190.6,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/hustler_casino_live_2024_hand_0047.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.9
+}

@@ -1,0 +1,53 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - heading "Poker Archive Search" [level=1] [ref=e6]
+        - paragraph [ref=e7]: Search poker hands, players, and strategies with intelligent autocomplete
+      - generic [ref=e9]:
+        - search [ref=e10]:
+          - generic [ref=e11]:
+            - img
+            - textbox "Search poker hands, players, and tags" [active] [ref=e12]:
+              - /placeholder: Search poker hands, players, tags...
+              - text: <script>alert("XSS")</script>
+            - button "Clear search" [ref=e13] [cursor=pointer]:
+              - img [ref=e14]
+          - status [ref=e17]
+        - generic [ref=e18]:
+          - paragraph [ref=e19]:
+            - text: No suggestions found for "
+            - strong [ref=e20]: <script>alert("XSS")</script>
+            - text: "\""
+          - paragraph [ref=e21]: Try checking your spelling or using player names
+      - paragraph [ref=e23]: "Try searching for: hero call, junglemann, or WSOP 2024"
+    - generic [ref=e26]:
+      - generic [ref=e27]:
+        - img [ref=e29]
+        - heading "Smart Autocomplete" [level=3] [ref=e31]
+        - paragraph [ref=e32]: Get instant suggestions as you type, powered by advanced search algorithms
+      - generic [ref=e33]:
+        - img [ref=e35]
+        - heading "Advanced Filters" [level=3] [ref=e37]
+        - paragraph [ref=e38]: Filter by pot size, tournament, tags, and more for precise results
+      - generic [ref=e39]:
+        - img [ref=e41]
+        - heading "Video Archive" [level=3] [ref=e44]
+        - paragraph [ref=e45]: Watch hand replays with timestamped video clips from tournaments
+    - paragraph [ref=e48]: Powered by Vertex AI Vector Search • Built with Next.js 15 & TypeScript
+  - generic [ref=e53] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e54]:
+      - img [ref=e55]
+    - generic [ref=e58]:
+      - button "Open issues overlay" [ref=e59]:
+        - generic [ref=e60]:
+          - generic [ref=e61]: "0"
+          - generic [ref=e62]: "1"
+        - generic [ref=e63]: Issue
+      - button "Collapse issues badge" [ref=e64]:
+        - img [ref=e65]
+  - alert [ref=e67]
+```

@@ -1,0 +1,42 @@
+{
+  "hand_id": "wsop_2023_hand_0074",
+  "tournament_id": "wsop_2023",
+  "hand_number": 74,
+  "timestamp": "2024-06-27T00:00:00Z",
+  "duration_seconds": 592,
+  "description": "Eric Persson attempts a bold flop bluff against Jason Koon. After Jason Koon checks, Eric Persson fires 206.8bb into a 127.6bb pot. Jason Koon tanks for 109s and makes the hero fold with full house. Eric Persson shows flush bluff and Jason Koon wins 334.4bb.",
+  "hero_name": "Eric Persson",
+  "villain_name": "Jason Koon",
+  "hero_position": "MP",
+  "villain_position": "UTG1",
+  "hero_stack_bb": 409.4,
+  "villain_stack_bb": 322.3,
+  "street": "FLOP",
+  "pot_bb": 334.4,
+  "action_sequence": [
+    "raise 3bb",
+    "call",
+    "bet 0.33pot",
+    "call",
+    "bet 0.5pot",
+    "call",
+    "all-in",
+    "tank 120s",
+    "fold"
+  ],
+  "hero_action": "raise",
+  "result": "SPLIT",
+  "tags": [
+    "CONTINUATION_BET",
+    "RIVER_DECISION",
+    "BLUFF",
+    "HIGH_STAKES"
+  ],
+  "hand_type": "BLUFF",
+  "video_url": "gs://poker-videos-prod/wsop_2023/day9_table10.mp4",
+  "video_start_time": 195.8,
+  "video_end_time": 11160.8,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/wsop_2023_hand_0074.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.82
+}

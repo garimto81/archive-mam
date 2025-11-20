@@ -1,0 +1,40 @@
+{
+  "hand_id": "wsop_2023_hand_0054",
+  "tournament_id": "wsop_2023",
+  "hand_number": 54,
+  "timestamp": "2024-12-29T00:00:00Z",
+  "duration_seconds": 572,
+  "description": "Bryn Kenney goes all-in for 391.9bb on the flop against Liv Boeree. Liv Boeree has straight and folds. Villain wins and Liv Boeree wins a 601.7bb pot.",
+  "hero_name": "Bryn Kenney",
+  "villain_name": "Liv Boeree",
+  "hero_position": "MP",
+  "villain_position": "CO",
+  "hero_stack_bb": 123.3,
+  "villain_stack_bb": 308.3,
+  "street": "FLOP",
+  "pot_bb": 601.7,
+  "action_sequence": [
+    "limp",
+    "raise 5bb",
+    "call",
+    "check",
+    "bet 0.5pot",
+    "raise 2x",
+    "all-in",
+    "call"
+  ],
+  "hero_action": "all-in",
+  "result": "SPLIT",
+  "tags": [
+    "HIGH_STAKES",
+    "3BET",
+    "ALL_IN"
+  ],
+  "hand_type": "ALL_IN",
+  "video_url": "gs://poker-videos-prod/wsop_2023/day4_table7.mp4",
+  "video_start_time": 4004.3,
+  "video_end_time": 16799.0,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/wsop_2023_hand_0054.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.97
+}

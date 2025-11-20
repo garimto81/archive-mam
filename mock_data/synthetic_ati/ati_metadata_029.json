@@ -1,0 +1,37 @@
+{
+  "hand_id": "triton_poker_2024_hand_0029",
+  "tournament_id": "triton_poker_2024",
+  "hand_number": 29,
+  "timestamp": "2024-05-28T00:00:00Z",
+  "duration_seconds": 355,
+  "description": "Phil Ivey makes a sick turn call against Nik Airball. Nik Airball fires two barrels and shoves 340.5bb on the turn. Phil Ivey thinks for 263s and calls with just bottom pair. Nik Airball was bluffing with ace-high and Phil Ivey scoops a 642.8bb pot.",
+  "hero_name": "Phil Ivey",
+  "villain_name": "Nik Airball",
+  "hero_position": "UTG",
+  "villain_position": "SB",
+  "hero_stack_bb": 404.7,
+  "villain_stack_bb": 95.5,
+  "street": "TURN",
+  "pot_bb": 642.8,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "fold",
+  "result": "SPLIT",
+  "tags": [
+    "RIVER_DECISION",
+    "SQUEEZE",
+    "DEEP_STACK",
+    "CHECK_RAISE",
+    "VALUE_BET"
+  ],
+  "hand_type": "VALUE_BET",
+  "video_url": "gs://poker-videos-prod/triton_poker_2024/day10_table13.mp4",
+  "video_start_time": 9051.7,
+  "video_end_time": 19293.9,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/triton_poker_2024_hand_0029.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.87
+}

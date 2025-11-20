@@ -1,0 +1,37 @@
+{
+  "hand_id": "triton_poker_2024_hand_0020",
+  "tournament_id": "triton_poker_2024",
+  "hand_number": 20,
+  "timestamp": "2024-05-09T00:00:00Z",
+  "duration_seconds": 512,
+  "description": "Eric Persson makes an insane flop call with flush against Wesley Fei's value bet. After Wesley Fei bets 203.5bb into a 246.8bb pot on the flop, Eric Persson tanks for 184s and makes the hero call with flush. Wesley Fei shows straight and Eric Persson wins a massive 450.3bb pot.",
+  "hero_name": "Eric Persson",
+  "villain_name": "Wesley Fei",
+  "hero_position": "SB",
+  "villain_position": "BB",
+  "hero_stack_bb": 89.9,
+  "villain_stack_bb": 443.9,
+  "street": "FLOP",
+  "pot_bb": 450.3,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "fold",
+  "result": "WIN",
+  "tags": [
+    "BAD_BEAT",
+    "COOLER",
+    "RIVER_DECISION",
+    "SQUEEZE",
+    "VALUE_BET"
+  ],
+  "hand_type": "VALUE_BET",
+  "video_url": "gs://poker-videos-prod/triton_poker_2024/day3_table9.mp4",
+  "video_start_time": 2359.0,
+  "video_end_time": 12431.1,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/triton_poker_2024_hand_0020.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.89
+}

@@ -1,0 +1,36 @@
+{
+  "hand_id": "triton_poker_2024_hand_0007",
+  "tournament_id": "triton_poker_2024",
+  "hand_number": 7,
+  "timestamp": "2024-07-09T00:00:00Z",
+  "duration_seconds": 480,
+  "description": "Phil Ivey makes an insane turn call with flush against Patrik Antonius's value bet. After Patrik Antonius bets 48.0bb into a 81.2bb pot on the turn, Phil Ivey tanks for 61s and makes the hero call with flush. Patrik Antonius shows queen-high and Phil Ivey wins a massive 129.2bb pot.",
+  "hero_name": "Phil Ivey",
+  "villain_name": "Patrik Antonius",
+  "hero_position": "UTG",
+  "villain_position": "CO",
+  "hero_stack_bb": 40.1,
+  "villain_stack_bb": 243.5,
+  "street": "TURN",
+  "pot_bb": 129.2,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "all-in",
+  "result": "SPLIT",
+  "tags": [
+    "4BET",
+    "RIVER_DECISION",
+    "CONTINUATION_BET",
+    "VALUE_BET"
+  ],
+  "hand_type": "VALUE_BET",
+  "video_url": "gs://poker-videos-prod/triton_poker_2024/day2_table19.mp4",
+  "video_start_time": 7636.5,
+  "video_end_time": 18334.5,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/triton_poker_2024_hand_0007.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.77
+}

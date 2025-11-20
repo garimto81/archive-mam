@@ -1,0 +1,42 @@
+{
+  "hand_id": "mpp_2023_hand_0088",
+  "tournament_id": "mpp_2023",
+  "hand_number": 88,
+  "timestamp": "2024-11-27T00:00:00Z",
+  "duration_seconds": 178,
+  "description": "Eric Persson goes all-in for 39.6bb on the preflop against Jason Koon. Jason Koon has full house and folds. Villain wins and Jason Koon wins a 94.1bb pot.",
+  "hero_name": "Eric Persson",
+  "villain_name": "Jason Koon",
+  "hero_position": "UTG",
+  "villain_position": "MP",
+  "hero_stack_bb": 282.7,
+  "villain_stack_bb": 179.3,
+  "street": "PREFLOP",
+  "pot_bb": 94.1,
+  "action_sequence": [
+    "limp",
+    "raise 5bb",
+    "call",
+    "check",
+    "bet 0.5pot",
+    "raise 2x",
+    "all-in",
+    "call"
+  ],
+  "hero_action": "all-in",
+  "result": "SPLIT",
+  "tags": [
+    "CONTINUATION_BET",
+    "HIGH_STAKES",
+    "ALL_IN",
+    "SHORT_STACK",
+    "3BET"
+  ],
+  "hand_type": "ALL_IN",
+  "video_url": "gs://poker-videos-prod/mpp_2023/day3_table10.mp4",
+  "video_start_time": 7787.5,
+  "video_end_time": 12873.0,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/mpp_2023_hand_0088.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.85
+}

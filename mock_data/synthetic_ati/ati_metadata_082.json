@@ -1,0 +1,36 @@
+{
+  "hand_id": "mpp_2024_hand_0082",
+  "tournament_id": "mpp_2024",
+  "hand_number": 82,
+  "timestamp": "2024-10-18T00:00:00Z",
+  "duration_seconds": 597,
+  "description": "Bryn Kenney makes an insane turn call with bottom pair against Nik Airball's value bet. After Nik Airball bets 132.7bb into a 169.4bb pot on the turn, Bryn Kenney tanks for 121s and makes the hero call with bottom pair. Nik Airball shows bottom pair and Bryn Kenney wins a massive 302.1bb pot.",
+  "hero_name": "Bryn Kenney",
+  "villain_name": "Nik Airball",
+  "hero_position": "BTN",
+  "villain_position": "BB",
+  "hero_stack_bb": 250.0,
+  "villain_stack_bb": 405.9,
+  "street": "TURN",
+  "pot_bb": 302.1,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "raise",
+  "result": "WIN",
+  "tags": [
+    "DONK_BET",
+    "BAD_BEAT",
+    "TRAP",
+    "SLOW_PLAY"
+  ],
+  "hand_type": "SLOW_PLAY",
+  "video_url": "gs://poker-videos-prod/mpp_2024/day9_table9.mp4",
+  "video_start_time": 6544.6,
+  "video_end_time": 17421.5,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/mpp_2024_hand_0082.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.86
+}

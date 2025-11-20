@@ -1,0 +1,35 @@
+{
+  "hand_id": "apl_2024_hand_0069",
+  "tournament_id": "apl_2024",
+  "hand_number": 69,
+  "timestamp": "2024-11-30T00:00:00Z",
+  "duration_seconds": 302,
+  "description": "Alex Foxen makes a sick river call against Garrett Adelstein. Garrett Adelstein fires two barrels and shoves 297.8bb on the river. Alex Foxen thinks for 66s and calls with just flush. Garrett Adelstein was bluffing with queen-high and Alex Foxen scoops a 777.6bb pot.",
+  "hero_name": "Alex Foxen",
+  "villain_name": "Garrett Adelstein",
+  "hero_position": "UTG",
+  "villain_position": "UTG1",
+  "hero_stack_bb": 193.2,
+  "villain_stack_bb": 155.1,
+  "street": "RIVER",
+  "pot_bb": 777.6,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "fold",
+  "result": "LOSE",
+  "tags": [
+    "RIVER_DECISION",
+    "VALUE_BET",
+    "DEEP_STACK"
+  ],
+  "hand_type": "VALUE_BET",
+  "video_url": "gs://poker-videos-prod/apl_2024/day2_table13.mp4",
+  "video_start_time": 9342.1,
+  "video_end_time": 17590.3,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/apl_2024_hand_0069.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.82
+}

@@ -1,0 +1,36 @@
+{
+  "hand_id": "mpp_2024_hand_0064",
+  "tournament_id": "mpp_2024",
+  "hand_number": 64,
+  "timestamp": "2024-10-10T00:00:00Z",
+  "duration_seconds": 139,
+  "description": "Andrew Robl makes a sick preflop call against Daniel Negreanu. Daniel Negreanu fires two barrels and shoves 30.4bb on the preflop. Andrew Robl thinks for 141s and calls with just trips. Daniel Negreanu was bluffing with ace-high and Andrew Robl scoops a 62.6bb pot.",
+  "hero_name": "Andrew Robl",
+  "villain_name": "Daniel Negreanu",
+  "hero_position": "UTG1",
+  "villain_position": "SB",
+  "hero_stack_bb": 456.5,
+  "villain_stack_bb": 54.2,
+  "street": "PREFLOP",
+  "pot_bb": 62.6,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "raise",
+  "result": "WIN",
+  "tags": [
+    "SICK_FOLD",
+    "RIVER_DECISION",
+    "SHORT_STACK",
+    "HERO_FOLD"
+  ],
+  "hand_type": "HERO_FOLD",
+  "video_url": "gs://poker-videos-prod/mpp_2024/day7_table8.mp4",
+  "video_start_time": 8992.3,
+  "video_end_time": 10076.5,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/mpp_2024_hand_0064.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.79
+}

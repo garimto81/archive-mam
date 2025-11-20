@@ -1,0 +1,36 @@
+{
+  "hand_id": "hustler_casino_live_2024_hand_0009",
+  "tournament_id": "hustler_casino_live_2024",
+  "hand_number": 9,
+  "timestamp": "2024-02-03T00:00:00Z",
+  "duration_seconds": 392,
+  "description": "Andrew Robl makes a sick turn call against Vanessa Selbst. Vanessa Selbst fires two barrels and shoves 12.8bb on the turn. Andrew Robl thinks for 290s and calls with just top pair. Vanessa Selbst was bluffing with top pair and Andrew Robl scoops a 25.2bb pot.",
+  "hero_name": "Andrew Robl",
+  "villain_name": "Vanessa Selbst",
+  "hero_position": "BTN",
+  "villain_position": "BB",
+  "hero_stack_bb": 419.5,
+  "villain_stack_bb": 426.4,
+  "street": "TURN",
+  "pot_bb": 25.2,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "fold",
+  "result": "WIN",
+  "tags": [
+    "BAD_BEAT",
+    "TRAP",
+    "SLOW_PLAY",
+    "DEEP_STACK"
+  ],
+  "hand_type": "SLOW_PLAY",
+  "video_url": "gs://poker-videos-prod/hustler_casino_live_2024/day1_table20.mp4",
+  "video_start_time": 8277.3,
+  "video_end_time": 12850.7,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/hustler_casino_live_2024_hand_0009.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.93
+}

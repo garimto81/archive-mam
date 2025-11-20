@@ -1,0 +1,36 @@
+{
+  "hand_id": "apl_2024_hand_0052",
+  "tournament_id": "apl_2024",
+  "hand_number": 52,
+  "timestamp": "2024-01-18T00:00:00Z",
+  "duration_seconds": 477,
+  "description": "Patrik Antonius makes a sick preflop call against Kristen Bicknell. Kristen Bicknell fires two barrels and shoves 59.3bb on the preflop. Patrik Antonius thinks for 226s and calls with just king-high. Kristen Bicknell was bluffing with trips and Patrik Antonius scoops a 134.4bb pot.",
+  "hero_name": "Patrik Antonius",
+  "villain_name": "Kristen Bicknell",
+  "hero_position": "UTG1",
+  "villain_position": "UTG",
+  "hero_stack_bb": 171.5,
+  "villain_stack_bb": 468.9,
+  "street": "PREFLOP",
+  "pot_bb": 134.4,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "fold",
+  "result": "LOSE",
+  "tags": [
+    "DONK_BET",
+    "SICK_FOLD",
+    "RIVER_DECISION",
+    "HERO_FOLD"
+  ],
+  "hand_type": "HERO_FOLD",
+  "video_url": "gs://poker-videos-prod/apl_2024/day4_table1.mp4",
+  "video_start_time": 3644.9,
+  "video_end_time": 14484.3,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/apl_2024_hand_0052.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.92
+}

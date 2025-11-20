@@ -1,0 +1,37 @@
+{
+  "hand_id": "triton_poker_2024_hand_0089",
+  "tournament_id": "triton_poker_2024",
+  "hand_number": 89,
+  "timestamp": "2024-07-16T00:00:00Z",
+  "duration_seconds": 334,
+  "description": "Nik Airball makes a sick flop call against Alex Foxen. Alex Foxen fires two barrels and shoves 462.7bb on the flop. Nik Airball thinks for 71s and calls with just two pair. Alex Foxen was bluffing with queen-high and Nik Airball scoops a 677.4bb pot.",
+  "hero_name": "Nik Airball",
+  "villain_name": "Alex Foxen",
+  "hero_position": "BB",
+  "villain_position": "MP",
+  "hero_stack_bb": 374.3,
+  "villain_stack_bb": 202.0,
+  "street": "FLOP",
+  "pot_bb": 677.4,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "all-in",
+  "result": "SPLIT",
+  "tags": [
+    "BAD_BEAT",
+    "RIVER_DECISION",
+    "DEEP_STACK",
+    "3BET",
+    "VALUE_BET"
+  ],
+  "hand_type": "VALUE_BET",
+  "video_url": "gs://poker-videos-prod/triton_poker_2024/day8_table10.mp4",
+  "video_start_time": 2330.6,
+  "video_end_time": 17290.7,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/triton_poker_2024_hand_0089.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.78
+}

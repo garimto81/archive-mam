@@ -1,0 +1,37 @@
+{
+  "hand_id": "mpp_2023_hand_0002",
+  "tournament_id": "mpp_2023",
+  "hand_number": 2,
+  "timestamp": "2024-08-25T00:00:00Z",
+  "duration_seconds": 117,
+  "description": "Phil Hellmuth makes a sick preflop call against Andrew Robl. Andrew Robl fires two barrels and shoves 34.6bb on the preflop. Phil Hellmuth thinks for 123s and calls with just bottom pair. Andrew Robl was bluffing with bottom pair and Phil Hellmuth scoops a 65.9bb pot.",
+  "hero_name": "Phil Hellmuth",
+  "villain_name": "Andrew Robl",
+  "hero_position": "UTG1",
+  "villain_position": "CO",
+  "hero_stack_bb": 66.0,
+  "villain_stack_bb": 181.8,
+  "street": "PREFLOP",
+  "pot_bb": 65.9,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "all-in",
+  "result": "WIN",
+  "tags": [
+    "BAD_BEAT",
+    "RIVER_DECISION",
+    "DEEP_STACK",
+    "DONK_BET",
+    "VALUE_BET"
+  ],
+  "hand_type": "VALUE_BET",
+  "video_url": "gs://poker-videos-prod/mpp_2023/day8_table8.mp4",
+  "video_start_time": 6787.1,
+  "video_end_time": 10325.9,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/mpp_2023_hand_0002.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.78
+}

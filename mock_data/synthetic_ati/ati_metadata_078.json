@@ -1,0 +1,35 @@
+{
+  "hand_id": "triton_poker_2024_hand_0078",
+  "tournament_id": "triton_poker_2024",
+  "hand_number": 78,
+  "timestamp": "2024-10-13T00:00:00Z",
+  "duration_seconds": 206,
+  "description": "Phil Hellmuth makes an insane river call with queen-high against Nik Airball's value bet. After Nik Airball bets 42.7bb into a 31.7bb pot on the river, Phil Hellmuth tanks for 138s and makes the hero call with queen-high. Nik Airball shows king-high and Phil Hellmuth wins a massive 74.4bb pot.",
+  "hero_name": "Phil Hellmuth",
+  "villain_name": "Nik Airball",
+  "hero_position": "CO",
+  "villain_position": "MP",
+  "hero_stack_bb": 408.3,
+  "villain_stack_bb": 41.7,
+  "street": "RIVER",
+  "pot_bb": 74.4,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "fold",
+  "result": "SPLIT",
+  "tags": [
+    "TRAP",
+    "SQUEEZE",
+    "SLOW_PLAY"
+  ],
+  "hand_type": "SLOW_PLAY",
+  "video_url": "gs://poker-videos-prod/triton_poker_2024/day2_table20.mp4",
+  "video_start_time": 3455.0,
+  "video_end_time": 18021.9,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/triton_poker_2024_hand_0078.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.93
+}

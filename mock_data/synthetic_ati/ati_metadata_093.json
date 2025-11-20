@@ -1,0 +1,38 @@
+{
+  "hand_id": "hustler_casino_live_2024_hand_0093",
+  "tournament_id": "hustler_casino_live_2024",
+  "hand_number": 93,
+  "timestamp": "2024-01-09T00:00:00Z",
+  "duration_seconds": 86,
+  "description": "Doug Polk makes a sick preflop call against Mikki Mase. Mikki Mase fires two barrels and shoves 333.1bb on the preflop. Doug Polk thinks for 228s and calls with just ace-high. Mikki Mase was bluffing with flush and Doug Polk scoops a 476.8bb pot.",
+  "hero_name": "Doug Polk",
+  "villain_name": "Mikki Mase",
+  "hero_position": "BTN",
+  "villain_position": "SB",
+  "hero_stack_bb": 342.8,
+  "villain_stack_bb": 422.1,
+  "street": "PREFLOP",
+  "pot_bb": 476.8,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "raise",
+  "result": "WIN",
+  "tags": [
+    "SICK_FOLD",
+    "RIVER_DECISION",
+    "SQUEEZE",
+    "HERO_FOLD",
+    "DEEP_STACK",
+    "CHECK_RAISE"
+  ],
+  "hand_type": "HERO_FOLD",
+  "video_url": "gs://poker-videos-prod/hustler_casino_live_2024/day10_table11.mp4",
+  "video_start_time": 6143.5,
+  "video_end_time": 14211.2,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/hustler_casino_live_2024_hand_0093.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.93
+}

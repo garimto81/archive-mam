@@ -1,0 +1,39 @@
+{
+  "hand_id": "mpp_2023_hand_0001",
+  "tournament_id": "mpp_2023",
+  "hand_number": 1,
+  "timestamp": "2024-10-07T00:00:00Z",
+  "duration_seconds": 552,
+  "description": "Mikki Mase goes all-in for 75.9bb on the turn against Alex Foxen. Alex Foxen has trips and calls. Villain wins and Alex Foxen wins a 110.1bb pot.",
+  "hero_name": "Mikki Mase",
+  "villain_name": "Alex Foxen",
+  "hero_position": "UTG1",
+  "villain_position": "MP",
+  "hero_stack_bb": 64.7,
+  "villain_stack_bb": 51.4,
+  "street": "TURN",
+  "pot_bb": 110.1,
+  "action_sequence": [
+    "raise 3bb",
+    "3bet 9bb",
+    "4bet 24bb",
+    "all-in",
+    "call"
+  ],
+  "hero_action": "raise",
+  "result": "LOSE",
+  "tags": [
+    "BAD_BEAT",
+    "HIGH_STAKES",
+    "ALL_IN",
+    "SQUEEZE",
+    "4BET"
+  ],
+  "hand_type": "ALL_IN",
+  "video_url": "gs://poker-videos-prod/mpp_2023/day8_table20.mp4",
+  "video_start_time": 719.6,
+  "video_end_time": 10972.8,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/mpp_2023_hand_0001.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.78
+}

@@ -1,0 +1,37 @@
+{
+  "hand_id": "mpp_2023_hand_0017",
+  "tournament_id": "mpp_2023",
+  "hand_number": 17,
+  "timestamp": "2024-05-24T00:00:00Z",
+  "duration_seconds": 285,
+  "description": "Massive all-in pot! Vanessa Selbst shoves 71.2bb with two pair against Phil Ivey's king-high on the flop. Phil Ivey calls and Villain wins. Final pot: 130.7bb.",
+  "hero_name": "Vanessa Selbst",
+  "villain_name": "Phil Ivey",
+  "hero_position": "CO",
+  "villain_position": "UTG",
+  "hero_stack_bb": 421.4,
+  "villain_stack_bb": 188.1,
+  "street": "FLOP",
+  "pot_bb": 130.7,
+  "action_sequence": [
+    "raise 3bb",
+    "3bet 9bb",
+    "4bet 24bb",
+    "all-in",
+    "call"
+  ],
+  "hero_action": "raise",
+  "result": "LOSE",
+  "tags": [
+    "HIGH_STAKES",
+    "ALL_IN",
+    "COOLER"
+  ],
+  "hand_type": "ALL_IN",
+  "video_url": "gs://poker-videos-prod/mpp_2023/day10_table3.mp4",
+  "video_start_time": 759.3,
+  "video_end_time": 17390.5,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/mpp_2023_hand_0017.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.89
+}

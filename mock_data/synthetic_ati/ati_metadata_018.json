@@ -1,0 +1,37 @@
+{
+  "hand_id": "mpp_2023_hand_0018",
+  "tournament_id": "mpp_2023",
+  "hand_number": 18,
+  "timestamp": "2024-06-10T00:00:00Z",
+  "duration_seconds": 50,
+  "description": "Garrett Adelstein makes a sick flop call against Justin Bonomo. Justin Bonomo fires two barrels and shoves 45.4bb on the flop. Garrett Adelstein thinks for 213s and calls with just full house. Justin Bonomo was bluffing with flush and Garrett Adelstein scoops a 128.5bb pot.",
+  "hero_name": "Garrett Adelstein",
+  "villain_name": "Justin Bonomo",
+  "hero_position": "CO",
+  "villain_position": "BB",
+  "hero_stack_bb": 32.1,
+  "villain_stack_bb": 47.0,
+  "street": "FLOP",
+  "pot_bb": 128.5,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "fold",
+  "result": "LOSE",
+  "tags": [
+    "TRAP",
+    "SLOW_PLAY",
+    "DEEP_STACK",
+    "TILT",
+    "DONK_BET"
+  ],
+  "hand_type": "SLOW_PLAY",
+  "video_url": "gs://poker-videos-prod/mpp_2023/day6_table19.mp4",
+  "video_start_time": 9607.2,
+  "video_end_time": 15300.4,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/mpp_2023_hand_0018.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.89
+}

@@ -1,0 +1,37 @@
+{
+  "hand_id": "apl_2024_hand_0031",
+  "tournament_id": "apl_2024",
+  "hand_number": 31,
+  "timestamp": "2024-02-26T00:00:00Z",
+  "duration_seconds": 388,
+  "description": "Vanessa Selbst makes an insane river call with trips against Wesley Fei's value bet. After Wesley Fei bets 110.1bb into a 115.3bb pot on the river, Vanessa Selbst tanks for 198s and makes the hero call with trips. Wesley Fei shows flush and Vanessa Selbst wins a massive 225.4bb pot.",
+  "hero_name": "Vanessa Selbst",
+  "villain_name": "Wesley Fei",
+  "hero_position": "BB",
+  "villain_position": "BTN",
+  "hero_stack_bb": 323.7,
+  "villain_stack_bb": 51.9,
+  "street": "RIVER",
+  "pot_bb": 225.4,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "call",
+  "result": "LOSE",
+  "tags": [
+    "CONTINUATION_BET",
+    "SICK_FOLD",
+    "RIVER_DECISION",
+    "SQUEEZE",
+    "HERO_FOLD"
+  ],
+  "hand_type": "HERO_FOLD",
+  "video_url": "gs://poker-videos-prod/apl_2024/day5_table4.mp4",
+  "video_start_time": 6217.7,
+  "video_end_time": 19751.8,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/apl_2024_hand_0031.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.77
+}

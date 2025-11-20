@@ -1,0 +1,37 @@
+{
+  "hand_id": "triton_poker_2024_hand_0014",
+  "tournament_id": "triton_poker_2024",
+  "hand_number": 14,
+  "timestamp": "2024-07-13T00:00:00Z",
+  "duration_seconds": 167,
+  "description": "Doug Polk goes all-in for 283.9bb on the turn against Eric Persson. Eric Persson has two pair and folds. Villain wins and Eric Persson wins a 730.3bb pot.",
+  "hero_name": "Doug Polk",
+  "villain_name": "Eric Persson",
+  "hero_position": "CO",
+  "villain_position": "UTG1",
+  "hero_stack_bb": 436.1,
+  "villain_stack_bb": 289.1,
+  "street": "TURN",
+  "pot_bb": 730.3,
+  "action_sequence": [
+    "raise 3bb",
+    "3bet 9bb",
+    "4bet 24bb",
+    "all-in",
+    "call"
+  ],
+  "hero_action": "fold",
+  "result": "SPLIT",
+  "tags": [
+    "HIGH_STAKES",
+    "BAD_BEAT",
+    "ALL_IN"
+  ],
+  "hand_type": "ALL_IN",
+  "video_url": "gs://poker-videos-prod/triton_poker_2024/day1_table8.mp4",
+  "video_start_time": 3927.2,
+  "video_end_time": 17368.5,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/triton_poker_2024_hand_0014.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.92
+}

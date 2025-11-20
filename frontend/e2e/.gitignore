@@ -1,0 +1,29 @@
+# Playwright test artifacts
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Video and screenshot recordings
+*.webm
+*.mp4
+*.png
+*.jpg
+
+# Trace files
+*.zip
+
+# Screenshots on failure
+screenshots/
+traces/
+videos/
+
+# Coverage reports
+coverage/
+
+# Temporary files
+.DS_Store
+.env.local
+*.swp
+*.swo
+*~

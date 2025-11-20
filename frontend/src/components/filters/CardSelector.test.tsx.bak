@@ -1,0 +1,352 @@
+/**
+ * CardSelector Component Tests
+ *
+ * Tests for accessibility, keyboard navigation, and functionality
+ */
+
+import React from 'react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { CardSelector } from './CardSelector';
+
+describe('CardSelector', () => {
+  const defaultProps = {
+    value: [],
+    onChange: jest.fn(),
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('Rendering', () => {
+    it('renders with default label', () => {
+      render(<CardSelector {...defaultProps} />);
+      expect(screen.getByText('Select Cards')).toBeInTheDocument();
+    });
+
+    it('renders with custom label', () => {
+      render(
+        <CardSelector {...defaultProps} label="Hero Cards" />
+      );
+      expect(screen.getByText('Hero Cards')).toBeInTheDocument();
+    });
+
+    it('displays selected card count', () => {
+      render(
+        <CardSelector {...defaultProps} value={['As', 'Kh']} maxCards={2} />
+      );
+      expect(screen.getByText('(2/2)')).toBeInTheDocument();
+    });
+
+    it('renders all 52 cards in grid', () => {
+      render(<CardSelector {...defaultProps} />);
+      const buttons = screen.getAllByRole('button');
+      // Filter out non-card buttons (clear, search, suit filters)
+      const cardButtons = buttons.filter(
+        (btn) =>
+          btn.getAttribute('aria-label')?.includes('of ') ||
+          btn.getAttribute('aria-label')?.includes('selected'),
+      );
+      expect(cardButtons.length).toBeGreaterThanOrEqual(52);
+    });
+
+    it('renders clear button when cards selected', () => {
+      render(
+        <CardSelector {...defaultProps} value={['As']} />
+      );
+      expect(screen.getByLabelText('Clear all selected cards')).toBeInTheDocument();
+    });
+
+    it('does not render clear button when no cards selected', () => {
+      render(<CardSelector {...defaultProps} />);
+      expect(
+        screen.queryByLabelText('Clear all selected cards'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Accessibility', () => {
+    it('has proper ARIA labels', () => {
+      render(<CardSelector {...defaultProps} />);
+      const label = screen.getByText('Select Cards');
+      expect(label).toHaveAttribute('id', 'card-selector-label');
+    });
+
+    it('has aria-label for selected cards region', () => {
+      render(
+        <CardSelector {...defaultProps} value={['As', 'Kh']} />
+      );
+      const region = screen.getByRole('region', { name: /Selected cards/i });
+      expect(region).toBeInTheDocument();
+    });
+
+    it('card buttons have aria-pressed attribute', () => {
+      render(
+        <CardSelector {...defaultProps} value={['As']} />
+      );
+      const aceSpade = screen.getByLabelText(/A of Spade.*selected/i);
+      expect(aceSpade).toHaveAttribute('aria-pressed', 'true');
+    });
+
+    it('unselected cards have aria-pressed false', () => {
+      render(<CardSelector {...defaultProps} value={[]} />);
+      const aceSpade = screen.getByLabelText(/A of Spade/i);
+      expect(aceSpade).toHaveAttribute('aria-pressed', 'false');
+    });
+
+    it('disabled cards have proper attributes', () => {
+      render(
+        <CardSelector {...defaultProps} value={['As', 'Kh']} maxCards={2} />
+      );
+      const kingSpade = screen.getByLabelText(/K of Spade/i);
+      expect(kingSpade).toBeDisabled();
+    });
+
+    it('has help text for keyboard navigation', () => {
+      render(<CardSelector {...defaultProps} />);
+      expect(
+        screen.getByText(/Use arrow keys to navigate/i),
+      ).toBeInTheDocument();
+    });
+  });
+
+  describe('User Interactions', () => {
+    it('calls onChange when card is clicked', async () => {
+      const onChange = jest.fn();
+      render(<CardSelector {...defaultProps} onChange={onChange} />);
+
+      const aceSpade = screen.getByLabelText(/A of Spade/i);
+      fireEvent.click(aceSpade);
+
+      expect(onChange).toHaveBeenCalledWith(['As']);
+    });
+
+    it('toggles card selection on second click', async () => {
+      const onChange = jest.fn();
+      const { rerender } = render(
+        <CardSelector {...defaultProps} onChange={onChange} />
+      );
+
+      const aceSpade = screen.getByLabelText(/A of Spade/i);
+      fireEvent.click(aceSpade);
+
+      expect(onChange).toHaveBeenCalledWith(['As']);
+
+      // Simulate updated props
+      rerender(
+        <CardSelector {...defaultProps} value={['As']} onChange={onChange} />
+      );
+
+      fireEvent.click(aceSpade);
+      expect(onChange).toHaveBeenCalledWith([]);
+    });
+
+    it('respects maxCards limit', async () => {
+      const onChange = jest.fn();
+      render(
+        <CardSelector
+          {...defaultProps}
+          value={['As', 'Kh']}
+          maxCards={2}
+          onChange={onChange}
+        />
+      );
+
+      const queenDiamond = screen.getByLabelText(/Q of Diamond/i);
+      fireEvent.click(queenDiamond);
+
+      expect(onChange).not.toHaveBeenCalled();
+      expect(queenDiamond).toBeDisabled();
+    });
+
+    it('clears all cards when Clear button clicked', () => {
+      const onChange = jest.fn();
+      render(
+        <CardSelector
+          {...defaultProps}
+          value={['As', 'Kh']}
+          onChange={onChange}
+        />
+      );
+
+      const clearButton = screen.getByLabelText('Clear all selected cards');
+      fireEvent.click(clearButton);
+
+      expect(onChange).toHaveBeenCalledWith([]);
+    });
+
+    it('removes individual cards from selected display', () => {
+      const onChange = jest.fn();
+      render(
+        <CardSelector
+          {...defaultProps}
+          value={['As', 'Kh']}
+          onChange={onChange}
+        />
+      );
+
+      const removeButtons = screen.getAllByLabelText(/Remove/i);
+      fireEvent.click(removeButtons[0]);
+
+      expect(onChange).toHaveBeenCalledWith(['Kh']);
+    });
+
+    it('filters cards by rank', async () => {
+      const user = userEvent.setup();
+      render(<CardSelector {...defaultProps} />);
+
+      const rankInput = screen.getByPlaceholderText(/e.g., A, K, Q/i);
+      await user.type(rankInput, 'A');
+
+      // Should only show Aces
+      const buttons = screen.getAllByRole('button');
+      const aces = buttons.filter((btn) =>
+        btn.getAttribute('aria-label')?.startsWith('A of'),
+      );
+      expect(aces.length).toBeGreaterThan(0);
+    });
+
+    it('filters cards by suit', async () => {
+      const user = userEvent.setup();
+      render(<CardSelector {...defaultProps} />);
+
+      const heartButton = screen.getByLabelText('Filter by Hearts');
+      await user.click(heartButton);
+
+      // Suit filter buttons should toggle
+      expect(heartButton).toHaveAttribute('aria-pressed', 'true');
+    });
+  });
+
+  describe('Keyboard Navigation', () => {
+    it('selects card with Enter key', async () => {
+      const onChange = jest.fn();
+      render(<CardSelector {...defaultProps} onChange={onChange} />);
+
+      const aceSpade = screen.getByLabelText(/A of Spade/i);
+      aceSpade.focus();
+      fireEvent.keyDown(aceSpade, { key: 'Enter', code: 'Enter' });
+
+      expect(onChange).toHaveBeenCalledWith(['As']);
+    });
+
+    it('selects card with Space key', async () => {
+      const onChange = jest.fn();
+      render(<CardSelector {...defaultProps} onChange={onChange} />);
+
+      const aceSpade = screen.getByLabelText(/A of Spade/i);
+      aceSpade.focus();
+      fireEvent.keyDown(aceSpade, { key: ' ', code: 'Space' });
+
+      expect(onChange).toHaveBeenCalledWith(['As']);
+    });
+
+    it('tabs between cards', async () => {
+      const user = userEvent.setup();
+      render(<CardSelector {...defaultProps} />);
+
+      const aceSpade = screen.getByLabelText(/A of Spade/i);
+      aceSpade.focus();
+      expect(aceSpade).toHaveFocus();
+
+      await user.tab();
+      expect(aceSpade).not.toHaveFocus();
+    });
+  });
+
+  describe('Selected Cards Display', () => {
+    it('displays selected cards as chips', () => {
+      render(
+        <CardSelector
+          {...defaultProps}
+          value={['As', 'Kh']}
+        />
+      );
+
+      expect(screen.getByText(/A♠/)).toBeInTheDocument();
+      expect(screen.getByText(/K♥/)).toBeInTheDocument();
+    });
+
+    it('shows correct card symbols for suits', () => {
+      render(
+        <CardSelector
+          {...defaultProps}
+          value={['As', 'Kh', 'Qd', 'Jc']}
+        />
+      );
+
+      // Check each suit symbol appears
+      expect(screen.getByText(/♠/)).toBeInTheDocument(); // Spade
+      expect(screen.getByText(/♥/)).toBeInTheDocument(); // Heart
+      expect(screen.getByText(/♦/)).toBeInTheDocument(); // Diamond
+      expect(screen.getByText(/♣/)).toBeInTheDocument(); // Club
+    });
+
+    it('has region role for selected cards', () => {
+      render(
+        <CardSelector
+          {...defaultProps}
+          value={['As', 'Kh']}
+        />
+      );
+
+      const region = screen.getByRole('region', { name: /Selected cards/i });
+      expect(region).toBeInTheDocument();
+      expect(region).toContainElement(screen.getByText(/A♠/));
+    });
+  });
+
+  describe('Max Cards', () => {
+    it('defaults to maxCards of 2', () => {
+      render(
+        <CardSelector
+          {...defaultProps}
+          value={['As', 'Kh']}
+        />
+      );
+
+      expect(screen.getByText('(2/2)')).toBeInTheDocument();
+    });
+
+    it('respects custom maxCards', () => {
+      render(
+        <CardSelector
+          {...defaultProps}
+          value={['As', 'Kh', 'Qd']}
+          maxCards={5}
+        />
+      );
+
+      expect(screen.getByText('(3/5)')).toBeInTheDocument();
+    });
+  });
+
+  describe('Type Styling', () => {
+    it('applies hero type styling', () => {
+      const { container } = render(
+        <CardSelector
+          {...defaultProps}
+          value={['As']}
+          type="hero"
+        />
+      );
+
+      const selectedArea = screen.getByRole('region', { name: /Selected cards/i });
+      expect(selectedArea).toHaveClass('border-blue-500');
+    });
+
+    it('applies villain type styling', () => {
+      const { container } = render(
+        <CardSelector
+          {...defaultProps}
+          value={['As']}
+          type="villain"
+        />
+      );
+
+      const selectedArea = screen.getByRole('region', { name: /Selected cards/i });
+      expect(selectedArea).toHaveClass('border-red-500');
+    });
+  });
+});

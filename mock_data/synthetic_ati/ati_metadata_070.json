@@ -1,0 +1,37 @@
+{
+  "hand_id": "mpp_2024_hand_0070",
+  "tournament_id": "mpp_2024",
+  "hand_number": 70,
+  "timestamp": "2024-02-10T00:00:00Z",
+  "duration_seconds": 225,
+  "description": "Maria Ho makes an insane flop call with flush against Nik Airball's value bet. After Nik Airball bets 21.0bb into a 39.4bb pot on the flop, Maria Ho tanks for 293s and makes the hero call with flush. Nik Airball shows bottom pair and Maria Ho wins a massive 60.4bb pot.",
+  "hero_name": "Maria Ho",
+  "villain_name": "Nik Airball",
+  "hero_position": "MP",
+  "villain_position": "BB",
+  "hero_stack_bb": 355.4,
+  "villain_stack_bb": 327.2,
+  "street": "FLOP",
+  "pot_bb": 60.4,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "all-in",
+  "result": "SPLIT",
+  "tags": [
+    "BAD_BEAT",
+    "TRAP",
+    "SHORT_STACK",
+    "COOLER",
+    "SLOW_PLAY"
+  ],
+  "hand_type": "SLOW_PLAY",
+  "video_url": "gs://poker-videos-prod/mpp_2024/day9_table10.mp4",
+  "video_start_time": 6601.7,
+  "video_end_time": 18439.6,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/mpp_2024_hand_0070.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.97
+}

@@ -1,0 +1,184 @@
+'use client';
+
+import React, { useCallback } from 'react';
+import { cn } from '@/lib/utils';
+
+type StreetType = 'PREFLOP' | 'FLOP' | 'TURN' | 'RIVER';
+
+interface StreetFilterProps {
+  value?: StreetType;
+  onChange: (street: StreetType | undefined) => void;
+  label?: string;
+}
+
+interface StreetOption {
+  code: StreetType;
+  label: string;
+  icon: string;
+  description: string;
+  color: string;
+  bgColor: string;
+  borderColor: string;
+}
+
+const STREETS: StreetOption[] = [
+  {
+    code: 'PREFLOP',
+    label: 'Preflop',
+    icon: '🎴',
+    description: 'Before community cards are shown',
+    color: 'text-purple-600',
+    bgColor: 'bg-purple-50 hover:bg-purple-100',
+    borderColor: 'border-purple-300',
+  },
+  {
+    code: 'FLOP',
+    label: 'Flop',
+    icon: '🌊',
+    description: 'First three community cards',
+    color: 'text-blue-600',
+    bgColor: 'bg-blue-50 hover:bg-blue-100',
+    borderColor: 'border-blue-300',
+  },
+  {
+    code: 'TURN',
+    label: 'Turn',
+    icon: '🔄',
+    description: 'Fourth community card',
+    color: 'text-yellow-600',
+    bgColor: 'bg-yellow-50 hover:bg-yellow-100',
+    borderColor: 'border-yellow-300',
+  },
+  {
+    code: 'RIVER',
+    label: 'River',
+    icon: '🌊',
+    description: 'Final community card',
+    color: 'text-red-600',
+    bgColor: 'bg-red-50 hover:bg-red-100',
+    borderColor: 'border-red-300',
+  },
+];
+
+export function StreetFilter({
+  value,
+  onChange,
+  label = 'Street',
+}: StreetFilterProps) {
+  const handleSelect = useCallback(
+    (street: StreetType) => {
+      onChange(value === street ? undefined : street);
+    },
+    [value, onChange],
+  );
+
+  const handleClear = useCallback(() => {
+    onChange(undefined);
+  }, [onChange]);
+
+  return (
+    <div className="space-y-4">
+      {/* Label */}
+      <label className="block text-sm font-semibold text-gray-900" id="street-filter-label">
+        {label}
+        {value && (
+          <span className="ml-2 inline-block px-2.5 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+            {value}
+          </span>
+        )}
+      </label>
+
+      {/* Street Buttons - Segmented Control Style */}
+      <div className="inline-flex gap-2 p-1 bg-gray-100 rounded-lg" role="radiogroup" aria-labelledby="street-filter-label">
+        {STREETS.map((street) => {
+          const isSelected = value === street.code;
+          return (
+            <button
+              key={street.code}
+              onClick={() => handleSelect(street.code)}
+              role="radio"
+              aria-checked={isSelected}
+              className={cn(
+                'flex flex-col items-center gap-1 px-4 py-3 rounded-md font-semibold text-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 min-w-24',
+                isSelected
+                  ? 'bg-white text-gray-900 shadow-md'
+                  : 'text-gray-600 hover:text-gray-900',
+              )}
+              title={street.description}
+              aria-label={`${street.label}${isSelected ? ', selected' : ''}`}
+            >
+              <span className="text-xl">{street.icon}</span>
+              <span className="text-xs">{street.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Street Cards - Alternative Layout (Hidden by default, shown on hover) */}
+      <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
+        {STREETS.map((street) => {
+          const isSelected = value === street.code;
+          return (
+            <button
+              key={street.code}
+              onClick={() => handleSelect(street.code)}
+              className={cn(
+                'flex flex-col items-center gap-3 p-4 rounded-lg border-2 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500',
+                isSelected
+                  ? `bg-blue-500 text-white border-blue-600 shadow-lg`
+                  : `${street.bgColor} ${street.color} border-${street.borderColor.split('-')[1]}-200 hover:shadow-md`,
+              )}
+              aria-pressed={isSelected}
+              aria-label={`${street.label}${isSelected ? ', selected' : ''}`}
+              title={street.description}
+            >
+              <span className="text-3xl">{street.icon}</span>
+              <div className="text-center">
+                <div className="font-semibold">{street.label}</div>
+                <div className={cn(
+                  'text-xs',
+                  isSelected ? 'text-blue-100' : 'text-gray-600',
+                )}>
+                  {street.description}
+                </div>
+              </div>
+              {isSelected && (
+                <div className="mt-2 w-6 h-6 rounded-full bg-white flex items-center justify-center">
+                  <span className="text-blue-500">✓</span>
+                </div>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Selected Display */}
+      {value && (
+        <div className="p-4 bg-blue-50 rounded-lg border-2 border-blue-300">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold text-gray-900">
+                {STREETS.find((s) => s.code === value)?.label}
+              </p>
+              <p className="text-xs text-gray-600 mt-1">
+                {STREETS.find((s) => s.code === value)?.description}
+              </p>
+            </div>
+            <button
+              onClick={handleClear}
+              className="px-3 py-1 text-sm font-medium text-blue-600 hover:bg-blue-100 rounded transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-label="Clear street selection"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Help Text */}
+      <p className="text-xs text-gray-500">
+        Select a street to filter by • Click again to deselect • Each street represents a betting round
+      </p>
+    </div>
+  );
+}

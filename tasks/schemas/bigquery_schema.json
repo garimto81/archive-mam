@@ -1,0 +1,170 @@
+[
+  {
+    "name": "hand_id",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Unique identifier for the hand"
+  },
+  {
+    "name": "tournament_id",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Tournament identifier"
+  },
+  {
+    "name": "hand_number",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Hand number within the tournament"
+  },
+  {
+    "name": "timestamp",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED",
+    "description": "When the hand was played (ISO 8601 format)"
+  },
+  {
+    "name": "duration_seconds",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Hand duration in seconds"
+  },
+  {
+    "name": "description",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "English description of the hand action (used for search)"
+  },
+  {
+    "name": "hero_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Name of the hero (main player in focus)"
+  },
+  {
+    "name": "villain_name",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Name of the villain (opponent)"
+  },
+  {
+    "name": "hero_position",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Hero's position at the table (BTN, SB, BB, UTG, MP, CO)"
+  },
+  {
+    "name": "villain_position",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Villain's position at the table"
+  },
+  {
+    "name": "hero_stack_bb",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "Hero's stack size in big blinds"
+  },
+  {
+    "name": "villain_stack_bb",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "Villain's stack size in big blinds"
+  },
+  {
+    "name": "street",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Street where the key action occurred (PREFLOP, FLOP, TURN, RIVER)"
+  },
+  {
+    "name": "pot_bb",
+    "type": "FLOAT",
+    "mode": "REQUIRED",
+    "description": "Final pot size in big blinds"
+  },
+  {
+    "name": "action_sequence",
+    "type": "STRING",
+    "mode": "REPEATED",
+    "description": "Sequence of actions in the hand"
+  },
+  {
+    "name": "hero_action",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Hero's key action in the hand (fold, call, raise, all-in, check)"
+  },
+  {
+    "name": "result",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Hand result from hero's perspective (WIN, LOSE, SPLIT)"
+  },
+  {
+    "name": "tags",
+    "type": "STRING",
+    "mode": "REPEATED",
+    "description": "Searchable tags for categorization"
+  },
+  {
+    "name": "hand_type",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Primary hand classification (BLUFF, VALUE_BET, HERO_CALL, etc.)"
+  },
+  {
+    "name": "video_url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "GCS URL to the video file (gs://bucket/path)"
+  },
+  {
+    "name": "video_start_time",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "Hand start time in video (seconds)"
+  },
+  {
+    "name": "video_end_time",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "Hand end time in video (seconds)"
+  },
+  {
+    "name": "thumbnail_url",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Optional thumbnail image URL"
+  },
+  {
+    "name": "ati_version",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "ATI system version that generated this metadata"
+  },
+  {
+    "name": "ati_confidence",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "ATI analysis confidence score (0-1)"
+  },
+  {
+    "name": "created_date",
+    "type": "DATE",
+    "mode": "REQUIRED",
+    "description": "Partition key - date when the hand was indexed (YYYY-MM-DD)"
+  },
+  {
+    "name": "created_at",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED",
+    "description": "Timestamp when the hand was indexed"
+  },
+  {
+    "name": "gcs_source_path",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Original GCS path of the source JSON file"
+  }
+]

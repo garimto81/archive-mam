@@ -1,0 +1,36 @@
+{
+  "hand_id": "apl_2024_hand_0008",
+  "tournament_id": "apl_2024",
+  "hand_number": 8,
+  "timestamp": "2024-02-22T00:00:00Z",
+  "duration_seconds": 173,
+  "description": "Phil Ivey makes a sick flop call against Stephen Chidwick. Stephen Chidwick fires two barrels and shoves 500.4bb on the flop. Phil Ivey thinks for 249s and calls with just ace-high. Stephen Chidwick was bluffing with queen-high and Phil Ivey scoops a 775.3bb pot.",
+  "hero_name": "Phil Ivey",
+  "villain_name": "Stephen Chidwick",
+  "hero_position": "MP",
+  "villain_position": "UTG",
+  "hero_stack_bb": 328.9,
+  "villain_stack_bb": 334.9,
+  "street": "FLOP",
+  "pot_bb": 775.3,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "all-in",
+  "result": "WIN",
+  "tags": [
+    "CHECK_RAISE",
+    "SICK_FOLD",
+    "RIVER_DECISION",
+    "HERO_FOLD"
+  ],
+  "hand_type": "HERO_FOLD",
+  "video_url": "gs://poker-videos-prod/apl_2024/day5_table8.mp4",
+  "video_start_time": 5213.8,
+  "video_end_time": 13560.6,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/apl_2024_hand_0008.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.91
+}

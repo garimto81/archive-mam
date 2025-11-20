@@ -1,0 +1,40 @@
+{
+  "hand_id": "wsop_2023_hand_0032",
+  "tournament_id": "wsop_2023",
+  "hand_number": 32,
+  "timestamp": "2024-08-07T00:00:00Z",
+  "duration_seconds": 424,
+  "description": "Massive all-in pot! Vanessa Kade shoves 42.0bb with flush against Justin Bonomo's straight on the turn. Justin Bonomo folds and Villain wins. Final pot: 78.8bb.",
+  "hero_name": "Vanessa Kade",
+  "villain_name": "Justin Bonomo",
+  "hero_position": "MP",
+  "villain_position": "CO",
+  "hero_stack_bb": 391.5,
+  "villain_stack_bb": 491.2,
+  "street": "TURN",
+  "pot_bb": 78.8,
+  "action_sequence": [
+    "limp",
+    "raise 5bb",
+    "call",
+    "check",
+    "bet 0.5pot",
+    "raise 2x",
+    "all-in",
+    "call"
+  ],
+  "hero_action": "fold",
+  "result": "SPLIT",
+  "tags": [
+    "HIGH_STAKES",
+    "TILT",
+    "ALL_IN"
+  ],
+  "hand_type": "ALL_IN",
+  "video_url": "gs://poker-videos-prod/wsop_2023/day6_table7.mp4",
+  "video_start_time": 3834.0,
+  "video_end_time": 12688.5,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/wsop_2023_hand_0032.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.96
+}

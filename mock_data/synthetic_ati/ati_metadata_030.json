@@ -1,0 +1,37 @@
+{
+  "hand_id": "hustler_casino_live_2024_hand_0030",
+  "tournament_id": "hustler_casino_live_2024",
+  "hand_number": 30,
+  "timestamp": "2024-11-10T00:00:00Z",
+  "duration_seconds": 96,
+  "description": "Bryn Kenney makes an insane river call with top pair against Vanessa Kade's value bet. After Vanessa Kade bets 150.9bb into a 204.2bb pot on the river, Bryn Kenney tanks for 154s and makes the hero call with top pair. Vanessa Kade shows trips and Bryn Kenney wins a massive 355.1bb pot.",
+  "hero_name": "Bryn Kenney",
+  "villain_name": "Vanessa Kade",
+  "hero_position": "MP",
+  "villain_position": "BTN",
+  "hero_stack_bb": 88.4,
+  "villain_stack_bb": 80.0,
+  "street": "RIVER",
+  "pot_bb": 355.1,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "call",
+  "result": "LOSE",
+  "tags": [
+    "TRAP",
+    "COOLER",
+    "SLOW_PLAY",
+    "3BET",
+    "CHECK_RAISE"
+  ],
+  "hand_type": "SLOW_PLAY",
+  "video_url": "gs://poker-videos-prod/hustler_casino_live_2024/day3_table15.mp4",
+  "video_start_time": 45.5,
+  "video_end_time": 16930.9,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/hustler_casino_live_2024_hand_0030.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.92
+}

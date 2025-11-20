@@ -1,0 +1,37 @@
+{
+  "hand_id": "triton_poker_2024_hand_0060",
+  "tournament_id": "triton_poker_2024",
+  "hand_number": 60,
+  "timestamp": "2024-06-25T00:00:00Z",
+  "duration_seconds": 198,
+  "description": "David Peters goes all-in for 101.8bb on the flop against Stephen Chidwick. Stephen Chidwick has king-high and folds. Hero wins and David Peters wins a 234.2bb pot.",
+  "hero_name": "David Peters",
+  "villain_name": "Stephen Chidwick",
+  "hero_position": "SB",
+  "villain_position": "UTG",
+  "hero_stack_bb": 230.7,
+  "villain_stack_bb": 394.3,
+  "street": "FLOP",
+  "pot_bb": 234.2,
+  "action_sequence": [
+    "raise 3bb",
+    "3bet 9bb",
+    "4bet 24bb",
+    "all-in",
+    "call"
+  ],
+  "hero_action": "all-in",
+  "result": "WIN",
+  "tags": [
+    "HIGH_STAKES",
+    "TILT",
+    "ALL_IN"
+  ],
+  "hand_type": "ALL_IN",
+  "video_url": "gs://poker-videos-prod/triton_poker_2024/day3_table20.mp4",
+  "video_start_time": 904.6,
+  "video_end_time": 16974.0,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/triton_poker_2024_hand_0060.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.76
+}

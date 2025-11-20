@@ -1,0 +1,35 @@
+{
+  "hand_id": "mpp_2024_hand_0025",
+  "tournament_id": "mpp_2024",
+  "hand_number": 25,
+  "timestamp": "2024-06-20T00:00:00Z",
+  "duration_seconds": 451,
+  "description": "Jason Koon makes an insane turn call with two pair against Alex Foxen's value bet. After Alex Foxen bets 211.2bb into a 232.1bb pot on the turn, Jason Koon tanks for 278s and makes the hero call with two pair. Alex Foxen shows two pair and Jason Koon wins a massive 443.3bb pot.",
+  "hero_name": "Jason Koon",
+  "villain_name": "Alex Foxen",
+  "hero_position": "UTG1",
+  "villain_position": "UTG",
+  "hero_stack_bb": 156.6,
+  "villain_stack_bb": 294.1,
+  "street": "TURN",
+  "pot_bb": 443.3,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "fold",
+  "result": "WIN",
+  "tags": [
+    "4BET",
+    "TRAP",
+    "SLOW_PLAY"
+  ],
+  "hand_type": "SLOW_PLAY",
+  "video_url": "gs://poker-videos-prod/mpp_2024/day9_table4.mp4",
+  "video_start_time": 3328.2,
+  "video_end_time": 10499.5,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/mpp_2024_hand_0025.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.98
+}

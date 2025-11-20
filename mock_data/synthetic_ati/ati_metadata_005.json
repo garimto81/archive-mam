@@ -1,0 +1,37 @@
+{
+  "hand_id": "mpp_2023_hand_0005",
+  "tournament_id": "mpp_2023",
+  "hand_number": 5,
+  "timestamp": "2024-04-08T00:00:00Z",
+  "duration_seconds": 381,
+  "description": "Bryn Kenney makes a sick preflop call against Wesley Fei. Wesley Fei fires two barrels and shoves 470.4bb on the preflop. Bryn Kenney thinks for 229s and calls with just trips. Wesley Fei was bluffing with trips and Bryn Kenney scoops a 676.4bb pot.",
+  "hero_name": "Bryn Kenney",
+  "villain_name": "Wesley Fei",
+  "hero_position": "UTG",
+  "villain_position": "BTN",
+  "hero_stack_bb": 246.8,
+  "villain_stack_bb": 201.1,
+  "street": "PREFLOP",
+  "pot_bb": 676.4,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "raise",
+  "result": "WIN",
+  "tags": [
+    "BAD_BEAT",
+    "COOLER",
+    "SICK_FOLD",
+    "RIVER_DECISION",
+    "HERO_FOLD"
+  ],
+  "hand_type": "HERO_FOLD",
+  "video_url": "gs://poker-videos-prod/mpp_2023/day2_table10.mp4",
+  "video_start_time": 7687.1,
+  "video_end_time": 19060.8,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/mpp_2023_hand_0005.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.96
+}

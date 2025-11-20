@@ -1,0 +1,36 @@
+{
+  "hand_id": "mpp_2023_hand_0095",
+  "tournament_id": "mpp_2023",
+  "hand_number": 95,
+  "timestamp": "2024-10-07T00:00:00Z",
+  "duration_seconds": 480,
+  "description": "Vanessa Kade makes an insane preflop call with two pair against Daniel Negreanu's value bet. After Daniel Negreanu bets 30.3bb into a 14.7bb pot on the preflop, Vanessa Kade tanks for 294s and makes the hero call with two pair. Daniel Negreanu shows ace-high and Vanessa Kade wins a massive 45.0bb pot.",
+  "hero_name": "Vanessa Kade",
+  "villain_name": "Daniel Negreanu",
+  "hero_position": "MP",
+  "villain_position": "CO",
+  "hero_stack_bb": 128.1,
+  "villain_stack_bb": 85.1,
+  "street": "PREFLOP",
+  "pot_bb": 45.0,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "call",
+  "result": "SPLIT",
+  "tags": [
+    "CONTINUATION_BET",
+    "TRAP",
+    "SLOW_PLAY",
+    "DEEP_STACK"
+  ],
+  "hand_type": "SLOW_PLAY",
+  "video_url": "gs://poker-videos-prod/mpp_2023/day5_table16.mp4",
+  "video_start_time": 6048.3,
+  "video_end_time": 16990.1,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/mpp_2023_hand_0095.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.92
+}

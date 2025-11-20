@@ -1,0 +1,40 @@
+{
+  "hand_id": "wsop_2024_hand_0042",
+  "tournament_id": "wsop_2024",
+  "hand_number": 42,
+  "timestamp": "2024-10-17T00:00:00Z",
+  "duration_seconds": 131,
+  "description": "Bryn Kenney goes all-in for 77.7bb on the river against Phil Hellmuth. Phil Hellmuth has king-high and calls. Villain wins and Phil Hellmuth wins a 152.3bb pot.",
+  "hero_name": "Bryn Kenney",
+  "villain_name": "Phil Hellmuth",
+  "hero_position": "MP",
+  "villain_position": "BTN",
+  "hero_stack_bb": 192.5,
+  "villain_stack_bb": 205.0,
+  "street": "RIVER",
+  "pot_bb": 152.3,
+  "action_sequence": [
+    "limp",
+    "raise 5bb",
+    "call",
+    "check",
+    "bet 0.5pot",
+    "raise 2x",
+    "all-in",
+    "call"
+  ],
+  "hero_action": "all-in",
+  "result": "LOSE",
+  "tags": [
+    "HIGH_STAKES",
+    "TILT",
+    "ALL_IN"
+  ],
+  "hand_type": "ALL_IN",
+  "video_url": "gs://poker-videos-prod/wsop_2024/day8_table10.mp4",
+  "video_start_time": 8266.1,
+  "video_end_time": 11708.5,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/wsop_2024_hand_0042.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.96
+}

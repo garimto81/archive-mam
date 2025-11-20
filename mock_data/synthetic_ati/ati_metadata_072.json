@@ -1,0 +1,36 @@
+{
+  "hand_id": "hustler_casino_live_2024_hand_0072",
+  "tournament_id": "hustler_casino_live_2024",
+  "hand_number": 72,
+  "timestamp": "2024-11-07T00:00:00Z",
+  "duration_seconds": 211,
+  "description": "Justin Bonomo makes an insane flop call with flush against Nik Airball's value bet. After Nik Airball bets 37.1bb into a 61.1bb pot on the flop, Justin Bonomo tanks for 182s and makes the hero call with flush. Nik Airball shows straight and Justin Bonomo wins a massive 98.2bb pot.",
+  "hero_name": "Justin Bonomo",
+  "villain_name": "Nik Airball",
+  "hero_position": "CO",
+  "villain_position": "UTG",
+  "hero_stack_bb": 35.7,
+  "villain_stack_bb": 399.4,
+  "street": "FLOP",
+  "pot_bb": 98.2,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "raise",
+  "result": "SPLIT",
+  "tags": [
+    "4BET",
+    "RIVER_DECISION",
+    "CHECK_RAISE",
+    "VALUE_BET"
+  ],
+  "hand_type": "VALUE_BET",
+  "video_url": "gs://poker-videos-prod/hustler_casino_live_2024/day3_table8.mp4",
+  "video_start_time": 1834.7,
+  "video_end_time": 11149.6,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/hustler_casino_live_2024_hand_0072.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.93
+}

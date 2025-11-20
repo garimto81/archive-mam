@@ -1,0 +1,37 @@
+{
+  "hand_id": "hustler_casino_live_2024_hand_0077",
+  "tournament_id": "hustler_casino_live_2024",
+  "hand_number": 77,
+  "timestamp": "2024-10-03T00:00:00Z",
+  "duration_seconds": 154,
+  "description": "Alex Foxen makes a sick flop call against Phil Ivey. Phil Ivey fires two barrels and shoves 384.0bb on the flop. Alex Foxen thinks for 286s and calls with just flush. Phil Ivey was bluffing with flush and Alex Foxen scoops a 618.3bb pot.",
+  "hero_name": "Alex Foxen",
+  "villain_name": "Phil Ivey",
+  "hero_position": "BB",
+  "villain_position": "UTG",
+  "hero_stack_bb": 219.5,
+  "villain_stack_bb": 140.7,
+  "street": "FLOP",
+  "pot_bb": 618.3,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "all-in",
+  "result": "LOSE",
+  "tags": [
+    "TRAP",
+    "COOLER",
+    "SLOW_PLAY",
+    "3BET",
+    "CHECK_RAISE"
+  ],
+  "hand_type": "SLOW_PLAY",
+  "video_url": "gs://poker-videos-prod/hustler_casino_live_2024/day3_table1.mp4",
+  "video_start_time": 3357.3,
+  "video_end_time": 19091.7,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/hustler_casino_live_2024_hand_0077.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.96
+}

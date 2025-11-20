@@ -1,0 +1,36 @@
+{
+  "hand_id": "hustler_casino_live_2024_hand_0036",
+  "tournament_id": "hustler_casino_live_2024",
+  "hand_number": 36,
+  "timestamp": "2024-03-27T00:00:00Z",
+  "duration_seconds": 318,
+  "description": "Andrew Robl makes a sick flop call against Daniel Negreanu. Daniel Negreanu fires two barrels and shoves 283.0bb on the flop. Andrew Robl thinks for 283s and calls with just trips. Daniel Negreanu was bluffing with trips and Andrew Robl scoops a 453.8bb pot.",
+  "hero_name": "Andrew Robl",
+  "villain_name": "Daniel Negreanu",
+  "hero_position": "BB",
+  "villain_position": "CO",
+  "hero_stack_bb": 59.8,
+  "villain_stack_bb": 132.7,
+  "street": "FLOP",
+  "pot_bb": 453.8,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "call",
+  "result": "SPLIT",
+  "tags": [
+    "DONK_BET",
+    "RIVER_DECISION",
+    "VALUE_BET",
+    "COOLER"
+  ],
+  "hand_type": "VALUE_BET",
+  "video_url": "gs://poker-videos-prod/hustler_casino_live_2024/day9_table3.mp4",
+  "video_start_time": 703.0,
+  "video_end_time": 12548.1,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/hustler_casino_live_2024_hand_0036.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.79
+}

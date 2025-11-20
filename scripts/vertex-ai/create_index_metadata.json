@@ -1,0 +1,53 @@
+{
+  "displayName": "poker-hands-standard-index",
+  "description": "Vertex AI Vector Search index for Open Hand History specification - semantic search across hands, players, actions, and game metadata",
+  "metadata": {
+    "contentsDeltaUri": "gs://ati-metadata-prod/embeddings_standard/",
+    "config": {
+      "dimensions": 768,
+      "approximateNeighborsCount": 20,
+      "distanceMeasureType": "DOT_PRODUCT_DISTANCE",
+      "featureNormType": "UNIT_L2_NORM",
+      "algorithmConfig": {
+        "treeAhConfig": {
+          "leafNodeEmbeddingCount": 1000,
+          "leafNodesToSearchPercent": 10,
+          "fractionLeafNodesToSearch": 0.1
+        }
+      },
+      "shardSize": "SHARD_SIZE_SMALL"
+    }
+  },
+  "indexUpdateMethod": "BATCH_UPDATE",
+  "notes": {
+    "embedding_model": "text-embedding-004 (768 dimensions)",
+    "distance_metric": "DOT_PRODUCT_DISTANCE for cosine similarity",
+    "algorithm": "Tree-AH (optimized for 768D embeddings)",
+    "shard_size": "SMALL (suitable for <100k poker hands)",
+    "update_method": "BATCH_UPDATE (optimal for bulk initial load, then incremental)",
+    "data_source": "BigQuery hands_standard table + derived metadata",
+    "search_fields": [
+      "game_number",
+      "player_names",
+      "player_actions",
+      "board_cards",
+      "game_type",
+      "table_name",
+      "tournament_info",
+      "pot_size",
+      "street_actions",
+      "round_results"
+    ],
+    "use_case": "Hybrid search (BM25 keyword + Vector semantic + RRF ranking)",
+    "cost_optimization": {
+      "shard_size_small": "Lower cost for development/PoC (<100k vectors)",
+      "tree_ah_algorithm": "Good balance between latency and accuracy",
+      "batch_update": "Reduces incremental update costs"
+    },
+    "scaling_plan": {
+      "100k_hands": "SHARD_SIZE_SMALL (current)",
+      "500k_hands": "SHARD_SIZE_MEDIUM",
+      "1M+_hands": "SHARD_SIZE_LARGE + consider streaming updates"
+    }
+  }
+}

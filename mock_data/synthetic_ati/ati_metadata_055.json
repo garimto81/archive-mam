@@ -1,0 +1,36 @@
+{
+  "hand_id": "triton_poker_2024_hand_0055",
+  "tournament_id": "triton_poker_2024",
+  "hand_number": 55,
+  "timestamp": "2024-02-13T00:00:00Z",
+  "duration_seconds": 204,
+  "description": "Andrew Robl makes a sick river call against Fedor Holz. Fedor Holz fires two barrels and shoves 38.0bb on the river. Andrew Robl thinks for 163s and calls with just full house. Fedor Holz was bluffing with top pair and Andrew Robl scoops a 75.7bb pot.",
+  "hero_name": "Andrew Robl",
+  "villain_name": "Fedor Holz",
+  "hero_position": "SB",
+  "villain_position": "CO",
+  "hero_stack_bb": 440.7,
+  "villain_stack_bb": 90.8,
+  "street": "RIVER",
+  "pot_bb": 75.7,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "raise",
+  "result": "WIN",
+  "tags": [
+    "4BET",
+    "DONK_BET",
+    "RIVER_DECISION",
+    "VALUE_BET"
+  ],
+  "hand_type": "VALUE_BET",
+  "video_url": "gs://poker-videos-prod/triton_poker_2024/day7_table14.mp4",
+  "video_start_time": 8416.9,
+  "video_end_time": 14713.1,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/triton_poker_2024_hand_0055.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.97
+}

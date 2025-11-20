@@ -1,0 +1,35 @@
+{
+  "hand_id": "apl_2024_hand_0061",
+  "tournament_id": "apl_2024",
+  "hand_number": 61,
+  "timestamp": "2024-02-03T00:00:00Z",
+  "duration_seconds": 554,
+  "description": "Justin Bonomo makes a sick flop call against Phil Hellmuth. Phil Hellmuth fires two barrels and shoves 89.0bb on the flop. Justin Bonomo thinks for 187s and calls with just king-high. Phil Hellmuth was bluffing with full house and Justin Bonomo scoops a 176.0bb pot.",
+  "hero_name": "Justin Bonomo",
+  "villain_name": "Phil Hellmuth",
+  "hero_position": "UTG1",
+  "villain_position": "BTN",
+  "hero_stack_bb": 370.0,
+  "villain_stack_bb": 433.0,
+  "street": "FLOP",
+  "pot_bb": 176.0,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "all-in",
+  "result": "SPLIT",
+  "tags": [
+    "RIVER_DECISION",
+    "CHECK_RAISE",
+    "VALUE_BET"
+  ],
+  "hand_type": "VALUE_BET",
+  "video_url": "gs://poker-videos-prod/apl_2024/day10_table12.mp4",
+  "video_start_time": 1729.6,
+  "video_end_time": 13217.8,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/apl_2024_hand_0061.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.75
+}

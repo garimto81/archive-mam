@@ -1,0 +1,35 @@
+{
+  "hand_id": "wsop_2023_hand_0035",
+  "tournament_id": "wsop_2023",
+  "hand_number": 35,
+  "timestamp": "2024-01-11T00:00:00Z",
+  "duration_seconds": 331,
+  "description": "Andrew Robl makes an insane flop call with bottom pair against Liv Boeree's value bet. After Liv Boeree bets 230.3bb into a 468.5bb pot on the flop, Andrew Robl tanks for 67s and makes the hero call with bottom pair. Liv Boeree shows bottom pair and Andrew Robl wins a massive 698.8bb pot.",
+  "hero_name": "Andrew Robl",
+  "villain_name": "Liv Boeree",
+  "hero_position": "SB",
+  "villain_position": "BTN",
+  "hero_stack_bb": 136.0,
+  "villain_stack_bb": 112.1,
+  "street": "FLOP",
+  "pot_bb": 698.8,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "call",
+  "result": "WIN",
+  "tags": [
+    "3BET",
+    "RIVER_DECISION",
+    "VALUE_BET"
+  ],
+  "hand_type": "VALUE_BET",
+  "video_url": "gs://poker-videos-prod/wsop_2023/day1_table10.mp4",
+  "video_start_time": 8928.6,
+  "video_end_time": 11764.6,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/wsop_2023_hand_0035.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.78
+}

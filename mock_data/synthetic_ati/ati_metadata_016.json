@@ -1,0 +1,40 @@
+{
+  "hand_id": "mpp_2023_hand_0016",
+  "tournament_id": "mpp_2023",
+  "hand_number": 16,
+  "timestamp": "2024-12-24T00:00:00Z",
+  "duration_seconds": 590,
+  "description": "Stephen Chidwick goes all-in for 199.7bb on the river against Kristen Bicknell. Kristen Bicknell has top pair and calls. Villain wins and Kristen Bicknell wins a 417.1bb pot.",
+  "hero_name": "Stephen Chidwick",
+  "villain_name": "Kristen Bicknell",
+  "hero_position": "SB",
+  "villain_position": "BB",
+  "hero_stack_bb": 329.7,
+  "villain_stack_bb": 297.5,
+  "street": "RIVER",
+  "pot_bb": 417.1,
+  "action_sequence": [
+    "limp",
+    "raise 5bb",
+    "call",
+    "check",
+    "bet 0.5pot",
+    "raise 2x",
+    "all-in",
+    "call"
+  ],
+  "hero_action": "raise",
+  "result": "LOSE",
+  "tags": [
+    "HIGH_STAKES",
+    "3BET",
+    "ALL_IN"
+  ],
+  "hand_type": "ALL_IN",
+  "video_url": "gs://poker-videos-prod/mpp_2023/day9_table17.mp4",
+  "video_start_time": 8344.0,
+  "video_end_time": 16984.2,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/mpp_2023_hand_0016.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.92
+}

@@ -1,0 +1,42 @@
+{
+  "hand_id": "wsop_2023_hand_0004",
+  "tournament_id": "wsop_2023",
+  "hand_number": 4,
+  "timestamp": "2024-01-22T00:00:00Z",
+  "duration_seconds": 362,
+  "description": "Massive all-in pot! Phil Ivey shoves 98.7bb with flush against Phil Hellmuth's two pair on the river. Phil Hellmuth calls and Villain wins. Final pot: 271.0bb.",
+  "hero_name": "Phil Ivey",
+  "villain_name": "Phil Hellmuth",
+  "hero_position": "BB",
+  "villain_position": "BTN",
+  "hero_stack_bb": 306.4,
+  "villain_stack_bb": 57.4,
+  "street": "RIVER",
+  "pot_bb": 271.0,
+  "action_sequence": [
+    "limp",
+    "raise 5bb",
+    "call",
+    "check",
+    "bet 0.5pot",
+    "raise 2x",
+    "all-in",
+    "call"
+  ],
+  "hero_action": "all-in",
+  "result": "LOSE",
+  "tags": [
+    "HIGH_STAKES",
+    "ALL_IN",
+    "SHORT_STACK",
+    "TILT",
+    "4BET"
+  ],
+  "hand_type": "ALL_IN",
+  "video_url": "gs://poker-videos-prod/wsop_2023/day6_table11.mp4",
+  "video_start_time": 1566.6,
+  "video_end_time": 16200.0,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/wsop_2023_hand_0004.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.89
+}

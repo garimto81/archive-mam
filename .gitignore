@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Logs
+*.log
+
+# Database
+*.db
+*.sqlite
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test coverage
+.coverage
+htmlcov/
+
+# Build
+dist/
+build/
+*.egg-info/
+
+# Kafka data
+/data/kafka/
+/data/zookeeper/
+
+# Video files
+*.mp4
+*.m3u8
+*.ts
+
+# Models
+models/
+!app/models/
+*.pth
+*.onnx
+
+backend/config/gcp-service-account.json
+
+backend/config/gcp-service-account.appengine.bak
+
+backend/config/gcp-service-account.json
+
+backend/config/gcp-service-account.appengine.bak

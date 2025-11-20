@@ -1,0 +1,36 @@
+{
+  "hand_id": "triton_poker_2024_hand_0024",
+  "tournament_id": "triton_poker_2024",
+  "hand_number": 24,
+  "timestamp": "2024-05-11T00:00:00Z",
+  "duration_seconds": 170,
+  "description": "Andrew Robl makes a sick preflop call against Garrett Adelstein. Garrett Adelstein fires two barrels and shoves 54.8bb on the preflop. Andrew Robl thinks for 264s and calls with just two pair. Garrett Adelstein was bluffing with trips and Andrew Robl scoops a 90.0bb pot.",
+  "hero_name": "Andrew Robl",
+  "villain_name": "Garrett Adelstein",
+  "hero_position": "SB",
+  "villain_position": "BB",
+  "hero_stack_bb": 125.6,
+  "villain_stack_bb": 357.3,
+  "street": "PREFLOP",
+  "pot_bb": 90.0,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "call",
+  "result": "LOSE",
+  "tags": [
+    "TILT",
+    "SICK_FOLD",
+    "RIVER_DECISION",
+    "HERO_FOLD"
+  ],
+  "hand_type": "HERO_FOLD",
+  "video_url": "gs://poker-videos-prod/triton_poker_2024/day2_table6.mp4",
+  "video_start_time": 7722.8,
+  "video_end_time": 17993.6,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/triton_poker_2024_hand_0024.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.79
+}

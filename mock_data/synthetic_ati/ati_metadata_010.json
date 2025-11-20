@@ -1,0 +1,35 @@
+{
+  "hand_id": "wsop_2024_hand_0010",
+  "tournament_id": "wsop_2024",
+  "hand_number": 10,
+  "timestamp": "2024-07-30T00:00:00Z",
+  "duration_seconds": 478,
+  "description": "Liv Boeree makes an insane preflop call with two pair against Phil Hellmuth's value bet. After Phil Hellmuth bets 192.7bb into a 230.7bb pot on the preflop, Liv Boeree tanks for 230s and makes the hero call with two pair. Phil Hellmuth shows bottom pair and Liv Boeree wins a massive 423.4bb pot.",
+  "hero_name": "Liv Boeree",
+  "villain_name": "Phil Hellmuth",
+  "hero_position": "SB",
+  "villain_position": "BB",
+  "hero_stack_bb": 271.5,
+  "villain_stack_bb": 461.5,
+  "street": "PREFLOP",
+  "pot_bb": 423.4,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "fold",
+  "result": "LOSE",
+  "tags": [
+    "DONK_BET",
+    "RIVER_DECISION",
+    "VALUE_BET"
+  ],
+  "hand_type": "VALUE_BET",
+  "video_url": "gs://poker-videos-prod/wsop_2024/day7_table11.mp4",
+  "video_start_time": 1569.9,
+  "video_end_time": 13925.9,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/wsop_2024_hand_0010.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.76
+}

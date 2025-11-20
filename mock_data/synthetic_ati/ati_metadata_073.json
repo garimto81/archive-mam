@@ -1,0 +1,35 @@
+{
+  "hand_id": "mpp_2024_hand_0073",
+  "tournament_id": "mpp_2024",
+  "hand_number": 73,
+  "timestamp": "2024-01-16T00:00:00Z",
+  "duration_seconds": 425,
+  "description": "Mikki Mase makes a sick river call against David Peters. David Peters fires two barrels and shoves 222.0bb on the river. Mikki Mase thinks for 228s and calls with just bottom pair. David Peters was bluffing with bottom pair and Mikki Mase scoops a 322.0bb pot.",
+  "hero_name": "Mikki Mase",
+  "villain_name": "David Peters",
+  "hero_position": "SB",
+  "villain_position": "BB",
+  "hero_stack_bb": 216.5,
+  "villain_stack_bb": 135.0,
+  "street": "RIVER",
+  "pot_bb": 322.0,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "call",
+  "result": "WIN",
+  "tags": [
+    "RIVER_DECISION",
+    "VALUE_BET",
+    "COOLER"
+  ],
+  "hand_type": "VALUE_BET",
+  "video_url": "gs://poker-videos-prod/mpp_2024/day6_table3.mp4",
+  "video_start_time": 5486.3,
+  "video_end_time": 15872.1,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/mpp_2024_hand_0073.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.96
+}

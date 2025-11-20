@@ -1,0 +1,36 @@
+{
+  "hand_id": "mpp_2023_hand_0019",
+  "tournament_id": "mpp_2023",
+  "hand_number": 19,
+  "timestamp": "2024-03-29T00:00:00Z",
+  "duration_seconds": 584,
+  "description": "Phil Hellmuth makes an insane flop call with king-high against Vanessa Kade's value bet. After Vanessa Kade bets 366.9bb into a 199.3bb pot on the flop, Phil Hellmuth tanks for 266s and makes the hero call with king-high. Vanessa Kade shows full house and Phil Hellmuth wins a massive 566.2bb pot.",
+  "hero_name": "Phil Hellmuth",
+  "villain_name": "Vanessa Kade",
+  "hero_position": "BTN",
+  "villain_position": "UTG1",
+  "hero_stack_bb": 228.8,
+  "villain_stack_bb": 463.2,
+  "street": "FLOP",
+  "pot_bb": 566.2,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "all-in",
+  "result": "LOSE",
+  "tags": [
+    "SQUEEZE",
+    "SICK_FOLD",
+    "RIVER_DECISION",
+    "HERO_FOLD"
+  ],
+  "hand_type": "HERO_FOLD",
+  "video_url": "gs://poker-videos-prod/mpp_2023/day10_table5.mp4",
+  "video_start_time": 1461.6,
+  "video_end_time": 15756.9,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/mpp_2023_hand_0019.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.84
+}

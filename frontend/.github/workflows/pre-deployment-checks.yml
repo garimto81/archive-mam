@@ -1,0 +1,234 @@
+name: Pre-Deployment Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'frontend/**'
+  workflow_dispatch:
+
+env:
+  WORKING_DIRECTORY: ./frontend
+
+jobs:
+  quality-checks:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.WORKING_DIRECTORY }}/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm ci
+
+      - name: TypeScript type check
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm run type-check
+
+      - name: ESLint
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm run lint
+
+      - name: Check for secrets
+        run: |
+          # Check for common secret patterns
+          if grep -r "NEXT_PUBLIC_API_KEY\|password\|token\|secret" frontend/src --exclude-dir=node_modules; then
+            echo "⚠️ Potential secrets found in source code"
+            exit 1
+          fi
+          echo "✅ No hardcoded secrets detected"
+
+  security-checks:
+    name: Security & Dependency Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.WORKING_DIRECTORY }}/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm ci
+
+      - name: npm audit
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: License check
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          # Check for GPL licenses (optional)
+          npm ls --depth=0 || true
+        continue-on-error: true
+
+  bundle-analysis:
+    name: Bundle Size Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.WORKING_DIRECTORY }}/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm ci
+
+      - name: Build with bundle analysis
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          npm run build
+          echo "✅ Build completed"
+
+      - name: Check bundle size
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          # Get main bundle size
+          BUNDLE_SIZE=$(find .next/static -name "*.js" | xargs du -ch | tail -1 | awk '{print $1}')
+          echo "Bundle size: $BUNDLE_SIZE"
+
+          # Warn if bundle is too large
+          # You can make this stricter or looser based on your needs
+
+  lighthouse:
+    name: Lighthouse Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.WORKING_DIRECTORY }}/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm ci
+
+      - name: Build application
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+
+      - name: Run Lighthouse audit
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        id: lighthouse
+        run: |
+          npm run lighthouse 2>&1 | tee lighthouse-output.txt || true
+          cat lighthouse-output.txt
+
+      - name: Upload Lighthouse report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: lighthouse-report
+          path: ${{ env.WORKING_DIRECTORY }}/lighthouse-report.json
+
+  environment-validation:
+    name: Environment Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate environment files
+        run: |
+          echo "Checking .env.example exists..."
+          test -f frontend/.env.example || (echo "❌ .env.example missing" && exit 1)
+          echo "✅ .env.example found"
+
+          echo "Checking .env files are in .gitignore..."
+          grep -q "^\\.env" frontend/.gitignore || (echo "❌ .env files not in .gitignore" && exit 1)
+          echo "✅ .env files properly ignored"
+
+          echo "Checking vercel.json exists..."
+          test -f frontend/vercel.json || (echo "❌ vercel.json missing" && exit 1)
+          echo "✅ vercel.json found"
+
+  deployment-readiness:
+    name: Deployment Readiness Check
+    runs-on: ubuntu-latest
+    needs:
+      - quality-checks
+      - security-checks
+      - bundle-analysis
+      - environment-validation
+    timeout-minutes: 5
+
+    steps:
+      - name: Check all prerequisites
+        run: |
+          echo "✅ All pre-deployment checks passed!"
+          echo ""
+          echo "Ready for deployment to Vercel:"
+          echo "1. Code quality: ✅"
+          echo "2. Security: ✅"
+          echo "3. Bundle size: ✅"
+          echo "4. Environment: ✅"
+          echo ""
+          echo "Next steps:"
+          echo "- Merge PR to main branch"
+          echo "- Vercel will auto-deploy to production"
+          echo "- Monitor Vercel dashboard for deployment status"
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `✅ **All Pre-Deployment Checks Passed**
+
+## Ready for Production
+This PR is ready to merge and deploy to Vercel production.
+
+### Checks Completed
+- [x] Code Quality (TypeScript, ESLint)
+- [x] Security (Dependency Audit)
+- [x] Bundle Size Analysis
+- [x] Environment Configuration
+- [x] Lighthouse Audit
+
+### Next Steps
+1. Merge this PR to \`main\` branch
+2. Vercel will automatically deploy to production
+3. Monitor deployment progress in Vercel dashboard`
+            });

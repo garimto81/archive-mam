@@ -1,0 +1,36 @@
+{
+  "hand_id": "mpp_2023_hand_0091",
+  "tournament_id": "mpp_2023",
+  "hand_number": 91,
+  "timestamp": "2024-04-02T00:00:00Z",
+  "duration_seconds": 486,
+  "description": "Stephen Chidwick makes an insane river call with queen-high against Jason Koon's value bet. After Jason Koon bets 360.0bb into a 323.4bb pot on the river, Stephen Chidwick tanks for 205s and makes the hero call with queen-high. Jason Koon shows trips and Stephen Chidwick wins a massive 683.4bb pot.",
+  "hero_name": "Stephen Chidwick",
+  "villain_name": "Jason Koon",
+  "hero_position": "UTG1",
+  "villain_position": "BTN",
+  "hero_stack_bb": 362.7,
+  "villain_stack_bb": 402.8,
+  "street": "RIVER",
+  "pot_bb": 683.4,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "raise",
+  "result": "SPLIT",
+  "tags": [
+    "3BET",
+    "RIVER_DECISION",
+    "4BET",
+    "VALUE_BET"
+  ],
+  "hand_type": "VALUE_BET",
+  "video_url": "gs://poker-videos-prod/mpp_2023/day10_table10.mp4",
+  "video_start_time": 8945.1,
+  "video_end_time": 12685.6,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/mpp_2023_hand_0091.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.92
+}

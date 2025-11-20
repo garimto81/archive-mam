@@ -1,0 +1,20 @@
+{
+  "displayName": "poker-hands-vector-index",
+  "description": "Vertex AI Vector Search index for poker hand descriptions",
+  "metadata": {
+    "config": {
+      "dimensions": 768,
+      "approximateNeighborsCount": 20,
+      "distanceMeasureType": "DOT_PRODUCT_DISTANCE",
+      "algorithmConfig": {
+        "treeAhConfig": {
+          "leafNodeEmbeddingCount": 1000,
+          "leafNodesToSearchPercent": 10,
+          "fractionLeafNodesToSearch": 0.1
+        }
+      },
+      "shardSize": "SHARD_SIZE_SMALL"
+    }
+  },
+  "indexUpdateMethod": "STREAM_UPDATE"
+}

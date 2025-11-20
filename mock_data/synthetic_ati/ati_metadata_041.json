@@ -1,0 +1,38 @@
+{
+  "hand_id": "mpp_2023_hand_0041",
+  "tournament_id": "mpp_2023",
+  "hand_number": 41,
+  "timestamp": "2024-07-07T00:00:00Z",
+  "duration_seconds": 574,
+  "description": "Massive all-in pot! Vanessa Selbst shoves 17.2bb with king-high against Fedor Holz's ace-high on the preflop. Fedor Holz calls and Villain wins. Final pot: 27.3bb.",
+  "hero_name": "Vanessa Selbst",
+  "villain_name": "Fedor Holz",
+  "hero_position": "UTG",
+  "villain_position": "MP",
+  "hero_stack_bb": 420.4,
+  "villain_stack_bb": 492.1,
+  "street": "PREFLOP",
+  "pot_bb": 27.3,
+  "action_sequence": [
+    "raise 3bb",
+    "3bet 9bb",
+    "4bet 24bb",
+    "all-in",
+    "call"
+  ],
+  "hero_action": "all-in",
+  "result": "LOSE",
+  "tags": [
+    "HIGH_STAKES",
+    "4BET",
+    "ALL_IN",
+    "SHORT_STACK"
+  ],
+  "hand_type": "ALL_IN",
+  "video_url": "gs://poker-videos-prod/mpp_2023/day9_table1.mp4",
+  "video_start_time": 3888.4,
+  "video_end_time": 14804.4,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/mpp_2023_hand_0041.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.86
+}

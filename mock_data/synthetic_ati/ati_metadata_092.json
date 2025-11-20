@@ -1,0 +1,35 @@
+{
+  "hand_id": "hustler_casino_live_2024_hand_0092",
+  "tournament_id": "hustler_casino_live_2024",
+  "hand_number": 92,
+  "timestamp": "2024-09-09T00:00:00Z",
+  "duration_seconds": 341,
+  "description": "Doug Polk makes a sick river call against Tom Dwan. Tom Dwan fires two barrels and shoves 52.9bb on the river. Doug Polk thinks for 73s and calls with just flush. Tom Dwan was bluffing with ace-high and Doug Polk scoops a 141.4bb pot.",
+  "hero_name": "Doug Polk",
+  "villain_name": "Tom Dwan",
+  "hero_position": "UTG1",
+  "villain_position": "BB",
+  "hero_stack_bb": 154.7,
+  "villain_stack_bb": 449.4,
+  "street": "RIVER",
+  "pot_bb": 141.4,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "raise",
+  "result": "SPLIT",
+  "tags": [
+    "SHORT_STACK",
+    "TRAP",
+    "SLOW_PLAY"
+  ],
+  "hand_type": "SLOW_PLAY",
+  "video_url": "gs://poker-videos-prod/hustler_casino_live_2024/day5_table17.mp4",
+  "video_start_time": 7841.6,
+  "video_end_time": 12598.6,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/hustler_casino_live_2024_hand_0092.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.86
+}

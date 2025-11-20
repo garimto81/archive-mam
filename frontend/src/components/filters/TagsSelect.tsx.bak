@@ -1,0 +1,289 @@
+'use client';
+
+import React, { useState, useCallback, useMemo } from 'react';
+import { X, Search } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+interface TagOption {
+  id: string;
+  label: string;
+  category?: string;
+  count?: number;
+}
+
+interface TagsSelectProps {
+  value: string[];
+  onChange: (tags: string[]) => void;
+  options: TagOption[];
+  label?: string;
+  colorMap?: Record<string, string>;
+}
+
+const DEFAULT_COLORS: Record<string, string> = {
+  'HERO_DECISION': 'bg-blue-100 text-blue-700 border-blue-300',
+  'VILLAIN_DECISION': 'bg-red-100 text-red-700 border-red-300',
+  'BLUFF': 'bg-purple-100 text-purple-700 border-purple-300',
+  'FOLD': 'bg-gray-100 text-gray-700 border-gray-300',
+  'RIVER_DECISION': 'bg-green-100 text-green-700 border-green-300',
+  'HIGH_STAKES': 'bg-yellow-100 text-yellow-700 border-yellow-300',
+  'COOLER': 'bg-orange-100 text-orange-700 border-orange-300',
+  'SICK_CALL': 'bg-pink-100 text-pink-700 border-pink-300',
+};
+
+export function TagsSelect({
+  value,
+  onChange,
+  options,
+  label = 'Tags',
+  colorMap = DEFAULT_COLORS,
+}: TagsSelectProps) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const groupedOptions = useMemo(() => {
+    const grouped: Record<string, TagOption[]> = {
+      'All Tags': [],
+    };
+
+    for (const option of options) {
+      const category = option.category || 'Other';
+      if (!grouped[category]) grouped[category] = [];
+      grouped[category].push(option);
+    }
+
+    // Sort categories, with 'All Tags' first
+    const result: Record<string, TagOption[]> = {
+      'All Tags': grouped['All Tags'],
+    };
+    delete grouped['All Tags'];
+
+    Object.keys(grouped)
+      .sort()
+      .forEach((key) => {
+        result[key] = grouped[key];
+      });
+
+    return result;
+  }, [options]);
+
+  const categories = useMemo(() => Object.keys(groupedOptions), [groupedOptions]);
+
+  const filteredOptions = useMemo(() => {
+    const result: Record<string, TagOption[]> = {};
+
+    for (const [category, tags] of Object.entries(groupedOptions)) {
+      if (selectedCategory && category !== selectedCategory && category !== 'All Tags') {
+        continue;
+      }
+
+      const filtered = tags.filter((tag) =>
+        tag.label.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+
+      if (filtered.length > 0) {
+        result[category] = filtered;
+      }
+    }
+
+    return result;
+  }, [groupedOptions, searchQuery, selectedCategory]);
+
+  const handleToggle = useCallback(
+    (tagId: string) => {
+      onChange(
+        value.includes(tagId)
+          ? value.filter((id) => id !== tagId)
+          : [...value, tagId],
+      );
+    },
+    [value, onChange],
+  );
+
+  const handleSelectCategory = useCallback(
+    (category: string | null) => {
+      setSelectedCategory(selectedCategory === category ? null : category);
+    },
+    [selectedCategory],
+  );
+
+  const handleSelectAll = useCallback(() => {
+    const allTagIds = Object.values(filteredOptions)
+      .flat()
+      .map((tag) => tag.id);
+    onChange(allTagIds);
+  }, [filteredOptions, onChange]);
+
+  const handleClearAll = useCallback(() => {
+    onChange([]);
+    setSearchQuery('');
+    setSelectedCategory(null);
+  }, [onChange]);
+
+  const selectedTags = options.filter((opt) => value.includes(opt.id));
+
+  const getTagColor = (tagId: string, category?: string) => {
+    return colorMap[tagId] || colorMap[category || 'FOLDER'] || DEFAULT_COLORS['FOLDER'] || 'bg-gray-100 text-gray-700 border-gray-300';
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Label */}
+      <div className="flex items-center justify-between">
+        <label className="block text-sm font-semibold text-gray-900" id="tags-label">
+          {label}
+          {value.length > 0 && (
+            <span className="ml-2 inline-block px-2.5 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+              {value.length}
+            </span>
+          )}
+        </label>
+        {value.length > 0 && (
+          <button
+            onClick={handleClearAll}
+            className="text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 px-2 py-1 rounded transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+            aria-label="Clear all selected tags"
+          >
+            Clear All
+          </button>
+        )}
+      </div>
+
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search tags..."
+          className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          aria-label="Search tags"
+        />
+      </div>
+
+      {/* Category Filter */}
+      {categories.length > 1 && (
+        <div className="flex flex-wrap gap-2">
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => handleSelectCategory(category)}
+              className={cn(
+                'px-3 py-1.5 text-sm font-medium rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500',
+                selectedCategory === category
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200',
+              )}
+              aria-pressed={selectedCategory === category}
+              aria-label={`Filter by ${category}`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Select All Button */}
+      <button
+        onClick={handleSelectAll}
+        className="px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg border border-blue-300 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+        aria-label="Select all visible tags"
+      >
+        Select All
+      </button>
+
+      {/* Tags Grid */}
+      <div className="space-y-4 max-h-80 overflow-y-auto">
+        {Object.entries(filteredOptions).length > 0 ? (
+          Object.entries(filteredOptions).map(([category, tags]) => (
+            <div key={category}>
+              {/* Category Header */}
+              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 py-2 mb-2">
+                {category}
+              </h3>
+
+              {/* Tags */}
+              <div
+                className="flex flex-wrap gap-2"
+                role="region"
+                aria-label={`${category} tags`}
+              >
+                {tags
+                  .sort((a, b) => {
+                    // Sort by count (descending)
+                    const countA = a.count || 0;
+                    const countB = b.count || 0;
+                    if (countB !== countA) return countB - countA;
+                    // Then by label
+                    return a.label.localeCompare(b.label);
+                  })
+                  .map((tag) => {
+                    const isSelected = value.includes(tag.id);
+                    return (
+                      <button
+                        key={tag.id}
+                        onClick={() => handleToggle(tag.id)}
+                        className={cn(
+                          'inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium border transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500',
+                          isSelected
+                            ? 'bg-blue-500 text-white border-blue-600 shadow-md'
+                            : `${getTagColor(tag.id, category)} hover:shadow-md border opacity-80 hover:opacity-100`,
+                        )}
+                        aria-pressed={isSelected}
+                        aria-label={`${tag.label}${tag.count ? ` (${tag.count} hands)` : ''}`}
+                        title={`${tag.label}${tag.count ? ` - ${tag.count} hands` : ''}`}
+                      >
+                        {tag.label}
+                        {tag.count && (
+                          <span className="text-xs font-semibold opacity-75">
+                            ({tag.count})
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="text-center py-8">
+            <p className="text-sm text-gray-500">No tags found matching your search</p>
+          </div>
+        )}
+      </div>
+
+      {/* Selected Tags Display */}
+      {value.length > 0 && (
+        <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+          <p className="text-xs font-semibold text-gray-600 mb-2">Selected Tags:</p>
+          <div className="flex flex-wrap gap-2">
+            {selectedTags.map((tag) => (
+              <div
+                key={tag.id}
+                className={cn(
+                  'inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium border',
+                  getTagColor(tag.id, tag.category),
+                )}
+              >
+                {tag.label}
+                <button
+                  onClick={() => handleToggle(tag.id)}
+                  className="p-0.5 hover:bg-black hover:bg-opacity-10 rounded-full transition-colors"
+                  aria-label={`Remove ${tag.label}`}
+                  title={`Remove ${tag.label}`}
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Help Text */}
+      <p className="text-xs text-gray-500">
+        Select multiple tags • Categories group related tags • Popular tags appear first
+      </p>
+    </div>
+  );
+}

@@ -1,0 +1,36 @@
+{
+  "hand_id": "hustler_casino_live_2024_hand_0065",
+  "tournament_id": "hustler_casino_live_2024",
+  "hand_number": 65,
+  "timestamp": "2024-07-03T00:00:00Z",
+  "duration_seconds": 167,
+  "description": "Mikki Mase makes an insane preflop call with top pair against Alex Foxen's value bet. After Alex Foxen bets 29.2bb into a 65.6bb pot on the preflop, Mikki Mase tanks for 214s and makes the hero call with top pair. Alex Foxen shows top pair and Mikki Mase wins a massive 94.8bb pot.",
+  "hero_name": "Mikki Mase",
+  "villain_name": "Alex Foxen",
+  "hero_position": "UTG",
+  "villain_position": "MP",
+  "hero_stack_bb": 253.2,
+  "villain_stack_bb": 302.4,
+  "street": "PREFLOP",
+  "pot_bb": 94.8,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "all-in",
+  "result": "SPLIT",
+  "tags": [
+    "CONTINUATION_BET",
+    "DONK_BET",
+    "TRAP",
+    "SLOW_PLAY"
+  ],
+  "hand_type": "SLOW_PLAY",
+  "video_url": "gs://poker-videos-prod/hustler_casino_live_2024/day7_table17.mp4",
+  "video_start_time": 1579.3,
+  "video_end_time": 18728.0,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/hustler_casino_live_2024_hand_0065.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.95
+}

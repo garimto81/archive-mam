@@ -1,0 +1,42 @@
+{
+  "hand_id": "mpp_2024_hand_0048",
+  "tournament_id": "mpp_2024",
+  "hand_number": 48,
+  "timestamp": "2024-05-09T00:00:00Z",
+  "duration_seconds": 577,
+  "description": "Garrett Adelstein attempts a bold turn bluff against Wesley Fei. After Wesley Fei checks, Garrett Adelstein fires 366.1bb into a 159.7bb pot. Wesley Fei tanks for 171s and makes the hero fold with bottom pair. Garrett Adelstein shows bottom pair bluff and Wesley Fei wins 525.8bb.",
+  "hero_name": "Garrett Adelstein",
+  "villain_name": "Wesley Fei",
+  "hero_position": "SB",
+  "villain_position": "MP",
+  "hero_stack_bb": 222.3,
+  "villain_stack_bb": 335.0,
+  "street": "TURN",
+  "pot_bb": 525.8,
+  "action_sequence": [
+    "raise 3bb",
+    "call",
+    "bet 0.33pot",
+    "call",
+    "bet 0.5pot",
+    "call",
+    "all-in",
+    "tank 120s",
+    "fold"
+  ],
+  "hero_action": "all-in",
+  "result": "WIN",
+  "tags": [
+    "3BET",
+    "RIVER_DECISION",
+    "BLUFF",
+    "HIGH_STAKES"
+  ],
+  "hand_type": "BLUFF",
+  "video_url": "gs://poker-videos-prod/mpp_2024/day1_table2.mp4",
+  "video_start_time": 7705.6,
+  "video_end_time": 17637.1,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/mpp_2024_hand_0048.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.96
+}

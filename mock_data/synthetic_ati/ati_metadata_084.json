@@ -1,0 +1,37 @@
+{
+  "hand_id": "triton_poker_2024_hand_0084",
+  "tournament_id": "triton_poker_2024",
+  "hand_number": 84,
+  "timestamp": "2024-02-12T00:00:00Z",
+  "duration_seconds": 221,
+  "description": "Garrett Adelstein makes a sick river call against Fedor Holz. Fedor Holz fires two barrels and shoves 457.7bb on the river. Garrett Adelstein thinks for 230s and calls with just queen-high. Fedor Holz was bluffing with ace-high and Garrett Adelstein scoops a 716.8bb pot.",
+  "hero_name": "Garrett Adelstein",
+  "villain_name": "Fedor Holz",
+  "hero_position": "UTG",
+  "villain_position": "BTN",
+  "hero_stack_bb": 122.0,
+  "villain_stack_bb": 490.4,
+  "street": "RIVER",
+  "pot_bb": 716.8,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "call",
+  "result": "LOSE",
+  "tags": [
+    "CONTINUATION_BET",
+    "SHORT_STACK",
+    "RIVER_DECISION",
+    "DEEP_STACK",
+    "VALUE_BET"
+  ],
+  "hand_type": "VALUE_BET",
+  "video_url": "gs://poker-videos-prod/triton_poker_2024/day1_table6.mp4",
+  "video_start_time": 763.5,
+  "video_end_time": 15639.1,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/triton_poker_2024_hand_0084.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.92
+}

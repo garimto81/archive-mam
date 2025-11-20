@@ -1,0 +1,35 @@
+{
+  "hand_id": "wsop_2024_hand_0028",
+  "tournament_id": "wsop_2024",
+  "hand_number": 28,
+  "timestamp": "2024-03-18T00:00:00Z",
+  "duration_seconds": 506,
+  "description": "Andrew Robl makes a sick flop call against Maria Ho. Maria Ho fires two barrels and shoves 216.8bb on the flop. Andrew Robl thinks for 240s and calls with just trips. Maria Ho was bluffing with queen-high and Andrew Robl scoops a 359.6bb pot.",
+  "hero_name": "Andrew Robl",
+  "villain_name": "Maria Ho",
+  "hero_position": "BB",
+  "villain_position": "CO",
+  "hero_stack_bb": 343.0,
+  "villain_stack_bb": 395.7,
+  "street": "FLOP",
+  "pot_bb": 359.6,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "call",
+  "result": "WIN",
+  "tags": [
+    "3BET",
+    "TRAP",
+    "SLOW_PLAY"
+  ],
+  "hand_type": "SLOW_PLAY",
+  "video_url": "gs://poker-videos-prod/wsop_2024/day2_table11.mp4",
+  "video_start_time": 6719.4,
+  "video_end_time": 13326.7,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/wsop_2024_hand_0028.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.76
+}

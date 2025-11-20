@@ -1,0 +1,37 @@
+{
+  "hand_id": "wsop_2023_hand_0011",
+  "tournament_id": "wsop_2023",
+  "hand_number": 11,
+  "timestamp": "2024-04-05T00:00:00Z",
+  "duration_seconds": 529,
+  "description": "Daniel Negreanu makes an insane flop call with middle pair against Stephen Chidwick's value bet. After Stephen Chidwick bets 245.4bb into a 130.1bb pot on the flop, Daniel Negreanu tanks for 228s and makes the hero call with middle pair. Stephen Chidwick shows two pair and Daniel Negreanu wins a massive 375.5bb pot.",
+  "hero_name": "Daniel Negreanu",
+  "villain_name": "Stephen Chidwick",
+  "hero_position": "SB",
+  "villain_position": "MP",
+  "hero_stack_bb": 326.4,
+  "villain_stack_bb": 310.3,
+  "street": "FLOP",
+  "pot_bb": 375.5,
+  "action_sequence": [
+    "check",
+    "bet",
+    "call"
+  ],
+  "hero_action": "raise",
+  "result": "LOSE",
+  "tags": [
+    "TRAP",
+    "SHORT_STACK",
+    "SLOW_PLAY",
+    "DEEP_STACK",
+    "CHECK_RAISE"
+  ],
+  "hand_type": "SLOW_PLAY",
+  "video_url": "gs://poker-videos-prod/wsop_2023/day3_table10.mp4",
+  "video_start_time": 1996.1,
+  "video_end_time": 15166.4,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/wsop_2023_hand_0011.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.9
+}

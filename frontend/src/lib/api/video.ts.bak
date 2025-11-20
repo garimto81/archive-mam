@@ -1,0 +1,544 @@
+/**
+ * Video URL API Client
+ *
+ * @description
+ * Handles generation of GCS Signed URLs for secure video streaming.
+ * Provides URL caching, expiration handling, and error management for
+ * poker hand video playback.
+ *
+ * @author Claude Code
+ * @version 1.0.0
+ */
+
+import { fetchWithRetry } from "./client";
+import { InMemoryCache } from "@/lib/utils/cache";
+import { ENV, API_ENDPOINTS, PERFORMANCE } from "@/lib/constants/config";
+import {
+  ValidationError,
+  NotFoundError
+} from "@/types/errors";
+
+/**
+ * Video metadata with signed URL
+ *
+ * Complete information needed for video playback including
+ * secured streaming URL and temporal information.
+ */
+export interface VideoMetadata {
+  /** Unique hand identifier */
+  readonly handId: string;
+
+  /** GCS Signed URL for video streaming */
+  readonly videoUrl: string;
+
+  /** Video start time in seconds (from hand details) */
+  readonly startTime: number;
+
+  /** Video end time in seconds (from hand details) */
+  readonly endTime: number;
+
+  /** Thumbnail image URL */
+  readonly thumbnailUrl: string;
+
+  /** Video duration in seconds */
+  readonly duration: number;
+
+  /** URL expiration timestamp (ISO 8601) */
+  readonly expiresAt: string;
+
+  /** Recommended quality/format */
+  readonly format: "mp4" | "webm" | "hls";
+
+  /** Video file size in bytes */
+  readonly fileSize: number;
+}
+
+/**
+ * API options for video requests
+ */
+export interface VideoApiOptions {
+  /** Request timeout in milliseconds */
+  readonly timeout?: number;
+  /** AbortSignal for cancelling the request */
+  readonly signal?: AbortSignal;
+  /** Enable response caching (default: true) */
+  readonly enableCache?: boolean;
+}
+
+/**
+ * Video URL cache (5-minute TTL due to signed URL expiration)
+ * Shorter TTL than other caches due to URL expiration
+ */
+const videoUrlCache = new InMemoryCache<VideoMetadata>(
+  5 * 60 * 1000 // 5 minutes
+);
+
+/**
+ * Fetch video metadata with signed URL from API
+ *
+ * Generates a GCS Signed URL for secure video streaming.
+ * URLs expire after a period (typically 1 hour from generation).
+ * Caches URLs for 5 minutes to balance performance and security.
+ *
+ * @param handId - Unique hand identifier
+ * @param options - API request options
+ * @returns Video metadata with signed URL
+ *
+ * @throws ValidationError - Hand ID validation failed
+ * @throws NotFoundError - Video not found for hand
+ * @throws RateLimitError - Rate limit exceeded
+ * @throws NetworkError - Network error
+ * @throws TimeoutError - Request timeout
+ * @throws ServerError - Server error
+ *
+ * @example
+ * ```typescript
+ * // Basic usage
+ * const metadata = await fetchVideoUrl("wsop_2024_main_event_hand_3421");
+ * // Use metadata.videoUrl for <video> tag or video player
+ *
+ * // With custom timeout
+ * const metadata = await fetchVideoUrl("hand_123", {
+ *   timeout: 10000
+ * });
+ *
+ * // With cancellation
+ * const controller = new AbortController();
+ * const metadata = await fetchVideoUrl("hand_123", {
+ *   signal: controller.signal
+ * });
+ * // To cancel: controller.abort();
+ *
+ * // Without cache (force fresh URL)
+ * const metadata = await fetchVideoUrl("hand_123", {
+ *   enableCache: false
+ * });
+ * ```
+ */
+export async function fetchVideoUrl(
+  handId: string,
+  options: VideoApiOptions = {}
+): Promise<VideoMetadata> {
+  const {
+    timeout = PERFORMANCE.API_TIMEOUT_MS,
+    signal,
+    enableCache = true
+  } = options;
+
+  // 1. Validate hand ID
+  validateVideoHandId(handId);
+
+  // 2. Check cache
+  if (enableCache) {
+    const cached = videoUrlCache.get(handId);
+    if (cached && !isUrlExpired(cached)) {
+      return cached;
+    }
+  }
+
+  // 3. Build URL
+  const url = new URL(
+    API_ENDPOINTS.VIDEO_URL(handId),
+    ENV.API_URL
+  ).toString();
+
+  // 4. Log request (development only)
+  if (ENV.NODE_ENV === "development") {
+    console.log("[VideoAPI] Fetching URL:", { handId, url });
+  }
+
+  // 5. Make API request with retry
+  let metadata: VideoMetadata;
+  try {
+    metadata = await fetchWithRetry<VideoMetadata>(
+      url,
+      {
+        method: "GET",
+        timeout,
+        signal
+      },
+      PERFORMANCE.RETRY_COUNT
+    );
+  } catch (error) {
+    // Convert 404 errors to NotFoundError
+    if (error instanceof Error && error.message.includes("404")) {
+      throw new NotFoundError(`Video not found for hand "${handId}"`, handId);
+    }
+    throw error;
+  }
+
+  // 6. Validate response
+  if (!isValidVideoMetadata(metadata)) {
+    throw new ValidationError("Invalid video metadata response from server");
+  }
+
+  // 7. Check URL expiration
+  const expiresAt = new Date(metadata.expiresAt);
+  if (expiresAt <= new Date()) {
+    throw new ValidationError("Video URL has expired");
+  }
+
+  // 8. Cache response (only if not too close to expiration)
+  if (enableCache) {
+    const cacheEntry = { ...metadata };
+    videoUrlCache.set(handId, cacheEntry);
+  }
+
+  // 9. Log response (development only)
+  if (ENV.NODE_ENV === "development") {
+    const expiresIn = Math.round((expiresAt.getTime() - Date.now()) / 1000);
+    console.log("[VideoAPI] URL received:", {
+      handId,
+      format: metadata.format,
+      duration: metadata.duration,
+      expiresInSeconds: expiresIn
+    });
+  }
+
+  return metadata;
+}
+
+/**
+ * Validate video hand ID format
+ *
+ * @param handId - Hand ID to validate
+ * @throws ValidationError if hand ID is invalid
+ */
+function validateVideoHandId(handId: string): void {
+  if (!handId || handId.trim().length === 0) {
+    throw new ValidationError("Hand ID cannot be empty");
+  }
+
+  if (handId.trim().length > 256) {
+    throw new ValidationError("Hand ID is too long");
+  }
+
+  // Allow alphanumeric, underscore, and hyphen
+  const validFormat = /^[a-zA-Z0-9_\-]+$/;
+  if (!validFormat.test(handId.trim())) {
+    throw new ValidationError(
+      "Hand ID must contain only alphanumeric characters, underscores, and hyphens"
+    );
+  }
+}
+
+/**
+ * Check if video URL is expired or close to expiration
+ *
+ * Considers URL expired if it has less than 1 minute remaining.
+ * This provides a buffer to refresh before actual expiration.
+ *
+ * @param metadata - Video metadata with expiration
+ * @returns True if URL is expired or expiring soon
+ */
+function isUrlExpired(metadata: VideoMetadata): boolean {
+  const expiresAt = new Date(metadata.expiresAt);
+  const now = new Date();
+  const bufferMs = 60 * 1000; // 1 minute buffer
+
+  return expiresAt.getTime() - now.getTime() < bufferMs;
+}
+
+/**
+ * Type guard to validate video metadata
+ *
+ * @param value - Value to validate
+ * @returns True if value is valid VideoMetadata
+ */
+function isValidVideoMetadata(value: unknown): value is VideoMetadata {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+
+  const metadata = value as Partial<VideoMetadata>;
+
+  return (
+    typeof metadata.handId === "string" &&
+    typeof metadata.videoUrl === "string" &&
+    typeof metadata.startTime === "number" &&
+    typeof metadata.endTime === "number" &&
+    typeof metadata.thumbnailUrl === "string" &&
+    typeof metadata.duration === "number" &&
+    typeof metadata.expiresAt === "string" &&
+    typeof metadata.format === "string" &&
+    typeof metadata.fileSize === "number" &&
+    metadata.startTime >= 0 &&
+    metadata.endTime > metadata.startTime &&
+    metadata.duration > 0 &&
+    metadata.fileSize > 0
+  );
+}
+
+/**
+ * Clear video URL cache
+ *
+ * @description
+ * Clears all cached video URLs.
+ * Useful for forcing refresh of expired URLs or when
+ * video files have changed.
+ *
+ * @example
+ * ```typescript
+ * // Clear all video cache
+ * clearVideoCache();
+ * ```
+ */
+export function clearVideoCache(): void {
+  videoUrlCache.clear();
+}
+
+/**
+ * Clear specific video from cache
+ *
+ * @param handId - Hand ID to clear
+ * @returns True if video was cached and cleared
+ *
+ * @example
+ * ```typescript
+ * const wasCleared = clearVideoFromCache("hand_123");
+ * if (wasCleared) {
+ *   console.log("Video URL removed from cache");
+ * }
+ * ```
+ */
+export function clearVideoFromCache(handId: string): boolean {
+  return videoUrlCache.delete(handId);
+}
+
+/**
+ * Get cached video metadata
+ *
+ * Retrieves video metadata from cache without making an API request.
+ * Returns null if not cached, expired, or close to expiration.
+ *
+ * @param handId - Hand ID to retrieve
+ * @returns Cached video metadata or null
+ *
+ * @example
+ * ```typescript
+ * const cached = getCachedVideoUrl("hand_123");
+ * if (cached && !isUrlExpired(cached)) {
+ *   // Use cached URL
+ *   console.log(cached.videoUrl);
+ * }
+ * ```
+ */
+export function getCachedVideoUrl(handId: string): VideoMetadata | null {
+  const cached = videoUrlCache.get(handId) as VideoMetadata | null;
+  if (cached && !isUrlExpired(cached)) {
+    return cached;
+  }
+  return null;
+}
+
+/**
+ * Check if video URL is cached and valid
+ *
+ * @param handId - Hand ID to check
+ * @returns True if video is cached and not expired
+ *
+ * @example
+ * ```typescript
+ * if (isVideoCached("hand_123")) {
+ *   const metadata = getCachedVideoUrl("hand_123");
+ * }
+ * ```
+ */
+export function isVideoCached(handId: string): boolean {
+  const cached = videoUrlCache.get(handId) as VideoMetadata | null;
+  return cached !== null && !isUrlExpired(cached);
+}
+
+/**
+ * Get time remaining until video URL expires
+ *
+ * @param handId - Hand ID to check
+ * @returns Seconds remaining until expiration, or null if not cached
+ *
+ * @example
+ * ```typescript
+ * const secondsLeft = getVideoUrlTimeRemaining("hand_123");
+ * if (secondsLeft && secondsLeft < 300) {
+ *   console.log("URL expiring soon, should refresh");
+ * }
+ * ```
+ */
+export function getVideoUrlTimeRemaining(handId: string): number | null {
+  const cached = videoUrlCache.get(handId) as VideoMetadata | null;
+  if (!cached) {
+    return null;
+  }
+
+  const expiresAt = new Date(cached.expiresAt);
+  const secondsRemaining = Math.floor(
+    (expiresAt.getTime() - Date.now()) / 1000
+  );
+
+  return Math.max(0, secondsRemaining);
+}
+
+/**
+ * Prefetch multiple video URLs in parallel
+ *
+ * Prefetches video metadata to populate cache.
+ * Useful for preloading videos in search results or recommended hands.
+ *
+ * @param handIds - Array of hand IDs to prefetch
+ * @param options - API options
+ * @returns Promise that resolves when all prefetches complete
+ *
+ * @description
+ * Silently ignores errors for individual videos to allow partial success.
+ * Use Promise.allSettled for detailed error handling.
+ *
+ * @example
+ * ```typescript
+ * // Prefetch videos for search results
+ * const handIds = ["hand_1", "hand_2", "hand_3"];
+ * await prefetchVideos(handIds);
+ *
+ * // Now video loads instantly from cache
+ * const metadata = await fetchVideoUrl(handIds[0]); // From cache
+ * ```
+ */
+export async function prefetchVideos(
+  handIds: string[],
+  options: VideoApiOptions = {}
+): Promise<void> {
+  const promises = handIds.map(handId =>
+    fetchVideoUrl(handId, { ...options, enableCache: true })
+      .catch(error => {
+        // Silently ignore errors during prefetch
+        console.warn(`[VideoAPI] Failed to prefetch video for "${handId}":`, error);
+      })
+  );
+
+  await Promise.all(promises);
+}
+
+/**
+ * Prefetch with detailed error tracking
+ *
+ * Like prefetchVideos, but returns detailed results including errors.
+ *
+ * @param handIds - Array of hand IDs to prefetch
+ * @param options - API options
+ * @returns Promise with results array
+ *
+ * @example
+ * ```typescript
+ * const results = await prefetchVideosWithErrors(
+ *   ["hand_1", "hand_2", "hand_3"]
+ * );
+ *
+ * results.forEach(result => {
+ *   if (result.status === "fulfilled") {
+ *     console.log("Cached video for:", result.value.handId);
+ *   } else {
+ *     console.error("Failed:", result.reason);
+ *   }
+ * });
+ * ```
+ */
+export async function prefetchVideosWithErrors(
+  handIds: string[],
+  options: VideoApiOptions = {}
+): Promise<PromiseSettledResult<VideoMetadata>[]> {
+  const promises = handIds.map(handId =>
+    fetchVideoUrl(handId, { ...options, enableCache: true })
+  );
+
+  return Promise.allSettled(promises);
+}
+
+/**
+ * Get video cache statistics
+ *
+ * @returns Cache statistics
+ *
+ * @example
+ * ```typescript
+ * const stats = getVideoCacheStats();
+ * console.log(`${stats.cachedVideos} videos in cache`);
+ * ```
+ */
+export function getVideoCacheStats() {
+  return {
+    cachedVideos: videoUrlCache.size()
+  };
+}
+
+/**
+ * Refresh expired video URLs
+ *
+ * Checks cache for videos close to expiration and refreshes them.
+ * Useful to call before extended user sessions or when videos are
+ * expected to be accessed.
+ *
+ * @param handIds - Hand IDs to refresh
+ * @param options - API options
+ * @returns Promise that resolves when refresh completes
+ *
+ * @example
+ * ```typescript
+ * // Refresh videos that might expire soon
+ * await refreshExpiredVideoUrls(
+ *   ["hand_1", "hand_2"],
+ *   { timeout: 5000 }
+ * );
+ * ```
+ */
+export async function refreshExpiredVideoUrls(
+  handIds: string[],
+  options: VideoApiOptions = {}
+): Promise<void> {
+  const promises = handIds.map(handId =>
+    fetchVideoUrl(handId, { ...options, enableCache: true })
+      .catch(error => {
+        console.warn(`[VideoAPI] Failed to refresh video for "${handId}":`, error);
+      })
+  );
+
+  await Promise.all(promises);
+}
+
+/**
+ * Format video duration for display
+ *
+ * @param seconds - Duration in seconds
+ * @returns Formatted string (e.g., "1:23" or "12:34")
+ *
+ * @example
+ * ```typescript
+ * const metadata = await fetchVideoUrl("hand_123");
+ * const formatted = formatVideoDuration(metadata.duration);
+ * console.log(`Duration: ${formatted}`); // "2:45"
+ * ```
+ */
+export function formatVideoDuration(seconds: number): string {
+  const minutes = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${minutes}:${secs.toString().padStart(2, "0")}`;
+}
+
+/**
+ * Calculate video playback time range
+ *
+ * Combines video metadata with hand timing to provide
+ * accurate playback range for the hand.
+ *
+ * @param metadata - Video metadata
+ * @returns Playback range as formatted string
+ *
+ * @example
+ * ```typescript
+ * const metadata = await fetchVideoUrl("hand_123");
+ * const range = getPlaybackRange(metadata);
+ * console.log(`Play from ${range}`); // "1:23 - 2:45"
+ * ```
+ */
+export function getPlaybackRange(metadata: VideoMetadata): string {
+  const start = formatVideoDuration(metadata.startTime);
+  const end = formatVideoDuration(metadata.endTime);
+  return `${start} - ${end}`;
+}

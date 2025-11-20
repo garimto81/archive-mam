@@ -1,0 +1,41 @@
+{
+  "hand_id": "wsop_2023_hand_0066",
+  "tournament_id": "wsop_2023",
+  "hand_number": 66,
+  "timestamp": "2024-03-10T00:00:00Z",
+  "duration_seconds": 66,
+  "description": "Massive all-in pot! Fedor Holz shoves 506.9bb with two pair against Alex Foxen's full house on the preflop. Alex Foxen folds and Hero wins. Final pot: 734.2bb.",
+  "hero_name": "Fedor Holz",
+  "villain_name": "Alex Foxen",
+  "hero_position": "BB",
+  "villain_position": "CO",
+  "hero_stack_bb": 219.1,
+  "villain_stack_bb": 173.8,
+  "street": "PREFLOP",
+  "pot_bb": 734.2,
+  "action_sequence": [
+    "limp",
+    "raise 5bb",
+    "call",
+    "check",
+    "bet 0.5pot",
+    "raise 2x",
+    "all-in",
+    "call"
+  ],
+  "hero_action": "raise",
+  "result": "WIN",
+  "tags": [
+    "HIGH_STAKES",
+    "4BET",
+    "CONTINUATION_BET",
+    "ALL_IN"
+  ],
+  "hand_type": "ALL_IN",
+  "video_url": "gs://poker-videos-prod/wsop_2023/day6_table13.mp4",
+  "video_start_time": 7691.1,
+  "video_end_time": 11284.7,
+  "thumbnail_url": "gs://poker-videos-prod/thumbnails/wsop_2023_hand_0066.jpg",
+  "ati_version": "1.0.0",
+  "ati_confidence": 0.82
+}
